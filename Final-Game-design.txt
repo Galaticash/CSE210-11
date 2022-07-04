@@ -94,3 +94,8 @@ Example
 Wolf (Enemy)
 - how it moves
 - how it looks
+-   -   -   -   -
+
+Other Ideas:
+- main Menu
+- high score, but that's extra
