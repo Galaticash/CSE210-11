@@ -8,7 +8,6 @@
 - The program should be delivered through a version control system. (Git/GitHub)
 - The program should be able to be run from the command line. (Runs as a Python file, etc)
 
-
 ## Week 11 - Maintainability
 Learn about Maintainability and start the Final Project
 
@@ -47,9 +46,34 @@ Class | Job
 Enemy | Inherits from Collision Actor, 
 Specific enemies | Different types of Enemies (different display, movement, hitpoints/damage, etc)
 Pick up items | (Collision Actor - with movement removed (or could use it to animate floating?)
+Scene | A Window Area where a Player can fight Enemies. The Scene can be cleared when all Enemies are defeated *subject to changes based on Game type.  Maybe this would be an adjusted version of Cast? Or each Scene has a Cast (enemies (created with Scene) + Player (receievd from the Director))? Scenes could also include the Main Menu
 
-## Week 12
+## Week 12 - Continuing Development
 Continue Develpoing the Final Game
 
-## Week 13 (check back, Canvas unlocks 7/2)
-Final Project Submisison
+## Week 13 - Finishing the Final Project
+Submit a recording of the game being played at the end of the week
+
+### Final Project Due (Wednesday 7/13)
+Might be able to continue working past then, but Wednesday is when the GitHub link is due.
+
+### Mastery Question (Saturday 7/16)
+*Can you fix bugs or add new features to your code without resorting to major refactoring? Why or why not?*
+
+Add New Features by adding new things to the Director
+- Add new Scenes
+  - Add new Enemies to the Scenes
+- Could change the number of lives, difficulty constants (damage, healthpoints) (read from a .txt file? or could make a constants.py)
+
+### Project Demo (Saturday 7/16) *Voting Topic locked until 7/18
+- A one minute recording showing off game and its mechanics
+
+## Week 14 - Voting
+
+### Final Video
+Highlight the code you contributed to in the final project
+- Introduce yourself
+- Talk about what parts of the project you worked on
+- Must be around 1 minute long
+- Must have your face in the video
+  - Recording with Zoom's share screen has worked well for me
