@@ -99,3 +99,138 @@ Wolf (Enemy)
 Other Ideas:
 - main Menu
 - high score, but that's extra
+
+- - - - -
+
+Game
+Attribute
+    List of connecting Scenes
+Methods
+    Changing Scenes
+        - make sure to load all the enmies
+        - save changes to the previous scenes
+            - enemies
+   
+Menu
+Game Over
+    - out of lives or for each one taken
+Game
+    main scene/spawn - simple area (no enemeies) broken spaceship
+    Simple enemies area
+    Middle difficulty
+    Treasure room - Boxes/Crates/Barrels of things that fell off the ship
+    Boss
+
+Player --> pot
+pot -> broken == True
+Collision Handler
+Player <-- get_item()
+
+Player Inventory
+    Coins: 0
+        + 1
+    Arrows: 0
+        + 1, 5
+
+
+GUI <-- Player
+Player.get_inventory()
+
+
+Player
+Attributes:
+    current_healthpoints
+    total_healthpoints
+    Lives
+    Inventory
+        (list of items)
+
+Coins --> Life
+if x10 coins, then lives += 1
+
+Signs, notes, talking to NPCS
+
+(Actor)
+Message
+    Dialogue
+
+
+Pick up
+    Hearts
+    Coins
+
+Scene
+Attributes
+    Connections
+
+Methods
+
+Collision Actor
+    HP/Stats Actor
+        Breakables - Barrels/Pots
+
+(Hitpoints)
+
+Collision Actor
+    Barrel
+    Pick up Item
+
+Collision Actor
+    Weapon
+        Bow and Arrow
+            Arrows -->
+        Sword
+        Spear
+
+Colliding_Actor
+HP/Stats Actor
+    Enemies
+        Simple Enemy 10
+        Marshan - ray gun (ranged weapons)
+        Robots
+        Rock?
+        Boss 50
+            Big Marshan (Doc Ock)
+                - multiple arms - using the trails
+                    - *Pretty extra - defeating arm portions
+                - swarm of Marshan helpers
+
+knockback
+
+Theme:
+    Astronaut in space/space planet
+    strange space creatures
+    space physics for knockback and gravity
+
+Controls:
+    WASD for walking
+    __ for attacking
+    __ for dialouge/interactions
+
+Sound Manager:
+
+
+Scene
+    - Background image
+    - Other colliding objects like walls, rocks, etc
+    - knows what Actors are in in the scene and where
+
+Classes to change/update:
+    GUI 
+        - print each Actor (Box, Enemy, Player)
+    Director
+        - Sound Manager:
+            - 
+        - Collision Handler
+            - all the current colliding Actors
+        - Cast 
+            - Player
+            - all the enemies within the scene
+                - Update the enemy movements
+
+        - Scene Manager
+            - Current Scene
+      
+Later/Extra
+- Sound/sound effects
+- 

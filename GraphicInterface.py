@@ -3,6 +3,11 @@ import pyray
 FRAME_RATES = {"easy": 12, "medium": 30, "hard": 60}
 FRAME_RATE = FRAME_RATES["medium"]
 
+SPRITES = {"Player": "insert .img file here"}
+
+#  or SPRITES = {"Player": PLAYER_SET, "Enemy1": MARTIAN_SET} 
+# and PLAYER_SET = {1: "insert first animation sprite here", 2: "insert second animation sprite here"}
+
 """
     Note: The GUI does NOT update the position of anything, only displays their current position.
     Requires:
@@ -28,6 +33,13 @@ class Window():
         # Has a const set Frame Rate, limits number of updates
         pyray.set_target_fps(FRAME_RATE)
 
+    def _print_test(self):
+        """
+            So instead of drawing them bit by bit, will refer to the professor's version of how to insert images
+            TODO: Print a specific image (dictionary based?) for each actor/actor type
+        """
+        pyray.draw_rectangle(0, 0, self._width, self._height, pyray.GREEN)
+
     def _print_actor(self, actor):
         """
             Prints the given actor on the board. All 
@@ -37,11 +49,12 @@ class Window():
 
     def _print_player(self, player):
         """
-            Prints an image representation of the Player
-            Testing with using sprites/images instead of just ASCII characters.
+            Prints the sprite of the Player
         """
         # TODO: Figure out what the 'model' class is, how to make a model?
-        pyray.draw_model()
+        #pyray.draw_model()
+
+        # pyray.draw_circle()
         pass
 
     def _print_button(self, button):
@@ -77,6 +90,8 @@ class Window():
         # Refreshes the board to black
         pyray.begin_drawing()
         pyray.clear_background(pyray.BLACK)
+
+        self._print_test()
 
         # Updates the Collision Actors
         # TODO: Change to cast.get_colliders()

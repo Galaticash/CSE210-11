@@ -1,0 +1,21 @@
+Tasks:
+
+Hailey
+- Find game assets to use with pyray
+    - All the animations (sprite sheet)
+    - Player/Actor figures out their current animation state
+- Brainstorm enemies/movements
+
+Ashley
+- Combat mechanics/Collisions
+    - Update Collision Handler
+    - Make sure enemy movement/collisions work
+    - Enemy and Player collisions damage eachother
+        - but Enemies don't hurt Enemies - unless that's a feature!
+
+John
+- Scenes, setup of how they connect
+    - How many scenes
+        - Main menu, high score, etc
+    - Figure out the logic for how Scene Manager, Scene object would work
+        - What kind of Attributes and Methods would each object have?
