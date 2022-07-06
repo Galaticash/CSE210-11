@@ -136,7 +136,6 @@ Player Inventory
 GUI <-- Player
 Player.get_inventory()
 
-
 Player
 Attributes:
     current_healthpoints
@@ -197,18 +196,12 @@ HP/Stats Actor
 
 knockback
 
-Theme:
-    Astronaut in space/space planet
-    strange space creatures
-    space physics for knockback and gravity
-
 Controls:
     WASD for walking
     __ for attacking
     __ for dialouge/interactions
 
 Sound Manager:
-
 
 Scene
     - Background image

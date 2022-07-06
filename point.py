@@ -28,36 +28,37 @@ class Point:
         self._y = y
 
     def get_x(self):
-        """Gets the horizontal distance.
-        
+        """
+            Gets the horizontal distance.
         Returns:
             integer: The horizontal distance.
         """
         return self._x
 
     def get_y(self):
-        """Gets the vertical distance.
-        
+        """
+            Gets the vertical distance.
         Returns:
             integer: The vertical distance.
         """
         return self._y
 
     def add_velocity(self, dx, dy):
-        """Changes the x and y position based off of the velocity 
-        (aka change in position)
-
+        """
+            Changes the x and y position based off of the velocity 
+            (aka change in position)
+            # TODO: Check if Sprite position is in the top-left or center
         """
         self._x += dx
-
-        if self._x > self._max_x:
-            self._x = 0
-        elif self._x < 0:
-            self._x = self._max_x
-
         self._y += dy
 
+        # TODO: Remove, simple catch to keep objects on the screen
+        if self._x > self._max_x:
+            self._x = self._max_x
+        elif self._x < 0:
+            self._x = 0
+
         if self._y > self._max_y:
-            self._y = 0
-        elif self._y < 0:
             self._y = self._max_y
+        elif self._y < 0:
+            self._y = 0

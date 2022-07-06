@@ -14,7 +14,7 @@ class Player(Collision_Actor):
         self._symbol = "@"
 
         # Give Player a Player_Input to determine velocity/movement
-        self._player_input = Player_Input([pyray.KEY_W, pyray.KEY_A, pyray.KEY_S, pyray.KEY_D])
+        self._player_input = Player_Input()
 
         # Player starts with an initial velocity of up.
         self._velocity = [0, -1]
