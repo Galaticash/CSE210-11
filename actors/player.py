@@ -3,8 +3,6 @@ from player_input import Player_Input, pyray
 from actors.score import Score
 from actors.Fighting_Actor import Fighting_Actor
 
-UPDATE_FRAME = 10
-
 class Player(Fighting_Actor):
     """
         The Player/Cycle that is controlled by the user.
@@ -14,13 +12,6 @@ class Player(Fighting_Actor):
         # Reset Base Color, Color, and Symbol
         self._base_color = Color("WHITE")
         self._color = copy.copy(self._base_color)
-
-        # For animation TODO: move to Fighting Actor to animate both Enemy and Player
-        self._frame_counter = 0
-        self._frames = ["0", "1", "2", "3", "4", "5"]
-        self._current_frame = 0
-        self._symbol = "@"
-
 
         # Give Player a Player_Input to determine velocity/movement
         self._player_input = Player_Input()
@@ -32,26 +23,6 @@ class Player(Fighting_Actor):
         
         # Create a Score object
         self._score = Score(max_x, max_y, [int(self._max_x * 1/12), 0], self._size, "Player One:")
-
-    def get_frame(self):
-        """
-            Animates the character
-        """
-        if self._velocity == [0, 0]:
-            return self._frames[0]
-        # TODO: only change the frame every few refreshes
-        self._frame_counter += 1
-        if self._frame_counter == UPDATE_FRAME:
-            self._frame_counter = 0
-            self._current_frame += 1
-            if self._current_frame == len(self._frames):
-                self._current_frame = 0
-            # TODO: Check the frame number
-        return self._frames[self._current_frame]
-
-    def get_display(self):
-        # DEBUG: Temporary override
-        return self.get_frame()
 
     def get_velocity(self):
         """
