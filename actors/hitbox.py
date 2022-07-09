@@ -8,12 +8,11 @@ class Hitbox():
         
         # Width is the length (w/o font size included)
         self._width = width
-        
         # The size of the symbol/hitbox
         self._size = size
-
         # The extra pixels of padding for the hitbox.
         self._padding = padding
+        self._is_hit = False
     
     def update(self, position):
         """
@@ -37,7 +36,7 @@ class Hitbox():
         # position.get_x() + self._size//2 
         #
 
-    def is_hit(self, other_collider_pos):
+    def hit(self, other_collider_pos):
         """
             Will check if the other Actor's Point position is within this Hitbox, and return if there has been a collison.
         """
@@ -46,9 +45,17 @@ class Hitbox():
             if other_collider_pos.get_y() <= self._hitbox["Bottom"]:
                 if other_collider_pos.get_x() >= self._hitbox["Left"]:
                     if other_collider_pos.get_x() <= self._hitbox["Right"]:
-                        return True
+                        self._is_hit = True
         else:
-           return False
+            self._is_hit = False
+            
+        return self._is_hit
+
+    def get_is_hit(self):
+        """
+            Returns if the hitbox is colliding
+        """
+        return self._is_hit
 
     @property
     def width(self):

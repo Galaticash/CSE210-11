@@ -1,47 +1,74 @@
+from collisionHandler import Collision_Handler
 """
-    TODO: Can rename to Scene Manager? Is in charge of making sure the Player
+    TODO: Is in charge of making sure the Player
      interacts correctly with all items in the Scene (another new Object - 
      holds list of enemies and how to transition from this scene to another scene?)
 """
 
-class Cast():
+class Scene_Manager():
     """
         A collection of Actors and Messages to display on the GUI.
     """
     def __init__(self):
         # TODO: Change to have a different list of Enemies/Colliders based on scene
         # Colliders can include things like walls, barrels, etc <-- Another new class or just a Collision Actor with no movement (Collision Actor's Move method is just 'pass' then Enemy and Player would override Move)
-        self._players = []
+        self._colliders = []
         self._messages = []
+        self._REPLAY_BUTTON_NAMES = ["PLAY_AGAIN", "EXIT"]
+        # If there are more buttons, add to the list? Not very maintainable here..
+        # Maybe have differnt lists of buttons? (self._replay_buttons, and self._UI_buttons?)
         self._buttons = {}
-        self._BUTTON_NAMES = ["PLAY_AGAIN", "EXIT"]
+
+        self._collision_handler = Collision_Handler()
 
     def add_player(self, new_player):
         """
-            Adds a new player to the Cast's list of Players.
+            Adds a new Player to the Cast's list of Colliders.
+            Will always be the first collider (index = 0)
+            Makes sure to add the score/UI as well
         """
-        self._players.append(new_player)
+        self.add_collider(new_player)
         self.add_message(new_player.get_score())
 
-    def get_players(self):
-        """
-            Returns the list of Players.
-        """
-        return self._players
+    #def load_scene(scene)
+        # Add all the Scene's colliders to self._colliders
+    
+    #def exit_scene()
+        # removes all the colliders from the other scene (self._collider = just the player)
 
-    def move_players(self):
-        """
-            Moves the Players.
-        """
-        for player in self._players:
-            player.move()
+    #def add_scene_border(self):
 
-    def reset_players(self):
+    def add_collider(self, new_collider):
         """
-            Moves the Players to their spawn points.
+            Adds a new Collider to the Cast's list of Colliders
         """
-        for player in self._players:
-            player.respawn()
+        self._colliders.append(new_collider)
+
+    def get_colliders(self):
+        """
+            Returns the list of Colliders.
+        """
+        return self._colliders
+
+    def move_colliders(self):
+        """
+            Moves all moving Colliders.
+            Any non-moving will have "pass" in their move method
+        """
+        for collider in self._colliders:
+            collider.move()
+
+    def reset_player(self):
+        """
+            Moves the Player to their spawn point.
+        """
+        self._colliders[0].respawn()
+
+    def check_collisions(self):
+        """
+            Checks if there has been a collision between any of the colliders.
+        """
+        self._collision_handler.check(self._colliders)
 
     def add_message(self, new_message):
         """
@@ -66,7 +93,7 @@ class Cast():
             Adds a new button to the Cast.
         """
         # Checks that the new_button is either "PLAY AGAIN" or "EXIT"
-        assert(type == self._BUTTON_NAMES[0] or type == self._BUTTON_NAMES[1])
+        assert(type == self._REPLAY_BUTTON_NAMES[0] or type == self._REPLAY_BUTTON_NAMES[1])
         self._buttons[type] = new_button
 
     def get_buttons(self):
@@ -75,7 +102,7 @@ class Cast():
         """
         button_list = []
         if len(self._buttons) > 0:
-            button_list = [self._buttons[self._BUTTON_NAMES[0]], self._buttons[self._BUTTON_NAMES[1]]]
+            button_list = [self._buttons[self._REPLAY_BUTTON_NAMES[0]], self._buttons[self._REPLAY_BUTTON_NAMES[1]]]
         return button_list
 
     def check_replay_buttons(self, cursor_position):
@@ -84,10 +111,10 @@ class Cast():
         """
         print(f"Cursor click at [{cursor_position.get_x()}, {cursor_position.get_y()}]")
         # If the Play Again button has been clicked.
-        if self._buttons[self._BUTTON_NAMES[0]].pressed(cursor_position):
+        if self._buttons[self._REPLAY_BUTTON_NAMES[0]].pressed(cursor_position):
             return True
         # Else if the Exit button has been clicked.
-        elif self._buttons[self._BUTTON_NAMES[1]].pressed(cursor_position):
+        elif self._buttons[self._REPLAY_BUTTON_NAMES[1]].pressed(cursor_position):
             return False
         # The user clicked elsewhere on the screen.
         else:

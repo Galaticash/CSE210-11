@@ -2,12 +2,13 @@ from actors.message import Message, Color
 from actors.hitbox import Hitbox
 
 class Button(Message):
+    
     """
         A type of Message that returns if the cursor has been clicked in its Hitbox.
     """
-    def __init__(self, max_x, max_y, font_size, message, color="WHITE"):
-        super().__init__(max_x, max_y, font_size, message, color)
-        self._hitbox = Hitbox(len(self._message)//2, self._font_size, 15)
+    def __init__(self, max_x, max_y, position, size, message, image="", color="WHITE"):
+        super().__init__(max_x, max_y, position, size, message, image, color)
+        self._hitbox = Hitbox(len(self._message)//2, self._size, 15)
         self._hitbox.update(self._position)
         self._color = Color("GREEN")
 

@@ -10,16 +10,18 @@ class Actor():
         Has a symbol to represent itself with, can be a single character or a string of them (Message).
         Has Getters for each Attribute so the GUI can properly display the Actor.
     """
-    def __init__(self, max_x, max_y, font_size, color = "WHITE"):
+    def __init__(self, max_x, max_y, size, image = "", color = "WHITE"):
         self._max_x = max_x
         self._max_y = max_y
-        # TODO: some calculations for spawn point
+        # Spawn point at the center of the screen
         self._spawn_point = Point(max_x, max_y, max_x//2, max_y//2)
         self._position = self._spawn_point # Could replay the game and set the actor back to the start
         self._velocity = [0, 0] # The X and Y velocity
         self._velocity_prev = copy.copy(self._velocity) # Copy values only
-        self._symbol = "#"
-        self._font_size = font_size
+        
+        self._symbol = "#" 
+        self._image = image
+        self._size = size
         self._base_color = Color(color)
         self._color = copy.copy(self._base_color)
 
@@ -68,15 +70,16 @@ class Actor():
 
     def get_display(self):
         """
-            Returns the character or string that is used to display the Actor.
+            Returns the string or image that is used to display the Actor.
         """
         return self._symbol
 
+    # TODO: Rename all places where this is called to get_size()
     def get_font_size(self):
         """
             Returns the font size of the Actor.
         """
-        return self._font_size
+        return self._size
 
     def set_color(self, color):
         """

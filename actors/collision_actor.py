@@ -7,9 +7,9 @@ class Collision_Actor(Actor):
     """
         An Actor that can collide with other Collision Actors.
     """
-    def __init__(self, max_x, max_y, font_size, color="WHITE"):
-        super().__init__(max_x, max_y, font_size, color)
-        self._hitbox = Hitbox(len(self._symbol), self._font_size)
+    def __init__(self, max_x, max_y, size, image="", color="WHITE"):
+        super().__init__(max_x, max_y, size, image, color)
+        self._hitbox = Hitbox(len(self._symbol), self._size)
         # How many pixels the Actor travels per Move method call.
         self._step_size = STEP_SIZE
 
@@ -24,6 +24,12 @@ class Collision_Actor(Actor):
             Returns the hitbox object.
         """
         return self._hitbox
+
+    def get_display(self):
+        """
+            Returns the Image of the Actor
+        """
+        return self._image
 
     def move(self):
         """

@@ -1,4 +1,5 @@
 import pyray
+import pathlib
 
 FRAME_RATES = {"easy": 12, "medium": 30, "hard": 60}
 FRAME_RATE = FRAME_RATES["medium"]
@@ -32,17 +33,39 @@ class Window():
         
         # Has a const set Frame Rate, limits number of updates
         pyray.set_target_fps(FRAME_RATE)
+        self._hitbox_test_color = (255, 0, 0, 50)
+        self._hitbox_test_hit_color = (255, 0, 0, 200)
 
     def _print_test(self):
         """
             So instead of drawing them bit by bit, will refer to the professor's version of how to insert images
             TODO: Print a specific image (dictionary based?) for each actor/actor type
         """
-        pyray.draw_rectangle(0, 0, self._width, self._height, pyray.GREEN)
+        pyray.draw_rectangle(0, 0, self._width, self._height, pyray.GRAY)
+        pyray.draw_rectangle(0, 0, self._width, 100, pyray.BLACK)
+
+    def _print_actor_image(self, actor):
+        """
+            Prints the given actor's image on the screen.
+        """
+        # From Professor's version
+        image = actor.get_image()
+        texture = image.get_texture()
+        # fixed os dependent filepath
+        #filepath = str(pathlib.Path(image.get_filename()))
+        #texture = self._textures[filepath]
+
+        scale = image.get_scale()
+        rotation = image.get_rotation()
+        
+        raylib_position = pyray.Vector2(actor.get_x(), actor.get_y())
+        tint = (255,255,255)
+        pyray.draw_texture_ex(texture, raylib_position, rotation, scale, tint)
+        pass
 
     def _print_actor(self, actor):
         """
-            Prints the given actor on the board. All 
+            Prints the given actor on the screen. All 
              variables are recieved from the actor itself.
         """
         pyray.draw_text(actor.get_display(), actor.get_x(), actor.get_y(), actor.get_font_size(), actor.get_color())
@@ -71,17 +94,18 @@ class Window():
              otherwise the Rectangle will draw on top of the text.
         """
         # Draw a rectangle
-        pyray.draw_rectangle(hitbox.left, hitbox.top, hitbox.right - hitbox.left, hitbox.bottom - hitbox.top, pyray.WHITE)
+        hitbox_color = self._hitbox_test_hit_color if hitbox.get_is_hit() else self._hitbox_test_color
+        pyray.draw_rectangle(hitbox.left, hitbox.top, hitbox.right - hitbox.left, hitbox.bottom - hitbox.top, hitbox_color)
 
         # Draw the outline
         # Draw the top line
-        pyray.draw_line(hitbox.left, hitbox.top, hitbox.right, hitbox.top, pyray.RAYWHITE)
+        pyray.draw_line(hitbox.left, hitbox.top, hitbox.right, hitbox.top, pyray.RED)
         # Bottom
-        pyray.draw_line(hitbox.left, hitbox.bottom, hitbox.right, hitbox.bottom, pyray.RAYWHITE)
+        pyray.draw_line(hitbox.left, hitbox.bottom, hitbox.right, hitbox.bottom, pyray.RED)
         # Left
-        pyray.draw_line(hitbox.left, hitbox.top, hitbox.left, hitbox.bottom, pyray.RAYWHITE)
+        pyray.draw_line(hitbox.left, hitbox.top, hitbox.left, hitbox.bottom, pyray.RED)
         # Right
-        pyray.draw_line(hitbox.right, hitbox.top, hitbox.right, hitbox.bottom, pyray.RAYWHITE)
+        pyray.draw_line(hitbox.right, hitbox.top, hitbox.right, hitbox.bottom, pyray.RED)
 
     def update(self, cast):
         """
@@ -95,10 +119,10 @@ class Window():
 
         # Updates the Collision Actors
         # TODO: Change to cast.get_colliders()
-        for player in cast.get_players():
-            self._print_actor(player)
+        for player in cast.get_colliders():
             # DEBUG: Prints Hitbox
-            self._print_hitbox(player.get_hitbox())
+            #self._print_hitbox(player.get_hitbox())
+            self._print_actor(player)
 
         # Updates the Messages
         for message in cast.get_messages():

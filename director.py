@@ -1,8 +1,7 @@
-from cast import Cast
+from cast import Scene_Manager
 from actors.player import *
 from actors.message import Message
 from actors.button import Button
-from collisionHandler import Collision_Handler
 from GraphicInterface import Window
 from mouse_input import Mouse_Input
 
@@ -15,7 +14,7 @@ class Director():
         Directs the inner workings of the game.
     """
     def __init__(self):
-        # Determine if the game is over.
+        # Determine idddddddddf the game is over.
         self._game_over = False
         # Determine if the window should close (exit program).
         self._window_close = False
@@ -27,27 +26,23 @@ class Director():
         # Create a Window to display things on
         self._window = Window(self._max_x, self._max_y)
 
-        # Create a Cast to add Players and Messages to
-        self._cast = Cast()
-
-        # Create a Collision Handler to manage collisions between Actors
-        self._collision_handler = Collision_Handler(self._cast)
+        # Create a Scene Manager to manage the current Scene and the collisions between Actors in that Scene
+        self._cast = Scene_Manager()
 
         # Create a Mouse_input
         self._mouse = Mouse_Input()
 
     def start_game(self):
         """
-            Begin the Cycle game. Create the two players.
+            Begin the Space game. Creates the Player and puts them into the starting scene.
         """
         # Add the Player (user) to the Cast.
         self._cast.add_player(Player(self._max_x, self._max_y, self._font_size))
 
-        # Add the enemies to the Cast
+        # Add all scene elements to the cast
+        #   Add all enemies
+        #   Add all walls/objects
         # TODO: Add Enemies class and subclasses (specific types of enemies, a boss as well?)
-
-        # Update the collision handler.
-        self._collision_handler.update_colliders()
 
     def update_game(self):
         """
@@ -56,11 +51,12 @@ class Director():
             TODO: Adjust for Final Game
         """
         # Move all members of the cast.
-        self._cast.move_players()
+        self._cast.move_colliders()
+        self._cast.check_collisions()
         
+        # Check if the game is currently over
         if not self._game_over:
-            # Check for collisions, if the Cycles collide, the game is over.
-            self._game_over = self._collision_handler.check()
+            # TODO: Insert some kind of check for game over, Player lives = 0, etc
             if self._game_over:
                 self.add_game_over()
         else:
@@ -117,8 +113,8 @@ class Director():
         self._cast.remove_game_over()
         self._cast.remove_buttons()
 
-        # Resets the Player Point positions, Trails, and Color
-        self._cast.reset_players()
+        # Resets the Player's Point position, Color?*
+        self._cast.reset_player()
     
     def get_game_over(self):
         """

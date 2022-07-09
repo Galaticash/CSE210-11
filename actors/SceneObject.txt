@@ -1,0 +1,22 @@
+Scene Class/Object
+Attributes:
+    Connections [Other Scenes] (Top, Left, Right, Bottom)
+    Entrance_Points [Points] (T, L, R, B)
+    Where the Player is coming from [Enum] (T, L, R, B)
+    List of Enemies/Colliders
+
+Methods:
+    Get Colliders: Returns to --> SceneManager
+
+(Call tree)
+Scene Manager
+
+    Scene 1, the Player goes to the top of the screen
+Player_exiting = Top
+Player_entering = Bottom
+    Scene1 knows that Scene2 is the connection at the Top
+Next_scene = Scene 2
+    Scene2 is told the PLayer is entering from the Bottom (reverse of where the PLayer is leaving)
+exit_scene()
+load_scene(Scene2)
+    Scene2 <-- Player_entering

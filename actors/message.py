@@ -1,11 +1,12 @@
 from actors.actor import *
 
 class Message(Actor):
+    
     """
         An Actor that displays a given message at a given position.
     """
-    def __init__(self, max_x, max_y, position, font_size, message, color="WHITE"):
-        super().__init__(max_x, max_y, font_size, color)
+    def __init__(self, max_x, max_y, position, size, message, image="", color="WHITE"):
+        super().__init__(max_x, max_y, size, image, color)
         self._message = message
         self._x_pos = position[0]
         self._y_pos = position[1]
