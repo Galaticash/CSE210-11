@@ -1,3 +1,5 @@
+DIRECTIONS = ["TOP", "BOTTOM", "LEFT", "RIGHT"]
+
 class Collision_Handler():
     """
         Handles the Collisions of the game, given a Cast of Colliding Actors.
@@ -5,6 +7,18 @@ class Collision_Handler():
     def __init__(self):
         pass
     
+    def check_exit(self, player, given_walls):
+        """
+            Checks if the Player is exiting, returns which way they are leaving.
+        """
+        #for wall_pos in DIRECTIONS:
+        # DEBUG: Testing collisions with Top hitbox
+        # print("\tPlayer vs TOP")
+        if player.get_hitbox().hit(given_walls["TOP"].get_hitbox()):
+            print(f"Attempting to exit via TOP")
+            return "TOP"
+        return None
+
     def check(self, given_colliders):
         """
             Checks if there has been a collision between any of the colliders
@@ -23,7 +37,7 @@ class Collision_Handler():
                     colliders_two.pop(collider_two)
                 else:
                     colliders = [collider_one, collider_two]
-                if collider_one.is_hit(collider_two):
+                if collider_one.hit(collider_two.get_hitbox()):
                     # Indicate there has been a collision.
                     # Play a sound?
                     for collider in colliders:

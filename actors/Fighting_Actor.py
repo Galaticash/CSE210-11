@@ -1,4 +1,7 @@
 from actors.collision_actor import Collision_Actor
+from actors.image import Image
+
+# NOTE: Currently testing with only one .png in position _frames[0]
 
 # The frame at which the animation frame is updated
 UPDATE_FRAME = 10
@@ -12,8 +15,10 @@ class Fighting_Actor(Collision_Actor):
         
         # For animation
         self._frame_counter = 0
-        self._frames = ["0", "1", "2", "3", "4", "5"]
+        self._frames = ["Test_file", "1", "2", "3", "4", "5"]
         self._current_frame = 0
+        self._scale = 1
+        self._rotation = 0
 
         # TODO: Player will do damage with a weapon (for Player -> 0, but their weapon)
         # How much damage is done to the other collider
@@ -21,20 +26,27 @@ class Fighting_Actor(Collision_Actor):
 
     def get_frame(self):
         """
-            Animates the character
+            Animates the character, returns the current frame.
         """
+        # If the Player is standing still, stay on first frame
         if self._velocity == [0, 0]:
             return self._frames[0]
-        # TODO: only change the frame every few refreshes
+
+        # Check for the update frame
         self._frame_counter += 1
         if self._frame_counter == UPDATE_FRAME:
+            # Reset the counter and update the animation frame,
+            #  making sure to loop when it hits the end.
             self._frame_counter = 0
-            self._current_frame += 1
+            #self._current_frame += 1
             if self._current_frame == len(self._frames):
-                self._current_frame = 0
-            # TODO: Check the frame number
+                self._current_frame = 1
+        # Return the filepath of the current frame
         return self._frames[self._current_frame]
 
     def get_display(self):
-        # DEBUG: Temporary override
-        return self.get_frame()
+        """
+            Returns the frame of the Actor to display.
+        """
+        # Create and return an Image (the filepath, scale, and rotation)
+        return Image(self.get_frame(), self._scale, self._rotation)

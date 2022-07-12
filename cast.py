@@ -1,4 +1,6 @@
 from collisionHandler import Collision_Handler
+from actors.wall import Wall
+
 """
     TODO: Is in charge of making sure the Player
      interacts correctly with all items in the Scene (another new Object - 
@@ -9,17 +11,23 @@ class Scene_Manager():
     """
         A collection of Actors and Messages to display on the GUI.
     """
-    def __init__(self):
+    def __init__(self, max_x, max_y):
+        # TODO: remove max_x, max_y - temporary wall sensing
+        self._max_x = max_x
+        self._max_y = max_y
         # TODO: Change to have a different list of Enemies/Colliders based on scene
         # Colliders can include things like walls, barrels, etc <-- Another new class or just a Collision Actor with no movement (Collision Actor's Move method is just 'pass' then Enemy and Player would override Move)
         self._colliders = []
         self._messages = []
         self._REPLAY_BUTTON_NAMES = ["PLAY_AGAIN", "EXIT"]
+        self._walls = {"TOP": None, "LEFT": None, "RIGHT": None, "BOTTOM": None}
+        self._scene_connections = {"TOP": None, "LEFT": None, "RIGHT": None, "BOTTOM": None}
         # If there are more buttons, add to the list? Not very maintainable here..
         # Maybe have differnt lists of buttons? (self._replay_buttons, and self._UI_buttons?)
         self._buttons = {}
 
         self._collision_handler = Collision_Handler()
+        self.add_walls()
 
     def add_player(self, new_player):
         """
@@ -29,6 +37,17 @@ class Scene_Manager():
         """
         self.add_collider(new_player)
         self.add_message(new_player.get_score())
+
+    def add_walls(self):
+        # TODO: Given a scene, finds wall edges
+        # TODO: Fix to fit Constant DIRECTIONS
+        self._walls["TOP"] = Wall(self._max_x, self._max_y, 0, 0, 0, self._max_x)
+        self._walls["LEFT"] = Wall(self._max_x, self._max_y, 0, self._max_y, 0, 0)
+        self._walls["RIGHT"] = Wall(self._max_x, self._max_y, 0, self._max_y, self._max_x, self._max_x)
+        self._walls["BOTTOM"] = Wall(self._max_x, self._max_y, self._max_y, self._max_y, 0, self._max_x)
+
+    def get_walls(self):
+        return self._walls
 
     #def load_scene(scene)
         # Add all the Scene's colliders to self._colliders
@@ -68,6 +87,7 @@ class Scene_Manager():
         """
             Checks if there has been a collision between any of the colliders.
         """
+        self._collision_handler.check_exit(self._colliders[0], self._walls)
         self._collision_handler.check(self._colliders)
 
     def add_message(self, new_message):

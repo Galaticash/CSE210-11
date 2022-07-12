@@ -5,9 +5,11 @@ from actors.button import Button
 from GraphicInterface import Window
 from mouse_input import Mouse_Input
 
+DIRECTIONS = ["TOP", "BOTTOM", "LEFT", "RIGHT"]
 WINDOW_MAX_X = 900
 WINDOW_MAX_Y = 600
-FONT_SIZE = 25
+FONT_SIZE = 24
+ACTOR_SIZE = 64
 
 class Director():
     """
@@ -22,12 +24,13 @@ class Director():
         self._max_x = WINDOW_MAX_X
         self._max_y = WINDOW_MAX_Y
         self._font_size = FONT_SIZE
+        self._actor_size = ACTOR_SIZE
 
         # Create a Window to display things on
         self._window = Window(self._max_x, self._max_y)
 
         # Create a Scene Manager to manage the current Scene and the collisions between Actors in that Scene
-        self._cast = Scene_Manager()
+        self._cast = Scene_Manager(self._max_x, self._max_y)
 
         # Create a Mouse_input
         self._mouse = Mouse_Input()
@@ -36,8 +39,11 @@ class Director():
         """
             Begin the Space game. Creates the Player and puts them into the starting scene.
         """
+        # Load the images used in the game
+        self._window.load_images("assets")
+
         # Add the Player (user) to the Cast.
-        self._cast.add_player(Player(self._max_x, self._max_y, self._font_size))
+        self._cast.add_player(Player(self._max_x, self._max_y, self._actor_size))
 
         # Add all scene elements to the cast
         #   Add all enemies
@@ -133,6 +139,7 @@ class Director():
             Ends the game by closing the window. Additional things can be added
               like adding a game over animation/screen.
         """
+        self._window.unload_images()
         self._window.close()
 
 # Game can also just be run from Director

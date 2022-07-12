@@ -2,6 +2,7 @@ from actors.collision_actor import *
 from player_input import Player_Input, pyray
 from actors.score import Score
 from actors.Fighting_Actor import Fighting_Actor
+from director import FONT_SIZE
 
 class Player(Fighting_Actor):
     """
@@ -13,16 +14,27 @@ class Player(Fighting_Actor):
         self._base_color = Color("WHITE")
         self._color = copy.copy(self._base_color)
 
+        # Overrite the Images
+        self._frames = ["diamond1_2.png"]
+        self._scale = 10
+
         # Give Player a Player_Input to determine velocity/movement
         self._player_input = Player_Input()
         self._velocity = [0, 0]
 
         # Overrite Spawn Point, Position
         self._spawn_point = Point(max_x, max_y, int(self._max_x * 1/3), self._max_y//2)
+        # TODO: Hmm Put spawn point as a passable variable to Actor?
         self._position = self._spawn_point
+        top = (self._position.get_y() - self._size//2)
+        bottom = (self._position.get_y() + self._size//2) 
+        left = (self._position.get_x() - (self._size//2)) 
+        right = (self._position.get_x() + (self._size//2)) 
+        self._hitbox = Hitbox(top, bottom, left, right)
         
+        # TODO: Change to UI/inventory?
         # Create a Score object
-        self._score = Score(max_x, max_y, [int(self._max_x * 1/12), 0], self._size, "Player One:")
+        self._score = Score(max_x, max_y, [int(self._max_x * 1/12), 0], FONT_SIZE, "Score:")
 
     def get_velocity(self):
         """

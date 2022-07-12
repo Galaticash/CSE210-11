@@ -1,13 +1,13 @@
+import os
+from matplotlib.pyplot import text
+import py
 import pyray
+from pyray import Rectangle
 import pathlib
 
+DIRECTIONS = ["TOP", "BOTTOM", "LEFT", "RIGHT"]
 FRAME_RATES = {"easy": 12, "medium": 30, "hard": 60}
 FRAME_RATE = FRAME_RATES["medium"]
-
-SPRITES = {"Player": "insert .img file here"}
-
-#  or SPRITES = {"Player": PLAYER_SET, "Enemy1": MARTIAN_SET} 
-# and PLAYER_SET = {1: "insert first animation sprite here", 2: "insert second animation sprite here"}
 
 """
     Note: The GUI does NOT update the position of anything, only displays their current position.
@@ -27,14 +27,46 @@ class Window():
         # Given a width and height, creates a new window
         self._width = width
         self._height = height
-        
+        self._textures = {}
+
         # Creates a Window of size width x height, and the given title.
-        pyray.init_window(self._width, self._height, "Cycle Game - Team F")
+        pyray.init_window(self._width, self._height, "Space Game - Team F")
         
         # Has a const set Frame Rate, limits number of updates
         pyray.set_target_fps(FRAME_RATE)
         self._hitbox_test_color = (255, 0, 0, 50)
         self._hitbox_test_hit_color = (255, 0, 0, 200)
+
+    def load_images(self, directory):
+        """
+            Loads all images in the assets folder to the textures dictionary
+        """
+        filepaths = self._get_filepaths(directory, [".png", ".gif", ".jpg", ".jpeg", ".bmp"])
+        for filepath in filepaths:
+            if filepath not in self._textures.keys():
+                texture = pyray.load_texture(filepath)
+                self._textures[filepath] = texture
+
+    def unload_images(self):
+        """
+            Unloads the images from memory.
+        """
+        for texture in self._textures.values():
+            pyray.unload_texture(texture)
+        self._textures.clear()
+
+    def _get_filepaths(self, directory, filter):
+        """
+            Gets all the filepaths for each image in the assets folder
+        """
+        filepaths = []
+        for file in os.listdir(directory):
+            filename = os.path.join(directory, file)
+            extension = pathlib.Path(filename).suffix.lower()
+            if extension in filter:
+                filename = str(pathlib.Path(filename))
+                filepaths.append(filename)
+        return filepaths
 
     def _print_test(self):
         """
@@ -44,24 +76,47 @@ class Window():
         pyray.draw_rectangle(0, 0, self._width, self._height, pyray.GRAY)
         pyray.draw_rectangle(0, 0, self._width, 100, pyray.BLACK)
 
+    def _get_rectangle(self, actor):
+        return Rectangle(actor.get_x(), actor.get_y(), actor.get_hitbox().right - actor.get_hitbox().left, actor.get_hitbox().bottom - actor.get_hitbox().top)
+
     def _print_actor_image(self, actor):
         """
             Prints the given actor's image on the screen.
         """
-        # From Professor's version
-        image = actor.get_image()
-        texture = image.get_texture()
-        # fixed os dependent filepath
-        #filepath = str(pathlib.Path(image.get_filename()))
-        #texture = self._textures[filepath]
+        # Checks if the actor has an image
+        image = actor.get_display()
+        if not (image == ""):
+            # Gets the filepath for the image
+            filepath = image.get_filepath()
+            try:
+                # texture = self._textures[filepath]
+                texture = self._textures[filepath]
+            except KeyError:
+                print("Invalid filepath")
+                return
 
-        scale = image.get_scale()
-        rotation = image.get_rotation()
-        
-        raylib_position = pyray.Vector2(actor.get_x(), actor.get_y())
-        tint = (255,255,255)
-        pyray.draw_texture_ex(texture, raylib_position, rotation, scale, tint)
-        pass
+            size = actor.get_font_size()
+            # print(f"size: {size}, Texture Width: {texture.width}, Height: {texture.height}")
+            # GOAL: Texture should fit within the hitbox of size
+            # image.get_scale() <-- could scale the image manually
+            scale = size // texture.width # or with math
+
+            rotation = image.get_rotation()
+            # actor.get_x() - texture.width//2 <- centers on Point Position
+            pos_x = actor.get_x() - (texture.width//2 * scale)
+            pos_y = actor.get_y() - (texture.height//2 * scale)
+            raylib_position = pyray.Vector2(pos_x, pos_y)
+
+            # NOTE: MUST put full Alpha or the image is not shown
+            tint = (255, 255, 255, 255)
+            # NOTE: okay.. this is messed up
+            #pyray.draw_texture_rec(texture, self._get_rectangle(actor), raylib_position, tint)
+
+            #pyray.draw_texture(texture, pos_x, pos_y, tint)
+            pyray.draw_texture_ex(texture, raylib_position, rotation, scale, tint)
+        else:
+            # print(f"There is no image for the actor at position [{actor.get_x()}, {actor.get_y}]")
+            return
 
     def _print_actor(self, actor):
         """
@@ -69,16 +124,6 @@ class Window():
              variables are recieved from the actor itself.
         """
         pyray.draw_text(actor.get_display(), actor.get_x(), actor.get_y(), actor.get_font_size(), actor.get_color())
-
-    def _print_player(self, player):
-        """
-            Prints the sprite of the Player
-        """
-        # TODO: Figure out what the 'model' class is, how to make a model?
-        #pyray.draw_model()
-
-        # pyray.draw_circle()
-        pass
 
     def _print_button(self, button):
         """
@@ -88,7 +133,7 @@ class Window():
         self._print_hitbox(button.get_hitbox())
         pyray.draw_text(button.get_display(), button.get_x(), button.get_y(), button.get_font_size(), button.get_color())
         
-    def _print_hitbox(self, hitbox):
+    def _print_hitbox(self, hitbox, color = pyray.RED):
         """
             Draws a given hitbox. Must be printed before text, 
              otherwise the Rectangle will draw on top of the text.
@@ -99,13 +144,16 @@ class Window():
 
         # Draw the outline
         # Draw the top line
-        pyray.draw_line(hitbox.left, hitbox.top, hitbox.right, hitbox.top, pyray.RED)
+        pyray.draw_line(hitbox.left, hitbox.top, hitbox.right, hitbox.top, color)
         # Bottom
-        pyray.draw_line(hitbox.left, hitbox.bottom, hitbox.right, hitbox.bottom, pyray.RED)
+        pyray.draw_line(hitbox.left, hitbox.bottom, hitbox.right, hitbox.bottom, color)
         # Left
-        pyray.draw_line(hitbox.left, hitbox.top, hitbox.left, hitbox.bottom, pyray.RED)
+        pyray.draw_line(hitbox.left, hitbox.top, hitbox.left, hitbox.bottom, color)
         # Right
-        pyray.draw_line(hitbox.right, hitbox.top, hitbox.right, hitbox.bottom, pyray.RED)
+        pyray.draw_line(hitbox.right, hitbox.top, hitbox.right, hitbox.bottom, color)
+
+    def _print_circle(self, actor):
+        pyray.draw_circle(actor.get_x(), actor.get_y(), 5, pyray.GREEN)
 
     def update(self, cast):
         """
@@ -115,14 +163,21 @@ class Window():
         pyray.begin_drawing()
         pyray.clear_background(pyray.BLACK)
 
-        self._print_test()
+        #self._print_image()
+        #self._print_test()
+
+        walls = cast.get_walls()
+        for direction in DIRECTIONS:
+            self._print_hitbox(walls[direction].get_hitbox(), pyray.BLUE)
 
         # Updates the Collision Actors
         # TODO: Change to cast.get_colliders()
         for player in cast.get_colliders():
             # DEBUG: Prints Hitbox
-            #self._print_hitbox(player.get_hitbox())
-            self._print_actor(player)
+            self._print_hitbox(player.get_hitbox())
+            # self._print_actor(player)
+            #self._print_circle(player)
+            self._print_actor_image(player)
 
         # Updates the Messages
         for message in cast.get_messages():
