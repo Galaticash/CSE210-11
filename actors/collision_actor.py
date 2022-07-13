@@ -2,6 +2,7 @@ from actors.actor import *
 from actors.hitbox import Hitbox
 
 STEP_SIZE = 5
+COLOR_TIMER_MAX = 20
 
 class Collision_Actor(Actor):
     """
@@ -10,6 +11,13 @@ class Collision_Actor(Actor):
     def __init__(self, name, position, size, image="", color="WHITE"):
         super().__init__(position, size, image, color)
         self._name = name
+        self._do_collisions = True
+
+        self._alive = True
+        # Not all colliding Actors do damage to others.
+        self._attack = 0
+
+        self._color_timer = 0
 
         # Hitbox math
         top = (self._position.get_y() - self._size//2)
@@ -40,6 +48,14 @@ class Collision_Actor(Actor):
     #     self._limits[DIRECTIONS[3]] = (self._position.get_x() + (self._size//2)) + self._padding
 
         # How many pixels the Actor travels per Move method call.
+
+    def get_name(self):
+        """
+            TEMPORARY: Returns the unique name of the object
+             Names are being used to determine if compared
+             colliding actors are the same instance.
+        """
+        return self._name
 
     def get_hitbox(self):
         """
@@ -73,6 +89,43 @@ class Collision_Actor(Actor):
     def is_hit(self, other_collider):
         """
             Check if the Point position of the other 
-             collider is within the Hitbox of this actor.
+             collider is within the Hitbox of this actor,
+             but only when doing collisions
         """
-        return self._hitbox.hit(other_collider)
+        if self._do_collisions:
+            is_hit = self._hitbox.hit(other_collider.get_hitbox())
+            # Only every 10 or so checks will the color change back to normal?
+            self._color_timer += 1
+            if is_hit:
+                other_damage = other_collider.get_attack()
+                if other_damage > 0:
+                    self.damage(other_damage)
+                    self._color = Color("RED")
+            else:
+                if self._color_timer >= COLOR_TIMER_MAX:
+                    self._color_timer = 0
+                    self._color = Color("WHITE")
+            return is_hit
+        else:
+            # Not colliding with other actors, stay normal color
+            self._color = Color("WHITE")
+            return False
+
+    def get_attack(self):
+        """
+            Returns the damage this Actor does to other Fighting actors
+        """
+        return self._attack
+
+    def damage(self, damage_points):
+        # If the Actor is already out of HP points
+        if self._current_HP <= 0:
+            # Don't do anything
+            pass
+        else:
+            # The Actor is damaged
+            self._current_HP -= damage_points
+            # If they are out of HP
+            if self._current_HP <= 0:
+                pass
+               #self._alive = False

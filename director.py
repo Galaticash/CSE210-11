@@ -1,4 +1,4 @@
-from cast import Scene_Manager
+from scene_manager import Scene_Manager
 from actors.player import *
 from actors.message import Message
 from actors.button import Button
@@ -52,7 +52,6 @@ class Director():
 
         self._game_scenes["SPAWN"]
 
-
         pass
 
     def start_game(self):
@@ -65,19 +64,15 @@ class Director():
         # Creates the game's scenes
         self.create_scenes()
 
-        self._cast.setup_scene("SPAWN")
-
         # Add the Player (user) and Enemies to the Cast.
         self._cast.add_player(Player("Player", Point(int(self._max_x//2), self._actor_size + 10), self._actor_size))
+        
+        self._cast.setup_scene("SPAWN")
+        # All the enemies will be created with the scene, these are for testing
         self._cast.add_collider(Enemy("Enemy1", Point(int(self._max_x * 2/3), self._max_y//2), self._actor_size))
         self._cast.add_collider(Enemy("Enemy2", Point(int(self._max_x * 1/3), self._max_y//2), self._actor_size))
         self._cast.add_collider(Enemy("Enemy3", Point(int(self._max_x * 2/3) + 75, self._max_y//2), self._actor_size))
         self._cast.add_collider(Enemy("Enemy4", Point(int(self._max_x * 1/3) - 75, self._max_y//2), self._actor_size))
-
-        # Add all scene elements to the cast
-        #   Add all enemies
-        #   Add all walls/objects
-        # TODO: Add Enemies class and subclasses (specific types of enemies, a boss as well?)
 
     def update_game(self):
         """

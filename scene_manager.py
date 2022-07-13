@@ -43,7 +43,9 @@ class Scene_Manager():
             Makes sure to add the score/UI as well
         """
         self.add_collider(new_player)
-        self.add_message(new_player.get_score())
+        player_HUD = new_player.get_HUD()
+        for message in player_HUD:
+            self.add_message(message)
 
     def setup_scene(self, scene):
         # self._colliding_actors = scene.get_actors
@@ -97,6 +99,9 @@ class Scene_Manager():
             Any non-moving will have "pass" in their move method
         """
         for collider in self._colliding_actors:
+            if not collider.is_alive():
+                print(f"{collider.get_name()} has died!")
+                self._colliding_actors.remove(collider)
             collider.move()
 
     def reset_player(self):
@@ -106,6 +111,9 @@ class Scene_Manager():
         self._colliding_actors[0].respawn()
 
     def check_actions(self):
+        """
+            Checks Player Actions other than movement
+        """
         self._colliding_actors[0].check_shoot()
 
     def check_collisions(self):
@@ -113,8 +121,10 @@ class Scene_Manager():
             Checks if there has been a collision between any of the colliders.
         """
         if self._scene_loaded:
+            # Checks if the Player is attempting to exit the scene
             self._collision_handler.check_exit(self._colliding_actors[0], self._walls)
         if len(self._colliding_actors) > 1:
+            # Only check for collisions if there are other colliding Actors
             self._collision_handler.check(self._colliding_actors)
 
     def add_message(self, new_message):

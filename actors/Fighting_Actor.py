@@ -9,6 +9,7 @@ UPDATE_FRAME = 5
 class Fighting_Actor(Collision_Actor):
     def __init__(self, name, position, size, image="", color="WHITE"):
         super().__init__(name, position, size, image, color)
+        self._alive = True
         # Health Points
         self._max_HP = 25
         self._current_HP = self._max_HP
@@ -23,10 +24,6 @@ class Fighting_Actor(Collision_Actor):
         self._scale = 10
         self._facing_right = True
         self._rotation = 0
-
-        # Base Color, and current Color
-        self._base_color = Color(color)
-        self._color = copy.copy(self._base_color)
 
         # TODO: Player will do damage with a weapon (for Player -> 0, but their weapon)
         # How much damage is done to the other collider
@@ -70,17 +67,10 @@ class Fighting_Actor(Collision_Actor):
             self._scale = abs(self._scale)
         return Image(texture, self._scale, self._rotation, self._color)
 
-    def get_attack(self):
+    def is_alive(self):
         """
-            Returns the damage this Actor does to other Fighting actors
+            Tells the scene manager if the Actor is alive still,
+             otherwise it will be deleted. The Player, however 
+             has a lives system, and will never have alive = False
         """
-        return self._attack
-
-    def damage(self, damage_points):
-        if self._current_HP <= 0:
-            pass
-        else:
-            self._current_HP -= damage_points
-            if self._current_HP <= 0:
-                #self._size *= 2
-                del self
+        return self._alive
