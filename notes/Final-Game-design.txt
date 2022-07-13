@@ -1,0 +1,229 @@
+Overall design:
+
+First figure out the Game Logic --> Classes and objects with Attributes and Methods
+                    translate them into
+
+Questions:
+- Should we try animations?
+- How complex should we make the game?
+    - simply fight and defeat enemies
+    - collecting coins/money?
+    - levels/progression?
+
+Type:
+2D Platformer
+- Player moves around to defeat enemies (vertical)
+
+Dungeon Crawler
+- Player moves around to defeat enemies (top-down view)
+
+Jobs?
+Ashley
+- copy over the base project, sort into folders? (Actors - actor, Colliding_Actor, Fighting_Actor, Player, Enemy, enemy types)
+    - Things that inherit from eachother in the same folder/section
+- Look for images/sprites and how to incorapate them into pyray (see professor's Batter game)
+
+(Things to consider when making Classes/Objects)
+Object
+- Has stuff (Attributes/Variables)
+- Do stuff (Methods/Functions)
+- Is a/Are stuff (Inheritance)
+
+(W11 - Maintainability)
+Maintainability:
+- clear variable names
+- clear documentation (Readme  or in a design text file explain how the class realte to eachother and what each class does)
+    - README
+    - Text file
+    - And comments for each Class
+
+-   -   -   -   -
+Director/Main
+- In charge of the entire game
+- Creates a Cast of Actors
+    - Cast in charge of updating the positon of each actor
+    - Would be in charge of animating each Actor
+        - Actors would have a list of sprites, then move to the next one in the list to animate it
+- Creates a Collision Hanlder, gives it Cast's list of Colliding_Actors
+    - Determines if there was a collision between Colliding_Actors
+        - Then figures out how to handle it (Decrease HP, out of lives, game over)
+        - Should Player/Enemies have weapons or just bounce into eachother?
+        - Add knockback?
+
+Actor
+- position, color/sprite
+- ability to move itself/update the position
+
+Message/Text on screen (Actor)
+- overrides to be a message
+
+Colliding_Actor (Actor)
+- Any Actor that can be collided with
+- Have the functionalty to collide with other Colliding_Actors
+- Has a hitbox, keeps track of if something hit the box
+
+Fighting_Actor (Colliding_Actor)
+- Could have a weapons
+- Animate the weapon/decide how it moves (sweeping arc, or jab)
+- Have a health bar to display current HP
+- If HP --> 0, then do something
+
+Collision Handler
+- Called by Cast
+- Checks if Colliding_Actors have collided, and handles what happens
+    - If Player/Player weapon has hit an Enemy, then damage them
+        (decrease the healthpoints)
+
+Hitbox (something that a Colliding_Actor has)
+
+
+Cast
+- called by Director
+- Hands the Colliding_Handler a list of Colliding_Actors, see if they collide
+
+Player (Fighting_Actor)
+- overrides movement by using Player Input
+- overrider defeat method so if the Player is defeated
+    - Game over
+    - Or loses a life
+
+Enemy (Fighting_Actor)
+ - if hits Player, Player is damaged
+
+Example
+Wolf (Enemy)
+- how it moves
+- how it looks
+-   -   -   -   -
+
+Other Ideas:
+- main Menu
+- high score, but that's extra
+
+- - - - -
+
+Game
+Attribute
+    List of connecting Scenes
+Methods
+    Changing Scenes
+        - make sure to load all the enmies
+        - save changes to the previous scenes
+            - enemies
+   
+Menu
+Game Over
+    - out of lives or for each one taken
+Game
+    main scene/spawn - simple area (no enemeies) broken spaceship
+    Simple enemies area
+    Middle difficulty
+    Treasure room - Boxes/Crates/Barrels of things that fell off the ship
+    Boss
+
+Player --> pot
+pot -> broken == True
+Collision Handler
+Player <-- get_item()
+
+Player Inventory
+    Coins: 0
+        + 1
+    Arrows: 0
+        + 1, 5
+
+
+GUI <-- Player
+Player.get_inventory()
+
+Player
+Attributes:
+    current_healthpoints
+    total_healthpoints
+    Lives
+    Inventory
+        (list of items)
+
+Coins --> Life
+if x10 coins, then lives += 1
+
+Signs, notes, talking to NPCS
+
+(Actor)
+Message
+    Dialogue
+
+
+Pick up
+    Hearts
+    Coins
+
+Scene
+Attributes
+    Connections
+
+Methods
+
+Collision Actor
+    HP/Stats Actor
+        Breakables - Barrels/Pots
+
+(Hitpoints)
+
+Collision Actor
+    Barrel
+    Pick up Item
+
+Collision Actor
+    Weapon
+        Bow and Arrow
+            Arrows -->
+        Sword
+        Spear
+
+Colliding_Actor
+HP/Stats Actor
+    Enemies
+        Simple Enemy 10
+        Marshan - ray gun (ranged weapons)
+        Robots
+        Rock?
+        Boss 50
+            Big Marshan (Doc Ock)
+                - multiple arms - using the trails
+                    - *Pretty extra - defeating arm portions
+                - swarm of Marshan helpers
+
+knockback
+
+Controls:
+    WASD for walking
+    __ for attacking
+    __ for dialouge/interactions
+
+Sound Manager:
+
+Scene
+    - Background image
+    - Other colliding objects like walls, rocks, etc
+    - knows what Actors are in in the scene and where
+
+Classes to change/update:
+    GUI 
+        - print each Actor (Box, Enemy, Player)
+    Director
+        - Sound Manager:
+            - 
+        - Collision Handler
+            - all the current colliding Actors
+        - Cast 
+            - Player
+            - all the enemies within the scene
+                - Update the enemy movements
+
+        - Scene Manager
+            - Current Scene
+      
+Later/Extra
+- Sound/sound effects
+- 

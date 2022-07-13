@@ -1,0 +1,18 @@
+Actor (base class)
+    - What Scene it belongs to
+    - Point position in the Scene (all Scenes being the size of the Window)
+
+('Physical' Objects Branch)
+Collision Actor - adds Hitbox/Collision mechanics
+Fighting Actor - adds HP, speed, other states. Ability to change stats (HP decrease or increase base on collision interactions)
+Enemies - adds a movement algorithm
+
+(Player Branch - from Fighting Actor)
+Player
+    - Will originally belong to the Main/Starting Scene, but can move between
+    - Adds player_input to control movement
+
+(Message Branch - from Actor base)
+Message
+Button
+Dialogue w/ Box (or would message just have the option to have a dialogue box?)
