@@ -37,6 +37,9 @@ class Window():
         self._hitbox_test_color = (255, 0, 0, 50)
         self._hitbox_test_hit_color = (255, 0, 0, 200)
 
+        self._background_color = (255, 162, 87, 255)
+        self._GUI_space = 100
+
     def load_images(self, directory):
         """
             Loads all images in the assets folder to the textures dictionary
@@ -173,6 +176,8 @@ class Window():
         # Refreshes the board to black
         pyray.begin_drawing()
         pyray.clear_background(pyray.BLACK)
+
+        pyray.draw_rectangle(0, self._GUI_space, self._width, self._height, self._background_color)
 
         # TODO: Print background of the scene (gotten from Cast)
 
