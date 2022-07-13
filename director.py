@@ -1,11 +1,11 @@
-from actors.enemy import Enemy
 from cast import Scene_Manager
 from actors.player import *
 from actors.message import Message
 from actors.button import Button
 from GraphicInterface import Window
 from mouse_input import Mouse_Input
-from Scene import *
+from Scene import Scene, Scene1, Boss_Scene
+from actors.enemy import Enemy
 
 DIRECTIONS = ["TOP", "BOTTOM", "LEFT", "RIGHT"]
 WINDOW_MAX_X = 900

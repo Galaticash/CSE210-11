@@ -1,6 +1,6 @@
 from actors.Fighting_Actor import Fighting_Actor
 from point import Point
-from director import ACTOR_SIZE
+from constants import ACTOR_SIZE
 
 SPIRTE_PATH = "assets\\Alien\\Alien_idle3.png"
 #ROUTE_OPTIONS = {"DEFAULT": }
