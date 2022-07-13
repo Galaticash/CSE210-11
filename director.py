@@ -5,6 +5,7 @@ from actors.message import Message
 from actors.button import Button
 from GraphicInterface import Window
 from mouse_input import Mouse_Input
+from Scene import *
 
 DIRECTIONS = ["TOP", "BOTTOM", "LEFT", "RIGHT"]
 WINDOW_MAX_X = 900
@@ -12,7 +13,7 @@ WINDOW_MAX_Y = 600
 FONT_SIZE = 24
 # Note: Actors are currenlty 24 pixels, 
 # but they are dscaled up to be printed at this size
-ACTOR_SIZE = 64
+ACTOR_SIZE = 100
 
 class Director():
     """
@@ -32,11 +33,27 @@ class Director():
         # Create a Window to display things on
         self._window = Window(self._max_x, self._max_y)
 
+        self._game_scenes = {}
+
         # Create a Scene Manager to manage the current Scene and the collisions between Actors in that Scene
         self._cast = Scene_Manager(self._max_x, self._max_y)
 
         # Create a Mouse_input
         self._mouse = Mouse_Input()
+
+    def create_scenes(self):
+        """
+            Creates all the scenes in the game
+        """
+        self._game_scenes["SPAWN"] = Scene()
+        self._game_scenes["BOSS"] = Scene()
+        self._game_scenes["TWO"] = Scene()
+        
+
+        self._game_scenes["SPAWN"]
+
+
+        pass
 
     def start_game(self):
         """
@@ -45,9 +62,17 @@ class Director():
         # Load the images used in the game
         self._window.load_images("assets")
 
-        # Add the Player (user) to the Cast.
-        self._cast.add_player(Player(Point(int(self._max_x * 1/3), self._max_y//2), self._actor_size))
-        self._cast.add_collider(Enemy(Point(int(self._max_x * 2/3), self._max_y//2), self._actor_size))
+        # Creates the game's scenes
+        self.create_scenes()
+
+        self._cast.setup_scene("SPAWN")
+
+        # Add the Player (user) and Enemies to the Cast.
+        self._cast.add_player(Player("Player", Point(int(self._max_x//2), self._actor_size + 10), self._actor_size))
+        self._cast.add_collider(Enemy("Enemy1", Point(int(self._max_x * 2/3), self._max_y//2), self._actor_size))
+        self._cast.add_collider(Enemy("Enemy2", Point(int(self._max_x * 1/3), self._max_y//2), self._actor_size))
+        self._cast.add_collider(Enemy("Enemy3", Point(int(self._max_x * 2/3) + 75, self._max_y//2), self._actor_size))
+        self._cast.add_collider(Enemy("Enemy4", Point(int(self._max_x * 1/3) - 75, self._max_y//2), self._actor_size))
 
         # Add all scene elements to the cast
         #   Add all enemies
@@ -62,6 +87,7 @@ class Director():
         """
         # Move all members of the cast.
         self._cast.move_colliders()
+        self._cast.check_actions()
         self._cast.check_collisions()
         
         # Check if the game is currently over

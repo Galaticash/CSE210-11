@@ -11,6 +11,12 @@ class Player_Input():
         self._dx = 0
         self._dy = 0
         
+    def get_shoot(self):
+        if pyray.is_key_down(pyray.KeyboardKey.KEY_SPACE):
+            return True
+        else:
+            return False
+
     def get_direction(self):
         """
             Changes the values of dx and dy and returns them.

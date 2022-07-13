@@ -7,11 +7,13 @@ from actors.image import Image
 UPDATE_FRAME = 5
 
 class Fighting_Actor(Collision_Actor):
-    def __init__(self, position, size, image="", color="WHITE"):
-        super().__init__(position, size, image, color)
+    def __init__(self, name, position, size, image="", color="WHITE"):
+        super().__init__(name, position, size, image, color)
         # Health Points
-        self._max_HP = 10
-        self._current_HP = 10
+        self._max_HP = 25
+        self._current_HP = self._max_HP
+
+        self._attack = 5
         
         # For animation
         self._frame_counter = 0
@@ -67,3 +69,18 @@ class Fighting_Actor(Collision_Actor):
             #self._rotation = 0
             self._scale = abs(self._scale)
         return Image(texture, self._scale, self._rotation, self._color)
+
+    def get_attack(self):
+        """
+            Returns the damage this Actor does to other Fighting actors
+        """
+        return self._attack
+
+    def damage(self, damage_points):
+        if self._current_HP <= 0:
+            pass
+        else:
+            self._current_HP -= damage_points
+            if self._current_HP <= 0:
+                #self._size *= 2
+                del self

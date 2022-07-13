@@ -159,6 +159,13 @@ class Window():
         # Right
         pyray.draw_line(hitbox.right, hitbox.top, hitbox.right, hitbox.bottom, color)
 
+    def _print_rock(self, rock):
+        """
+            Draw a Pyray Rectangle instead of an image/png
+        """
+        # Put the Rock's position, size, etc
+        pyray.draw_rectangle()
+
     def update(self, cast):
         """
             Draws a frame of the Game given the Cast of Actors.
@@ -179,11 +186,11 @@ class Window():
                 pass
 
         # Updates the Colliding Actors
-        for player in cast.get_colliders():
+        for actor in cast.get_colliders():
             # DEBUG: Prints Hitbox
-            #self._print_hitbox(player.get_hitbox())
+            #self._print_hitbox(actor.get_hitbox())
             #self._print_circle(player)
-            self._print_actor_image(player)
+            self._print_actor_image(actor)
 
         # Updates the Messages
         for message in cast.get_messages():

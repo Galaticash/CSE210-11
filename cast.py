@@ -11,6 +11,7 @@ from actors.wall import Wall
 class Scene_Manager():
     """
         A collection of Actors and Messages to display on the GUI.
+        Has a current scene that it loads information from
     """
     def __init__(self, max_x, max_y):
         # TODO: remove max_x, max_y - temporary wall sensing
@@ -19,6 +20,10 @@ class Scene_Manager():
         # TODO: Change to have a different list of Enemies/Colliders based on scene
         # Colliders can include things like walls, barrels, etc <-- Another new class or just a Collision Actor with no movement (Collision Actor's Move method is just 'pass' then Enemy and Player would override Move)
         self._colliding_actors = []
+
+        # self._moving_actors = Player, Enemies
+        # self._stationary_actors = Object, walls, etc
+
         self._messages = []
         self._REPLAY_BUTTON_NAMES = ["PLAY_AGAIN", "EXIT"]
         self._scene_loaded = False
@@ -39,6 +44,10 @@ class Scene_Manager():
         """
         self.add_collider(new_player)
         self.add_message(new_player.get_score())
+
+    def setup_scene(self, scene):
+        # self._colliding_actors = scene.get_actors
+        pass
 
     def add_walls(self):
         # TODO: Given a scene, finds wall edges
@@ -95,6 +104,9 @@ class Scene_Manager():
             Moves the Player to their spawn point.
         """
         self._colliding_actors[0].respawn()
+
+    def check_actions(self):
+        self._colliding_actors[0].check_shoot()
 
     def check_collisions(self):
         """

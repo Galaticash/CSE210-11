@@ -7,14 +7,26 @@ class Collision_Actor(Actor):
     """
         An Actor that can collide with other Collision Actors.
     """
-    def __init__(self, position, size, image="", color="WHITE"):
+    def __init__(self, name, position, size, image="", color="WHITE"):
         super().__init__(position, size, image, color)
+        self._name = name
+
+        # Hitbox math
         top = (self._position.get_y() - self._size//2)
         bottom = (self._position.get_y() + self._size//2) 
         left = (self._position.get_x() - (self._size//2)) 
         right = (self._position.get_x() + (self._size//2)) 
-        self._hitbox = Hitbox(top, bottom, left, right)
+        self._hitbox = Hitbox(top, bottom, left, right, -20)
 
+        # How far the Actor moves per step
+        self._step_size = STEP_SIZE
+
+    def __eq__(self, other):
+        """
+            Can tell if it is the same instance if the name is the
+        """
+        return self._name == other._name
+            
     # def _set_limits(self):
     #     # The position is at the Top Left (determined by python.draw_text/etc)
     #     self._limits[DIRECTIONS[0]] = (self._position.get_y() - self._size//2) - self._padding
@@ -28,7 +40,6 @@ class Collision_Actor(Actor):
     #     self._limits[DIRECTIONS[3]] = (self._position.get_x() + (self._size//2)) + self._padding
 
         # How many pixels the Actor travels per Move method call.
-        self._step_size = STEP_SIZE
 
     def get_hitbox(self):
         """

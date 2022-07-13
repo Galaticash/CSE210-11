@@ -16,6 +16,15 @@ class Point:
         """
         self._x = x
         self._y = y
+        #[x, y]
+
+    # Called when point1 == point2?
+    def __eq__(self, other):
+        if self._x == other._x:
+            if self._y == other._y:
+                return True
+        # Either the x or y position don't match
+        return False
 
     def set_position(self, x, y):
         """
