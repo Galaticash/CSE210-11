@@ -69,7 +69,7 @@ class Director():
         
         self._cast.setup_scene("SPAWN")
         # All the enemies will be created with the scene, these are for testing
-        self._cast.add_collider(Enemy("Enemy1", Point(int(self._max_x * 2/3), self._max_y//2), self._actor_size))
+        self._cast.add_collider(Enemy("Enemy1", Point(int(self._max_x * 2/3) - 5, self._max_y//2), self._actor_size))
         self._cast.add_collider(Enemy("Enemy2", Point(int(self._max_x * 1/3), self._max_y//2), self._actor_size))
         self._cast.add_collider(Enemy("Enemy3", Point(int(self._max_x * 2/3) + 75, self._max_y//2), self._actor_size))
         self._cast.add_collider(Enemy("Enemy4", Point(int(self._max_x * 1/3) - 75, self._max_y//2), self._actor_size))
@@ -85,7 +85,7 @@ class Director():
         self._cast.check_actions()
         self._cast.check_collisions()
         
-        # Check if the game is currently over
+        # Check if the game is currently overs
         if not self._game_over:
             # TODO: Insert some kind of check for game over, Player lives = 0, etc
             if self._game_over:

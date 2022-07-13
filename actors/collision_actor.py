@@ -19,6 +19,11 @@ class Collision_Actor(Actor):
 
         self._color_timer = 0
 
+        # If the Actor has control over their movement
+        self._movement_control = True
+        self._control_timer = 0
+        self._control_reset = 0
+
         # Hitbox math
         top = (self._position.get_y() - self._size//2)
         bottom = (self._position.get_y() + self._size//2) 
@@ -69,6 +74,11 @@ class Collision_Actor(Actor):
         """
         return self._image
 
+    def override_movement(self, time):
+        self._movement_control = False
+        self._control_timer = 0
+        self._control_reset = time
+
     def move(self):
         """
             Moves based on its velocity. Also updates the Hitbox position.
@@ -76,8 +86,18 @@ class Collision_Actor(Actor):
         # Checks if the _velocity has changed.
         self.get_velocity()
 
-        dx = self._velocity[0]  * self._step_size
-        dy = self._velocity[1]  * self._step_size
+        # Slowly return velocity to normal from a sudden change
+        # if self._velocity[0] > 1:
+        #     self._velocity[0] -= 1
+        # elif self._velocity[0] < -1:
+        #     self._velocity[0] += 1
+        # if self._velocity[1] > 1:
+        #     self._velocity[1] -= 1
+        # elif self._velocity[1] < -1:
+        #     self._velocity[1] += 1
+
+        dx = self._velocity[0] * self._step_size
+        dy = self._velocity[1] * self._step_size
 
         # Update the Actor's position
         self._position.add_velocity(dx, dy)

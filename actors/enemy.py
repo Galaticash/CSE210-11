@@ -37,26 +37,60 @@ class Enemy(Fighting_Actor):
         self._max_HP = 15
         self._current_HP = self._max_HP
 
-        self._route = [Point(100, 300), Point(500, 300), Point(500, 500), Point(100, 500)]
+        self._route = [Point(500, 300), Point(100, 300), Point(100, 500), Point(500, 500)]
         self._route_item = 0
         self._goal_position = self._route[self._route_item]
     
-    def move(self):
-        """
-            TODO: Implement some kind of algorithm for enemy movement
-            Example: Move randomly within a certain range in the Scene
-        """
-        super().move()
-        # GOAL: Move to goal point
+    def get_aggro(self, player_pos):
+        # TODO: Is the Player close enough for the enemy to want to move towards the Player?
+        # Calculate difference between the Player and self
+        # If aggro_distance <= player_distance
+        # Then return True, will go after the Player
+        # Else return False, will continue on route
+        
+        pass
 
-        # TODO: Implement this portion, goal based rather than path/route based
-        # if self._position == self._goal_position:
-        #     # Move to the next position in the route
-        #     self._route_item += 1
-        #     if self._route_item > len(self._route):
-        #         self._route_item = 0
-        #     self._goal_position = self._route[self._route_item]
+    def get_velocity(self):
+        """
+            The Enemy will move towards it's Goal Position, whether
+             that be a set Route or the Player (not yet implemented)
+        """
+        new_velocity = [0, 0]
 
-        for point in ROUTE_POINTS:
-            if self._position == ROUTE_STOPS[point]:
-                self._velocity = ROUTE_DIRECTION[point]
+        # TODO: Enemies attacking the Player
+        # if get_agrro() returns True # If the Player is within detection range
+        # Goal position = Player # Goal is to move towards the Player
+
+        # Calculate the difference in position from current Point and Goal Point
+        x_diff = int(self._position.get_x() - self._goal_position.get_x())
+        y_diff = int(self._position.get_y() - self._goal_position.get_y())
+        # 0 - same position
+        # - integer/float - goal is to the left/down (velocity: 1)
+        # + integer/float - goal is to the right/up (velocity: -1)
+
+        # if there is no difference, then move to new goal position
+        # NOTE: For aggro, add OR player_aggro_off~ this would change it's goal_position from the Player's
+        if x_diff == 0 and y_diff == 0:
+            # Changes goal position to the next route position (looping over the list)
+            self._route_item += 1
+            if self._route_item >= len(self._route):
+                self._route_item = 0
+            self._goal_position = self._route[self._route_item]
+        else:
+            # Prioritize one set of movement, Enemies will have grid movement
+            # Otherwise remove if abs... and have both if/else statements one after the other
+            if abs(y_diff) > abs(x_diff):
+                # Positive or negative difference
+                if y_diff > 1:
+                    new_velocity[1] = -1
+                else:
+                    new_velocity[1] = 1
+            else:
+                # Positive or negative difference
+                if x_diff > 1:
+                    new_velocity[0] = -1
+                else:
+                    new_velocity[0] = 1
+        # Update the velocity
+        self._velocity = new_velocity
+        return self._velocity

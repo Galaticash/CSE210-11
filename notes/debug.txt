@@ -1,0 +1,13 @@
+# When I was printing actors, wanted to test Enemy Paths
+# So I thought it would be cool to keep the code
+try:
+    # DEBUG: See enemy pathing -ish
+    route_points = actor._route
+    for point in route_points:
+        pyray.draw_circle(point.get_x(), point.get_y(), 5, pyray.GREEN)
+    goal_point = actor._goal_position
+    pyray.draw_circle(goal_point.get_x(), goal_point.get_y(), 5, pyray.YELLOW)
+    pyray.draw_line(actor.get_x(), actor.get_y(), goal_point.get_x(), goal_point.get_y(), pyray.RED)
+except:
+    # Whoopsie! The actor isn't an Enemy/doesn't have a _route
+    pass

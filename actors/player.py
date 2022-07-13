@@ -68,11 +68,17 @@ class Player(Fighting_Actor):
         """
             Gets the current velocity of the Player. Relies on Player Input.
         """
-        # Update the player to move the direction the user has specified.
-        self._velocity = self._player_input.get_direction()
-        if not (self._velocity == [0, 0]):
-            self._facing = self._velocity
-        return self._velocity
+        if self._movement_control:
+            # Update the player to move the direction the user has specified.
+            self._velocity = self._player_input.get_direction()
+            if not (self._velocity == [0, 0]):
+                self._facing = self._velocity
+            return self._velocity
+        else:
+            # Update the time until the user regains control
+            self._control_timer += 1
+            if self._control_timer >= self._control_reset:
+                self._movement_control = True
 
     def move(self):
         """
