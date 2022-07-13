@@ -15,12 +15,10 @@ class Collision_Handler():
         """
             Checks if the Player is exiting, returns which way they are leaving.
         """
-        #for wall_pos in DIRECTIONS:
-        # DEBUG: Testing collisions with Top hitbox
-        # print("\tPlayer vs TOP")
-        if player.get_hitbox().hit(given_walls["TOP"].get_hitbox()):
-            print(f"Attempting to exit via TOP")
-            return "TOP"
+        for wall_pos in DIRECTIONS:
+            if player.get_hitbox().hit(given_walls[wall_pos].get_hitbox()):
+                print(f"Attempting to exit via {wall_pos}")
+                return wall_pos
         return None
 
     def check(self, given_colliders):

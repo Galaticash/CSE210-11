@@ -2,39 +2,38 @@ from collisionHandler import Collision_Handler
 from actors.actor import Point
 from actors.wall import Wall
 
-"""
-    TODO: Is in charge of making sure the Player
-     interacts correctly with all items in the Scene (another new Object - 
-     holds list of enemies and how to transition from this scene to another scene?)
-"""
-
 class Scene_Manager():
     """
-        A collection of Actors and Messages to display on the GUI.
-        Has a current scene that it loads information from
+       An object that is in charge of making sure all objects in the current scene interact properly 
     """
     def __init__(self, max_x, max_y):
         # TODO: remove max_x, max_y - temporary wall sensing
         self._max_x = max_x
         self._max_y = max_y
+        
         # TODO: Change to have a different list of Enemies/Colliders based on scene
         # Colliders can include things like walls, barrels, etc <-- Another new class or just a Collision Actor with no movement (Collision Actor's Move method is just 'pass' then Enemy and Player would override Move)
         self._colliding_actors = []
 
-        # self._moving_actors = Player, Enemies
+        # Well... Non-Moving colliders just have a velocity of 0, so while collider.move() is called, it just doesn't move
+
+        #self._moving_actors = []
         # self._stationary_actors = Object, walls, etc
 
+        # Currently only being used for Game Over
         self._messages = []
-        self._REPLAY_BUTTON_NAMES = ["PLAY_AGAIN", "EXIT"]
-        self._scene_loaded = False
-        self._walls = {"TOP": None, "LEFT": None, "RIGHT": None, "BOTTOM": None}
-        self._scene_connections = {"TOP": None, "LEFT": None, "RIGHT": None, "BOTTOM": None}
+        self._REPLAY_BUTTON_NAMES = ["PLAY_AGAIN", "EXIT"]        
         # If there are more buttons, add to the list? Not very maintainable here..
         # Maybe have differnt lists of buttons? (self._replay_buttons, and self._UI_buttons?)
         self._buttons = {}
+        
+        # Scene Loading
+        self._scene_loaded = False
+        self._walls = {"TOP": None, "LEFT": None, "RIGHT": None, "BOTTOM": None}
+        self._scene_connections = {"TOP": None, "LEFT": None, "RIGHT": None, "BOTTOM": None}
 
         self._collision_handler = Collision_Handler()
-        #self.add_walls()
+        self.add_walls()
 
     def add_player(self, new_player):
         """
@@ -53,7 +52,6 @@ class Scene_Manager():
 
     def add_walls(self):
         # TODO: Given a scene, finds wall edges
-        # TODO: Fix to fit Constant DIRECTIONS
         
         # top = 0
         # bottom = 0
@@ -62,10 +60,15 @@ class Scene_Manager():
         # center_x = (right - left)//2
         # center_y = (bottom - top)//2
 
-        self._walls["TOP"] = Wall(Point((self._max_x - 0)//2, (0 - 0)//2), 0, 0, 0, self._max_x)
-        self._walls["LEFT"] = Wall(Point((0 - 0)//2, (self._max_y - 0)//2), 0, self._max_y, 0, 0)
-        self._walls["RIGHT"] = Wall(Point((self._max_x - self._max_x)//2, (self._max_y - 0)//2), 0, self._max_y, self._max_x, self._max_x)
-        self._walls["BOTTOM"] = Wall(Point((self._max_x - 0)//2, (self._max_y - self._max_y)//2), self._max_y, self._max_y, 0, self._max_x)
+        scene_edges = {"TOP": 100, "BOTTOM": self._max_y, "LEFT": 0, "RIGHT": self._max_x}
+
+        # Will create the wall given the bounds of the scene
+        # Point - The center of the wall
+        # Top, Bottom, Left, Right - Bounds of the Hitbox (currently a thin line extending the length of the wall)
+        self._walls["TOP"] = Wall("TOP", Point((scene_edges["RIGHT"] - scene_edges["LEFT"])//2, (scene_edges["TOP"] - scene_edges["TOP"])//2), scene_edges["TOP"], scene_edges["TOP"], scene_edges["LEFT"], scene_edges["RIGHT"])
+        self._walls["LEFT"] = Wall("LEFT", Point((scene_edges["LEFT"] - scene_edges["LEFT"])//2, (scene_edges["BOTTOM"] - scene_edges["TOP"])//2), scene_edges["TOP"], scene_edges["BOTTOM"], scene_edges["LEFT"], scene_edges["LEFT"])
+        self._walls["RIGHT"] = Wall("RIGHT", Point((scene_edges["RIGHT"] - scene_edges["RIGHT"])//2, (scene_edges["BOTTOM"] - scene_edges["TOP"])//2), scene_edges["TOP"], scene_edges["BOTTOM"], scene_edges["RIGHT"], scene_edges["RIGHT"])
+        self._walls["BOTTOM"] = Wall("BOTTOM", Point((scene_edges["RIGHT"] - scene_edges["LEFT"])//2, (scene_edges["BOTTOM"] - scene_edges["BOTTOM"])//2), scene_edges["BOTTOM"], scene_edges["BOTTOM"], scene_edges["LEFT"], scene_edges["RIGHT"])
 
         # NOTE: Move this to a place after scene connections, enemies, etc are loaded
         self._scene_loaded = True
@@ -122,7 +125,8 @@ class Scene_Manager():
         """
         if self._scene_loaded:
             # Checks if the Player is attempting to exit the scene
-            self._collision_handler.check_exit(self._colliding_actors[0], self._walls)
+            #self._collision_handler.check_exit(self._colliding_actors[0], self._walls)s
+            pass
         if len(self._colliding_actors) > 1:
             # Only check for collisions if there are other colliding Actors
             self._collision_handler.check(self._colliding_actors)

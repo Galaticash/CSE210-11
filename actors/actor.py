@@ -73,7 +73,7 @@ class Actor():
         return self._symbol
 
     # TODO: Rename all places where this is called to get_size()
-    def get_font_size(self):
+    def get_size(self):
         """
             Returns the font size of the Actor.
         """

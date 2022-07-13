@@ -104,7 +104,7 @@ class Window():
                 print("Invalid filepath")
                 return
 
-            size = actor.get_font_size()
+            size = actor.get_size()
             # print(f"size: {size}, Texture Width: {texture.width}, Height: {texture.height}")
             # GOAL: Texture should fit within the hitbox of size
             # image.get_scale() <-- could scale the image manually
@@ -133,7 +133,7 @@ class Window():
             Prints the given actor on the screen. All 
              variables are recieved from the actor itself.
         """
-        pyray.draw_text(actor.get_display(), actor.get_x(), actor.get_y(), actor.get_font_size(), actor.get_color())
+        pyray.draw_text(actor.get_display(), actor.get_x(), actor.get_y(), actor.get_size(), actor.get_color())
 
     def _print_button(self, button):
         """
@@ -141,7 +141,7 @@ class Window():
              surrounding it to differentiate itself as a button.
         """        
         self._print_hitbox(button.get_hitbox())
-        pyray.draw_text(button.get_display(), button.get_x(), button.get_y(), button.get_font_size(), button.get_color())
+        pyray.draw_text(button.get_display(), button.get_x(), button.get_y(), button.get_size(), button.get_color())
         
     def _print_hitbox(self, hitbox, color = pyray.RED):
         """
@@ -182,13 +182,10 @@ class Window():
         # TODO: Print background of the scene (gotten from Cast)
 
         # DEBUG: Printing the walls/exit points
-        walls = cast.get_walls()
-        for direction in DIRECTIONS:
-            try:
-                self._print_hitbox(walls[direction].get_hitbox(), pyray.BLUE)
-            except:
-                # The walls haven't been loaded shhh...
-                pass
+        #walls = cast.get_walls()
+        #for direction in DIRECTIONS:
+                #self._print_hitbox(walls[direction].get_hitbox(), pyray.BLUE)
+                #pass
 
         # Updates the Colliding Actors
         for actor in cast.get_colliders():

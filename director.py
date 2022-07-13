@@ -6,14 +6,7 @@ from GraphicInterface import Window
 from mouse_input import Mouse_Input
 from Scene import Scene, Scene1, Boss_Scene
 from actors.enemy import Enemy
-
-DIRECTIONS = ["TOP", "BOTTOM", "LEFT", "RIGHT"]
-WINDOW_MAX_X = 900
-WINDOW_MAX_Y = 600
-FONT_SIZE = 24
-# Note: Actors are currenlty 24 pixels, 
-# but they are dscaled up to be printed at this size
-ACTOR_SIZE = 100
+from constants import *
 
 class Director():
     """
@@ -36,7 +29,7 @@ class Director():
         self._game_scenes = {}
 
         # Create a Scene Manager to manage the current Scene and the collisions between Actors in that Scene
-        self._cast = Scene_Manager(self._max_x, self._max_y)
+        self._scene_manager = Scene_Manager(self._max_x, self._max_y)
 
         # Create a Mouse_input
         self._mouse = Mouse_Input()
@@ -65,29 +58,29 @@ class Director():
         self.create_scenes()
 
         # Add the Player (user) and Enemies to the Cast.
-        self._cast.add_player(Player("Player", Point(int(self._max_x//2), self._actor_size + 10), self._actor_size))
+        self._scene_manager.add_player(Player("Player", Point(int(self._max_x//2), self._actor_size + 10), self._actor_size))
         
-        self._cast.setup_scene("SPAWN")
-        # All the enemies will be created with the scene, these are for testing
-        self._cast.add_collider(Enemy("Enemy1", Point(int(self._max_x * 2/3) - 5, self._max_y//2), self._actor_size))
-        self._cast.add_collider(Enemy("Enemy2", Point(int(self._max_x * 1/3), self._max_y//2), self._actor_size))
-        self._cast.add_collider(Enemy("Enemy3", Point(int(self._max_x * 2/3) + 75, self._max_y//2), self._actor_size))
-        self._cast.add_collider(Enemy("Enemy4", Point(int(self._max_x * 1/3) - 75, self._max_y//2), self._actor_size))
+        self._scene_manager.setup_scene("SPAWN")
+        # TODO: All the enemies will be created with the scene, these are for testing
+        self._scene_manager.add_collider(Enemy("Enemy1", Point(int(self._max_x * 2/3) - 5, self._max_y//2), self._actor_size))
+        self._scene_manager.add_collider(Enemy("Enemy2", Point(int(self._max_x * 1/3), self._max_y//2), self._actor_size))
+        self._scene_manager.add_collider(Enemy("Enemy3", Point(int(self._max_x * 2/3) + 75, self._max_y//2), self._actor_size))
+        self._scene_manager.add_collider(Enemy("Enemy4", Point(int(self._max_x * 1/3) - 75, self._max_y//2), self._actor_size))
 
     def update_game(self):
         """
             Updates all members of the cast while the game is not over (self._game_over)
-            TODO: Figure out specifics of the game/what ends the game, win condition?
             TODO: Adjust for Final Game
         """
         # Move all members of the cast.
-        self._cast.move_colliders()
-        self._cast.check_actions()
-        self._cast.check_collisions()
+        self._scene_manager.move_colliders()
+        self._scene_manager.check_actions()
+        self._scene_manager.check_collisions()
         
         # Check if the game is currently overs
         if not self._game_over:
-            # TODO: Insert some kind of check for game over, Player lives = 0, etc
+            # TODO: Figure out specifics of the game/what ends the game, win condition?
+            #       Insert some kind of check for game over, Player lives = 0, etc
             if self._game_over:
                 self.add_game_over()
         else:
@@ -97,7 +90,7 @@ class Director():
             # If the mouse was clicked,
             if not (mouse_position == None):
                 # Check if the user chose to play again (based on which button is clicked).
-                play_again = self._cast.check_replay_buttons(mouse_position)
+                play_again = self._scene_manager.check_replay_buttons(mouse_position)
                 # If the user actually pressed a button,
                 if not (play_again == None):
                     if play_again:
@@ -109,7 +102,7 @@ class Director():
                         return
 
         # Updates the visuals of the game.
-        self._window.update(self._cast)
+        self._window.update(self._scene_manager)
 
         # Checks if the window should close (X button pressed).
         self._window_close = self._window.should_close()
@@ -127,11 +120,11 @@ class Director():
         y_offset = int(game_over_size * 1.5)
         
         # Add the Game Over Message.
-        self._cast.add_message(Message(self._max_x, self._max_y, center, game_over_size, "Game Over"))
+        self._scene_manager.add_message(Message(self._max_x, self._max_y, center, game_over_size, "Game Over"))
         
         # Add Play Again and Exit Buttons.
-        self._cast.add_button("PLAY_AGAIN", Button(self._max_x, self._max_y, [center[0] - (x_offset//2), center[1] + y_offset], button_size, "Play Again"))
-        self._cast.add_button("EXIT", Button(self._max_x, self._max_y, [center[0] + (2 * x_offset), center[1] + y_offset], button_size, "Exit"))
+        self._scene_manager.add_button("PLAY_AGAIN", Button(self._max_x, self._max_y, [center[0] - (x_offset//2), center[1] + y_offset], button_size, "Play Again"))
+        self._scene_manager.add_button("EXIT", Button(self._max_x, self._max_y, [center[0] + (2 * x_offset), center[1] + y_offset], button_size, "Exit"))
 
     def replay(self):
         """
@@ -140,12 +133,14 @@ class Director():
         """
         self._game_over = False
 
-        # Removes game_over cast members (Game Over menu).
-        self._cast.remove_game_over()
-        self._cast.remove_buttons()
+        self._scene_manager.setup_scene("SPAWN")
 
-        # Resets the Player's Point position, Color?*
-        self._cast.reset_player()
+        # Removes game_over cast members (Game Over menu).
+        self._scene_manager.remove_game_over()
+        self._scene_manager.remove_buttons()
+
+        # Resets the Player's Stats
+        self._scene_manager.reset_player()
     
     def get_game_over(self):
         """
