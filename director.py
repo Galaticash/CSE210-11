@@ -1,3 +1,4 @@
+from actors.enemy import Enemy
 from cast import Scene_Manager
 from actors.player import *
 from actors.message import Message
@@ -9,6 +10,8 @@ DIRECTIONS = ["TOP", "BOTTOM", "LEFT", "RIGHT"]
 WINDOW_MAX_X = 900
 WINDOW_MAX_Y = 600
 FONT_SIZE = 24
+# Note: Actors are currenlty 24 pixels, 
+# but they are dscaled up to be printed at this size
 ACTOR_SIZE = 64
 
 class Director():
@@ -16,7 +19,7 @@ class Director():
         Directs the inner workings of the game.
     """
     def __init__(self):
-        # Determine idddddddddf the game is over.
+        # Determine if the game is over.
         self._game_over = False
         # Determine if the window should close (exit program).
         self._window_close = False
@@ -43,7 +46,8 @@ class Director():
         self._window.load_images("assets")
 
         # Add the Player (user) to the Cast.
-        self._cast.add_player(Player(self._max_x, self._max_y, self._actor_size))
+        self._cast.add_player(Player(Point(int(self._max_x * 1/3), self._max_y//2), self._actor_size))
+        self._cast.add_collider(Enemy(Point(int(self._max_x * 2/3), self._max_y//2), self._actor_size))
 
         # Add all scene elements to the cast
         #   Add all enemies

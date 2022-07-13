@@ -7,8 +7,8 @@ class Collision_Actor(Actor):
     """
         An Actor that can collide with other Collision Actors.
     """
-    def __init__(self, max_x, max_y, size, image="", color="WHITE"):
-        super().__init__(max_x, max_y, size, image, color)
+    def __init__(self, position, size, image="", color="WHITE"):
+        super().__init__(position, size, image, color)
         top = (self._position.get_y() - self._size//2)
         bottom = (self._position.get_y() + self._size//2) 
         left = (self._position.get_x() - (self._size//2)) 
@@ -26,7 +26,6 @@ class Collision_Actor(Actor):
     #     # Left point + (right) font_size * width = Right point
     #     # The right side of the hitbox must be adjusted to the length of the symbol
     #     self._limits[DIRECTIONS[3]] = (self._position.get_x() + (self._size//2)) + self._padding
-
 
         # How many pixels the Actor travels per Move method call.
         self._step_size = STEP_SIZE
@@ -65,4 +64,4 @@ class Collision_Actor(Actor):
             Check if the Point position of the other 
              collider is within the Hitbox of this actor.
         """
-        return self._hitbox.is_hit(other_collider.get_point_position())
+        return self._hitbox.hit(other_collider)

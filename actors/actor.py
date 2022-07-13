@@ -5,16 +5,14 @@ import copy
 class Actor():
     """
         An object that can be displayed on the GUI.
-        Given the maximum bounds of the screen, the font size, and color of itself. 
+        Given the spawn position, the font size, and color of itself. 
         Has a Point position on the screen
         Has a symbol to represent itself with, can be a single character or a string of them (Message).
         Has Getters for each Attribute so the GUI can properly display the Actor.
     """
-    def __init__(self, max_x, max_y, size, image = "", color = "WHITE"):
-        self._max_x = max_x
-        self._max_y = max_y
+    def __init__(self, position, size, image = "", color = "WHITE"):
         # Spawn point at the center of the screen
-        self._spawn_point = Point(max_x, max_y, max_x//2, max_y//2)
+        self._spawn_point = position
         self._position = self._spawn_point # Could replay the game and set the actor back to the start
         self._velocity = [0, 0] # The X and Y velocity
         self._velocity_prev = copy.copy(self._velocity) # Copy values only

@@ -28,22 +28,26 @@ class Collision_Handler():
         
         # A more generalized Collision Handler
         colliders_one = given_colliders.copy()
-        colliders_two = given_colliders.copy()[1: -1]
+        colliders_two = given_colliders.copy()[1:]
         for collider_one in colliders_one:
             # Check every collider in list one against those in list two, 
             # removing items from two if they are the same (no comparison needed)
             for collider_two in colliders_two:
                 if collider_one == colliders_two:
+                    # Don't check the same collider against itself
                     colliders_two.pop(collider_two)
+                    
                 else:
                     colliders = [collider_one, collider_two]
-                if collider_one.hit(collider_two.get_hitbox()):
-                    # Indicate there has been a collision.
-                    # Play a sound?
-                    for collider in colliders:
-                        collider.set_color("RED")
-                else:
-                    for collider in colliders:
-                        # There has been no collision, do nothing
-                        # Only reset color for those with was_hit == True?
-                        collider.reset_color()
+                    # Check if there is a collision between the two colliders
+                    if colliders[0].is_hit(colliders[1].get_hitbox()):
+                        # Indicate there has been a collision.
+                        # Play a sound?
+                        print(f"{collider_one} and {collider_two} have collided!")
+                        for collider in colliders:
+                            collider.set_color("RED")
+                    else:
+                        for collider in colliders:
+                            # There has been no collision, do nothing
+                            # Only reset color for those with was_hit == True?
+                            collider.reset_color()

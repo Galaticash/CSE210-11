@@ -1,4 +1,5 @@
 from collisionHandler import Collision_Handler
+from actors.actor import Point
 from actors.wall import Wall
 
 """
@@ -17,9 +18,10 @@ class Scene_Manager():
         self._max_y = max_y
         # TODO: Change to have a different list of Enemies/Colliders based on scene
         # Colliders can include things like walls, barrels, etc <-- Another new class or just a Collision Actor with no movement (Collision Actor's Move method is just 'pass' then Enemy and Player would override Move)
-        self._colliders = []
+        self._colliding_actors = []
         self._messages = []
         self._REPLAY_BUTTON_NAMES = ["PLAY_AGAIN", "EXIT"]
+        self._scene_loaded = False
         self._walls = {"TOP": None, "LEFT": None, "RIGHT": None, "BOTTOM": None}
         self._scene_connections = {"TOP": None, "LEFT": None, "RIGHT": None, "BOTTOM": None}
         # If there are more buttons, add to the list? Not very maintainable here..
@@ -27,7 +29,7 @@ class Scene_Manager():
         self._buttons = {}
 
         self._collision_handler = Collision_Handler()
-        self.add_walls()
+        #self.add_walls()
 
     def add_player(self, new_player):
         """
@@ -41,10 +43,21 @@ class Scene_Manager():
     def add_walls(self):
         # TODO: Given a scene, finds wall edges
         # TODO: Fix to fit Constant DIRECTIONS
-        self._walls["TOP"] = Wall(self._max_x, self._max_y, 0, 0, 0, self._max_x)
-        self._walls["LEFT"] = Wall(self._max_x, self._max_y, 0, self._max_y, 0, 0)
-        self._walls["RIGHT"] = Wall(self._max_x, self._max_y, 0, self._max_y, self._max_x, self._max_x)
-        self._walls["BOTTOM"] = Wall(self._max_x, self._max_y, self._max_y, self._max_y, 0, self._max_x)
+        
+        # top = 0
+        # bottom = 0
+        # left = 0
+        # right = 0
+        # center_x = (right - left)//2
+        # center_y = (bottom - top)//2
+
+        self._walls["TOP"] = Wall(Point((self._max_x - 0)//2, (0 - 0)//2), 0, 0, 0, self._max_x)
+        self._walls["LEFT"] = Wall(Point((0 - 0)//2, (self._max_y - 0)//2), 0, self._max_y, 0, 0)
+        self._walls["RIGHT"] = Wall(Point((self._max_x - self._max_x)//2, (self._max_y - 0)//2), 0, self._max_y, self._max_x, self._max_x)
+        self._walls["BOTTOM"] = Wall(Point((self._max_x - 0)//2, (self._max_y - self._max_y)//2), self._max_y, self._max_y, 0, self._max_x)
+
+        # NOTE: Move this to a place after scene connections, enemies, etc are loaded
+        self._scene_loaded = True
 
     def get_walls(self):
         return self._walls
@@ -61,34 +74,36 @@ class Scene_Manager():
         """
             Adds a new Collider to the Cast's list of Colliders
         """
-        self._colliders.append(new_collider)
+        self._colliding_actors.append(new_collider)
 
     def get_colliders(self):
         """
             Returns the list of Colliders.
         """
-        return self._colliders
+        return self._colliding_actors
 
     def move_colliders(self):
         """
             Moves all moving Colliders.
             Any non-moving will have "pass" in their move method
         """
-        for collider in self._colliders:
+        for collider in self._colliding_actors:
             collider.move()
 
     def reset_player(self):
         """
             Moves the Player to their spawn point.
         """
-        self._colliders[0].respawn()
+        self._colliding_actors[0].respawn()
 
     def check_collisions(self):
         """
             Checks if there has been a collision between any of the colliders.
         """
-        self._collision_handler.check_exit(self._colliders[0], self._walls)
-        self._collision_handler.check(self._colliders)
+        if self._scene_loaded:
+            self._collision_handler.check_exit(self._colliding_actors[0], self._walls)
+        if len(self._colliding_actors) > 1:
+            self._collision_handler.check(self._colliding_actors)
 
     def add_message(self, new_message):
         """

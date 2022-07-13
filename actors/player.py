@@ -1,30 +1,32 @@
-from actors.collision_actor import *
+from actors.Fighting_Actor import *
+# For User Input
 from player_input import Player_Input, pyray
+# For Score/Inventory display
 from actors.score import Score
-from actors.Fighting_Actor import Fighting_Actor
 from director import FONT_SIZE
+
+# NOTE: Not implemented
+SPRITE_SOURCE = "Astronaut\\"
+RUNNING = "Astronaut_Run"
+IDLE = "Astronaut_Idle"
+IMAGE_FILETYPE = ".png"
 
 class Player(Fighting_Actor):
     """
-        The Player/Cycle that is controlled by the user.
+        The Player/Astronaut that is controlled by the user.
     """
-    def __init__(self, max_x, max_y, size, image="", color="WHITE"):
-        super().__init__(max_x, max_y, size, image, color)
-        # Reset Base Color, Color, and Symbol
-        self._base_color = Color("WHITE")
-        self._color = copy.copy(self._base_color)
-
-        # Overrite the Images
-        self._frames = ["diamond1_2.png"]
-        self._scale = 10
+    def __init__(self, position, size, image="", color="WHITE"):
+        super().__init__(position, size, image, color)
+        # Overwrite the Images
+        # TODO: Can adjust file order for animation to be less clunky?
+        self._frames = ["Astronaut\\Astronaut_Idle3.png", "Astronaut\\Astronaut_Run1.png", "Astronaut\\Astronaut_Run2.png", "Astronaut\\Astronaut_Run1.png", "Astronaut\\Astronaut_Run3.png", "Astronaut\\Astronaut_Run4.png", "Astronaut\\Astronaut_Run5.png", "Astronaut\\Astronaut_Run6.png"]
+        #assets\Astronaut\Astronaut_Run1.png
 
         # Give Player a Player_Input to determine velocity/movement
         self._player_input = Player_Input()
         self._velocity = [0, 0]
 
         # Overrite Spawn Point, Position
-        self._spawn_point = Point(max_x, max_y, int(self._max_x * 1/3), self._max_y//2)
-        # TODO: Hmm Put spawn point as a passable variable to Actor?
         self._position = self._spawn_point
         top = (self._position.get_y() - self._size//2)
         bottom = (self._position.get_y() + self._size//2) 
@@ -34,7 +36,7 @@ class Player(Fighting_Actor):
         
         # TODO: Change to UI/inventory?
         # Create a Score object
-        self._score = Score(max_x, max_y, [int(self._max_x * 1/12), 0], FONT_SIZE, "Score:")
+        self._score = Score(Point(FONT_SIZE *2, 0), FONT_SIZE, "Score:")
 
     def get_velocity(self):
         """
@@ -76,5 +78,4 @@ class Player(Fighting_Actor):
         """
             Sets the color of the Player.
         """
-        print("player color change")
         self._color = Color(color)

@@ -19,7 +19,7 @@ class Color:
             blue (int): A blue value.
             alpha (int): An alpha or opacity.
         """
-        self._COLORS = {"WHITE": [255, 255, 255], "RED": [255, 0, 0], "GREEN": [0, 255, 0], "BLUE": [0, 0, 255]}
+        self._COLORS = {"WHITE": [255, 255, 255, 255], "RED": [255, 0, 0, 255], "GREEN": [0, 255, 0, 255], "BLUE": [0, 0, 255, 255], "INVISIBLE": [0, 0, 0, 0]}
         self._color_text = color
         self._color = self._COLORS[self._color_text]
         self._red = self._color[0]

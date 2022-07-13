@@ -7,7 +7,7 @@ class Point:
         _y (integer): The vertical distance from the origin.
     """
     
-    def __init__(self, max_x, max_y, x, y):
+    def __init__(self, x, y):
         """Constructs a new Point using the specified x and y values.
         
         Args:
@@ -16,9 +16,6 @@ class Point:
         """
         self._x = x
         self._y = y
-
-        self._max_x = max_x
-        self._max_y = max_y
 
     def set_position(self, x, y):
         """
@@ -47,18 +44,6 @@ class Point:
         """
             Changes the x and y position based off of the velocity 
             (aka change in position)
-            # TODO: Check if Sprite position is in the top-left or center
         """
         self._x += dx
         self._y += dy
-
-        # TODO: Remove, simple catch to keep objects on the screen
-        if self._x > self._max_x:
-            self._x = self._max_x
-        elif self._x < 0:
-            self._x = 0
-
-        if self._y > self._max_y:
-            self._y = self._max_y
-        elif self._y < 0:
-            self._y = 0

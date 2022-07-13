@@ -58,26 +58,32 @@ class Window():
     def _get_filepaths(self, directory, filter):
         """
             Gets all the filepaths for each image in the assets folder
+            Edited to find items within sub folders
         """
         filepaths = []
-        for file in os.listdir(directory):
+        files = os.listdir(directory)
+        for file in files:
             filename = os.path.join(directory, file)
             extension = pathlib.Path(filename).suffix.lower()
             if extension in filter:
                 filename = str(pathlib.Path(filename))
                 filepaths.append(filename)
+            # If there is a sub_folder
+            elif extension == "":
+                # Rename, know it is NOT a singular file
+                folder = file
+                sub_directory = directory + "\\" + folder
+                sub_files = os.listdir(sub_directory)
+                # Add all files within it to the files to look over
+                for sub_file in sub_files:            
+                    files.append(folder + "\\" + sub_file)
         return filepaths
 
-    def _print_test(self):
-        """
-            So instead of drawing them bit by bit, will refer to the professor's version of how to insert images
-            TODO: Print a specific image (dictionary based?) for each actor/actor type
-        """
-        pyray.draw_rectangle(0, 0, self._width, self._height, pyray.GRAY)
-        pyray.draw_rectangle(0, 0, self._width, 100, pyray.BLACK)
+    # def _get_rectangle(self, actor):
+    #     return Rectangle(actor.get_x(), actor.get_y(), actor.get_hitbox().right - actor.get_hitbox().left, actor.get_hitbox().bottom - actor.get_hitbox().top)
 
-    def _get_rectangle(self, actor):
-        return Rectangle(actor.get_x(), actor.get_y(), actor.get_hitbox().right - actor.get_hitbox().left, actor.get_hitbox().bottom - actor.get_hitbox().top)
+    # def _print_circle(self, actor):
+    #     pyray.draw_circle(actor.get_x(), actor.get_y(), 5, pyray.GREEN)
 
     def _print_actor_image(self, actor):
         """
@@ -108,7 +114,8 @@ class Window():
             raylib_position = pyray.Vector2(pos_x, pos_y)
 
             # NOTE: MUST put full Alpha or the image is not shown
-            tint = (255, 255, 255, 255)
+            #tint = (255, 255, 255, 255)
+            tint = image.get_tint()
             # NOTE: okay.. this is messed up
             #pyray.draw_texture_rec(texture, self._get_rectangle(actor), raylib_position, tint)
 
@@ -152,9 +159,6 @@ class Window():
         # Right
         pyray.draw_line(hitbox.right, hitbox.top, hitbox.right, hitbox.bottom, color)
 
-    def _print_circle(self, actor):
-        pyray.draw_circle(actor.get_x(), actor.get_y(), 5, pyray.GREEN)
-
     def update(self, cast):
         """
             Draws a frame of the Game given the Cast of Actors.
@@ -163,19 +167,21 @@ class Window():
         pyray.begin_drawing()
         pyray.clear_background(pyray.BLACK)
 
-        #self._print_image()
-        #self._print_test()
+        # TODO: Print background of the scene (gotten from Cast)
 
+        # DEBUG: Printing the walls/exit points
         walls = cast.get_walls()
         for direction in DIRECTIONS:
-            self._print_hitbox(walls[direction].get_hitbox(), pyray.BLUE)
+            try:
+                self._print_hitbox(walls[direction].get_hitbox(), pyray.BLUE)
+            except:
+                # The walls haven't been loaded shhh...
+                pass
 
-        # Updates the Collision Actors
-        # TODO: Change to cast.get_colliders()
+        # Updates the Colliding Actors
         for player in cast.get_colliders():
             # DEBUG: Prints Hitbox
-            self._print_hitbox(player.get_hitbox())
-            # self._print_actor(player)
+            #self._print_hitbox(player.get_hitbox())
             #self._print_circle(player)
             self._print_actor_image(player)
 

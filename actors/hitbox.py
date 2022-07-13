@@ -38,24 +38,18 @@ class Hitbox():
         """
             Will check if the other Actor's Point position is within this Hitbox, and return if there has been a collison.
         """
-        #print(f"Hitbox 1: TL[{self.left}, {self.top}], BR [{self.right}, {self.bottom}]")
-        #print(f"Hitbox 2: TL[{other_hitbox.left}, {other_hitbox.top}], BR [{other_hitbox.right}, {other_hitbox.bottom}]")
-
-        # NOTE: VERY inefficent..
-        # TODO: If two boxes have their edges touching, there is a collision
-        for sensitivity in range(0, 6):
-            # If the boxes are RIGHT next to eachother
-            if self.top - sensitivity == other_hitbox.bottom:
-                self._is_hit = True
-            elif self.bottom + sensitivity == other_hitbox.top:
-                self._is_hit = True
-            elif self.left - sensitivity == other_hitbox.right:
-                self._is_hit = True
-            elif self.right + sensitivity == other_hitbox.left:
-                self._is_hit = True
-
-        else:
+        # Checks each side to see if they are in the same area
+        if (self.left >= other_hitbox.right):
             self._is_hit = False
+        elif (self.right <= other_hitbox.left):            
+            self._is_hit = False
+        elif (self.bottom <= other_hitbox.top):            
+            self._is_hit = False
+        elif (self.top >= other_hitbox.bottom):
+            self._is_hit = False
+        else:
+            # Passes all checks, there is an overlap
+            self._is_hit = True
 
         return self._is_hit
 
