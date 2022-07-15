@@ -1,6 +1,9 @@
 from actors.Fighting_Actor import Fighting_Actor
 
-#BULLET_IMAGE = 
+IMAGE_SOURCE = "Bolt\\"
+IMAGE_NAME = "arrow1_"
+IMAGE_RANGE = [6, 11]
+IMAGE_FILETYPE = ".png"
 
 class Bullet(Fighting_Actor):
     """
@@ -11,6 +14,8 @@ class Bullet(Fighting_Actor):
         # Has no Health Points so it can be immediately destroyed on impact
         self._max_HP = 0
         self._current_HP = 0
+
+        self._frames = ["Bolt\\arrow1_6.png", "Bolt\\arrow1_7.png", "Bolt\\arrow1_8.png", "Bolt\\arrow1_9.png", "Bolt\\arrow1_10.png", "Bolt\\arrow1_11.png"]
 
         self._attack = 5
 

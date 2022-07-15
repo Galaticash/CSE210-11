@@ -6,7 +6,9 @@ from GraphicInterface import Window
 from mouse_input import Mouse_Input
 from Scene import Scene, Scene1, Boss_Scene
 from actors.enemy import Enemy
+from actors.pickup import Pickup
 from constants import *
+
 
 class Director():
     """
@@ -58,14 +60,20 @@ class Director():
         self.create_scenes()
 
         # Add the Player (user) and Enemies to the Cast.
-        self._scene_manager.add_player(Player("Player", Point(int(self._max_x//2), self._actor_size + 10), self._actor_size))
+        self._scene_manager.add_player(Player("Player", Point(100,  150), self._actor_size))
         
         self._scene_manager.setup_scene("SPAWN")
         # TODO: All the enemies will be created with the scene, these are for testing
-        self._scene_manager.add_collider(Enemy("Enemy1", Point(int(self._max_x * 2/3) - 5, self._max_y//2), self._actor_size))
-        self._scene_manager.add_collider(Enemy("Enemy2", Point(int(self._max_x * 1/3), self._max_y//2), self._actor_size))
-        self._scene_manager.add_collider(Enemy("Enemy3", Point(int(self._max_x * 2/3) + 75, self._max_y//2), self._actor_size))
-        self._scene_manager.add_collider(Enemy("Enemy4", Point(int(self._max_x * 1/3) - 75, self._max_y//2), self._actor_size))
+        self._scene_manager.add_enemy(Enemy("Enemy1", Point(int(self._max_x * 2/3) - 5, self._max_y//2), self._actor_size))
+        self._scene_manager.add_enemy(Enemy("Enemy2", Point(int(self._max_x * 1/3), self._max_y//2), self._actor_size))
+        self._scene_manager.add_enemy(Enemy("Enemy3", Point(int(self._max_x * 2/3) + 75, self._max_y//2), self._actor_size))
+        self._scene_manager.add_enemy(Enemy("Enemy4", Point(int(self._max_x * 1/3) - 75, self._max_y//2), self._actor_size))
+        self._scene_manager.add_enemy(Enemy("Enemy5", Point(200, 200), self._actor_size, [Point(450, 200), Point(550, 200)]))
+        
+        # Add some pickup items
+        self._scene_manager.add_collider(Pickup("Bullet", Point(550, 150), 1, self._actor_size))
+        #self._scene_manager.add_collider(Pickup("Gem", Point(550, 150), 5, self._actor_size))
+        #self._scene_manager.add_collider(Pickup("Bullet", Point(550, 150), 1, self._actor_size))
 
     def update_game(self):
         """

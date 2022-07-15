@@ -4,6 +4,7 @@ DIRECTIONS = ["TOP", "BOTTOM", "LEFT", "RIGHT"]
 
 # Window Size
 WINDOW_MAX_X = 900
+UI_Y_POS = 100 # So the scene working space is between 100 - 900
 WINDOW_MAX_Y = 600
 
 # Sizing

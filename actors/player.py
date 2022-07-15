@@ -17,7 +17,7 @@ RUNNING = "Astronaut_Run"
 IDLE = "Astronaut_Idle"
 IMAGE_FILETYPE = ".png"
 
-BULLET_PADDING = 10
+BULLET_PADDING = 100
 
 class Player(Fighting_Actor):
     """
@@ -58,11 +58,15 @@ class Player(Fighting_Actor):
 
     def check_shoot(self):
         if self._player_input.get_shoot():
+            # TODO: Check relod_time
             if self._shots.get_count() > 0:
-                self.fire_bullet()
+                self._shots.add(-1)
+                return self.fire_bullet()
             else:
                 # out of bullets, sound cue?
-                pass
+                return False
+        else:
+            return False
 
     def get_velocity(self):
         """
@@ -73,12 +77,9 @@ class Player(Fighting_Actor):
             self._velocity = self._player_input.get_direction()
             if not (self._velocity == [0, 0]):
                 self._facing = self._velocity
-            return self._velocity
         else:
-            # Update the time until the user regains control
-            self._control_timer += 1
-            if self._control_timer >= self._control_reset:
-                self._movement_control = True
+            self.override_update()
+        return self._velocity
 
     def move(self):
         """
@@ -119,12 +120,25 @@ class Player(Fighting_Actor):
         padding = BULLET_PADDING
         # If facing left or right
         if not (self._facing[0] == 0):
+            if self._facing[0] < 0:
+                padding *= -1
+                # padding = padding * -1
             new_position.add_velocity(padding, 0)
         # If facing up or down
-        elif not (self._facing[1] == 0):            
+        elif not (self._facing[1] == 0):   
+            if self._facing[1] < 0:
+                padding *= -1         
             new_position.add_velocity(0, padding)
 
-        new_bullet = Bullet("bullet", new_position, self._facing, self._size//2)
+        return Bullet("bullet", new_position, self._facing, self._size//2)
+
+    def pickup(self, item):
+        if item.get_name() == "Gem_p":
+            self._gems += item.get_value()
+        elif item.get_name() == "Bullet_p":
+            self._shots.add(item.get_value())
+        else:
+            print("Unidentified Item")
 
     def _set_HP(self, new_HP):
         self._current_HP = new_HP

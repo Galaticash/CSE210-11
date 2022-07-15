@@ -13,6 +13,10 @@ class Collision_Actor(Actor):
         self._name = name
         self._do_collisions = True
 
+        # Health Points
+        self._max_HP = 25
+        self._current_HP = self._max_HP
+
         self._alive = True
         # Not all colliding Actors do damage to others.
         self._attack = 0
@@ -56,7 +60,8 @@ class Collision_Actor(Actor):
 
     def get_name(self):
         """
-            TEMPORARY: Returns the unique name of the object
+            *** UNIQUE IDENTIFIER ***
+             Returns the unique name of the object
              Names are being used to determine if compared
              colliding actors are the same instance.
         """
@@ -75,9 +80,23 @@ class Collision_Actor(Actor):
         return self._image
 
     def override_movement(self, time):
+        """
+            Overrides the Actor's movement control for a bit.
+            NOTE: Time is NOT in seconds. It is the number of movement checks
+            (Times that self.move is called)
+        """
         self._movement_control = False
         self._control_timer = 0
         self._control_reset = time
+
+    def override_update(self):
+        """
+            Checks if the Actor has regained control of their movement.
+        """
+        # Update the time until the user regains control
+        self._control_timer += 1
+        if self._control_timer >= self._control_reset:
+            self._movement_control = True
 
     def move(self):
         """
@@ -130,6 +149,14 @@ class Collision_Actor(Actor):
             # Not colliding with other actors, stay normal color
             self._color = Color("WHITE")
             return False
+
+    def is_alive(self):
+        """
+            Tells the scene manager if the Actor is alive still,
+             otherwise it will be deleted. The Player, however 
+             has a lives system, and will never have alive = False
+        """
+        return self._alive
 
     def get_attack(self):
         """

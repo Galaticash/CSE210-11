@@ -1,4 +1,5 @@
 from collisionHandler import Collision_Handler
+from constants import *
 from actors.actor import Point
 from actors.wall import Wall
 
@@ -15,10 +16,8 @@ class Scene_Manager():
         # Colliders can include things like walls, barrels, etc <-- Another new class or just a Collision Actor with no movement (Collision Actor's Move method is just 'pass' then Enemy and Player would override Move)
         self._colliding_actors = []
 
-        # Well... Non-Moving colliders just have a velocity of 0, so while collider.move() is called, it just doesn't move
-
-        #self._moving_actors = []
-        # self._stationary_actors = Object, walls, etc
+        self._enemies = []
+        self._objects = []
 
         # Currently only being used for Game Over
         self._messages = []
@@ -33,7 +32,6 @@ class Scene_Manager():
         self._scene_connections = {"TOP": None, "LEFT": None, "RIGHT": None, "BOTTOM": None}
 
         self._collision_handler = Collision_Handler()
-        self.add_walls()
 
     def add_player(self, new_player):
         """
@@ -46,7 +44,12 @@ class Scene_Manager():
         for message in player_HUD:
             self.add_message(message)
 
+        # TODO: Temporary position
+        self.add_walls()
+
     def setup_scene(self, scene):
+        
+        #self.add_walls(scene)
         # self._colliding_actors = scene.get_actors
         pass
 
@@ -70,6 +73,11 @@ class Scene_Manager():
         self._walls["RIGHT"] = Wall("RIGHT", Point((scene_edges["RIGHT"] - scene_edges["RIGHT"])//2, (scene_edges["BOTTOM"] - scene_edges["TOP"])//2), scene_edges["TOP"], scene_edges["BOTTOM"], scene_edges["RIGHT"], scene_edges["RIGHT"])
         self._walls["BOTTOM"] = Wall("BOTTOM", Point((scene_edges["RIGHT"] - scene_edges["LEFT"])//2, (scene_edges["BOTTOM"] - scene_edges["BOTTOM"])//2), scene_edges["BOTTOM"], scene_edges["BOTTOM"], scene_edges["LEFT"], scene_edges["RIGHT"])
 
+        # Add walls in each direction
+        for direction in DIRECTIONS:
+            # Able to collide with walls
+            self.add_collider(self._walls[direction])
+
         # NOTE: Move this to a place after scene connections, enemies, etc are loaded
         self._scene_loaded = True
 
@@ -83,6 +91,10 @@ class Scene_Manager():
         # removes all the colliders from the other scene (self._collider = just the player)
 
     #def add_scene_border(self):
+
+    def add_enemy(self, enemy):
+        self._enemies.append(enemy)
+        self.add_collider(enemy)
 
     def add_collider(self, new_collider):
         """
@@ -117,7 +129,14 @@ class Scene_Manager():
         """
             Checks Player Actions other than movement
         """
-        self._colliding_actors[0].check_shoot()
+        new_bullet = self._colliding_actors[0].check_shoot()
+        if not (bool(new_bullet) == False):
+            print(f"Adding {new_bullet.get_name()} going {new_bullet.get_velocity()}")
+            self._colliding_actors.append(new_bullet)
+
+        for enemy in self._enemies:
+            enemy.get_aggro(self._colliding_actors[0].get_point_position())
+
 
     def check_collisions(self):
         """

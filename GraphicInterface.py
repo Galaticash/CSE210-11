@@ -5,6 +5,8 @@ import pyray
 from pyray import Rectangle
 import pathlib
 
+from constants import UI_Y_POS, WINDOW_MAX_X
+
 DIRECTIONS = ["TOP", "BOTTOM", "LEFT", "RIGHT"]
 FRAME_RATES = {"easy": 12, "medium": 30, "hard": 60}
 FRAME_RATE = FRAME_RATES["medium"]
@@ -182,17 +184,20 @@ class Window():
         # TODO: Print background of the scene (gotten from Cast)
 
         # DEBUG: Printing the walls/exit points
-        #walls = cast.get_walls()
-        #for direction in DIRECTIONS:
-                #self._print_hitbox(walls[direction].get_hitbox(), pyray.BLUE)
+        walls = cast.get_walls()
+        for direction in DIRECTIONS:
+                self._print_hitbox(walls[direction].get_hitbox(), pyray.BLUE)
                 #pass
 
         # Updates the Colliding Actors
         for actor in cast.get_colliders():
             # DEBUG: Prints Hitbox
-            #self._print_hitbox(actor.get_hitbox())
+            self._print_hitbox(actor.get_hitbox())
             #self._print_circle(player)
             self._print_actor_image(actor)
+
+
+        pyray.draw_rectangle(0, 0, WINDOW_MAX_X, UI_Y_POS, pyray.BLACK)
 
         # Updates the Messages
         for message in cast.get_messages():

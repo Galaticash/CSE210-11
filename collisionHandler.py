@@ -47,12 +47,27 @@ class Collision_Handler():
                     # Need a way to not collide more than once
                     # Option 1: Change Velocity
                     collision_direction = copy.copy(collider_one.get_velocity())
+                    
+                    # Guarantee at least on collider is moving
+                    # But if the first one isn't moving, get velocity from the second
                     if collision_direction == [0, 0]:
+                        # Freeze the collider's ability to move
+                        freeze_time = 50
+                        collider_one.override_movement(freeze_time)
+                        collider_two.override_movement(freeze_time)
+                        
+                        # Send them flying opposite directions
                         collision_direction = copy.copy(collider_two.get_velocity())
                         collider_one.set_velocity(collision_direction)
                         opposite_velocity = [collision_direction[0]* -1, collision_direction[1]* -1]
                         collider_two.set_velocity(opposite_velocity)
                     else:
+                        # Freeze the collider's ability to move
+                        freeze_time = 50
+                        collider_one.override_movement(freeze_time)
+                        collider_two.override_movement(freeze_time)
+
+                        # Send them flying opposite directions
                         collider_two.set_velocity(collision_direction)
                         opposite_velocity = [collision_direction[0]* -1, collision_direction[1]* -1]
                         collider_one.set_velocity(opposite_velocity)

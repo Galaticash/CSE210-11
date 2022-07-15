@@ -3,12 +3,6 @@ from point import Point
 from constants import ACTOR_SIZE
 
 SPIRTE_PATH = "assets\\Alien\\Alien_idle3.png"
-#ROUTE_OPTIONS = {"DEFAULT": }
-
-# Square
-ROUTE_POINTS = ["ONE", "TWO", "THREE", "FOUR"]
-ROUTE_STOPS = {"ONE": Point(100, 300), "TWO": Point(500, 300), "THREE": Point(500, 500), "FOUR": Point(100, 500)}
-ROUTE_DIRECTION = {"ONE": [1, 0], "TWO": [0, 1], "THREE": [-1, 0], "FOUR": [0, -1]}
 
 # Player Aggro
 """
@@ -27,17 +21,29 @@ point can be reassinged to the Player's position (aggro)
 
 """
 
+"""
+class Route():
+    def __init__(self):
+        self._path = [Point(500, 300), Point(100, 300), Point(100, 500), Point(500, 500)]
+
+"""
 
 # TODO: Double check that Collision Actor has all shared code between Enemy and Player
 class Enemy(Fighting_Actor):
-    def __init__(self, name, position, size, path = "default", image="", color="WHITE"):
+    def __init__(self, name, position, size, path = [Point(500, 300), Point(100, 300), Point(100, 500), Point(500, 500)], image="", color="WHITE"):
+        # Above, when creating Enemy, pass in a path (list of Points [Point(1, 2)])
         super().__init__(name, position, size, image, color)
         self._frames = ["Alien\\Alien_idle3.png"]
         self._velocity = [-1, 0]
         self._max_HP = 15
         self._current_HP = self._max_HP
 
-        self._route = [Point(500, 300), Point(100, 300), Point(100, 500), Point(500, 500)]
+        self._aggro = False
+        self._player_position = Point(0, 0)
+
+        # Change Path/Route here
+        self._route = path
+        
         self._route_item = 0
         self._goal_position = self._route[self._route_item]
     
@@ -47,50 +53,57 @@ class Enemy(Fighting_Actor):
         # If aggro_distance <= player_distance
         # Then return True, will go after the Player
         # Else return False, will continue on route
-        
-        pass
+        self._player_position = player_pos
+        #self._aggro = True
 
     def get_velocity(self):
         """
             The Enemy will move towards it's Goal Position, whether
              that be a set Route or the Player (not yet implemented)
         """
-        new_velocity = [0, 0]
+        if self._movement_control:
+            new_velocity = [0, 0]
 
-        # TODO: Enemies attacking the Player
-        # if get_agrro() returns True # If the Player is within detection range
-        # Goal position = Player # Goal is to move towards the Player
-
-        # Calculate the difference in position from current Point and Goal Point
-        x_diff = int(self._position.get_x() - self._goal_position.get_x())
-        y_diff = int(self._position.get_y() - self._goal_position.get_y())
-        # 0 - same position
-        # - integer/float - goal is to the left/down (velocity: 1)
-        # + integer/float - goal is to the right/up (velocity: -1)
-
-        # if there is no difference, then move to new goal position
-        # NOTE: For aggro, add OR player_aggro_off~ this would change it's goal_position from the Player's
-        if x_diff == 0 and y_diff == 0:
-            # Changes goal position to the next route position (looping over the list)
-            self._route_item += 1
-            if self._route_item >= len(self._route):
-                self._route_item = 0
-            self._goal_position = self._route[self._route_item]
-        else:
-            # Prioritize one set of movement, Enemies will have grid movement
-            # Otherwise remove if abs... and have both if/else statements one after the other
-            if abs(y_diff) > abs(x_diff):
-                # Positive or negative difference
-                if y_diff > 1:
-                    new_velocity[1] = -1
-                else:
-                    new_velocity[1] = 1
+            # TODO: Enemies attacking the Player
+            if self._aggro: # If the Player is within detection range
+                self._goal_position = self._player_position
             else:
-                # Positive or negative difference
-                if x_diff > 1:
-                    new_velocity[0] = -1
+                # If the player is no longer in bounds
+                pass
+            # Goal position = Player # Goal is to move towards the Player
+
+            # Calculate the difference in position from current Point and Goal Point
+            x_diff = int(self._position.get_x() - self._goal_position.get_x())
+            y_diff = int(self._position.get_y() - self._goal_position.get_y())
+            # 0 - same position
+            # - integer/float - goal is to the left/down (velocity: 1)
+            # + integer/float - goal is to the right/up (velocity: -1)
+
+            # if there is no difference, then move to new goal position
+            # NOTE: For aggro, add OR player_aggro_off~ this would change it's goal_position from the Player's
+            if x_diff == 0 and y_diff == 0:
+                # Changes goal position to the next route position (looping over the list)
+                self._route_item += 1
+                if self._route_item >= len(self._route):
+                    self._route_item = 0
+                self._goal_position = self._route[self._route_item]
+            else:
+                # Prioritize one set of movement, Enemies will have grid movement
+                # Otherwise remove if abs... and have both if/else statements one after the other
+                if abs(y_diff) > abs(x_diff):
+                    # Positive or negative difference
+                    if y_diff > 1:
+                        new_velocity[1] = -1
+                    else:
+                        new_velocity[1] = 1
                 else:
-                    new_velocity[0] = 1
-        # Update the velocity
-        self._velocity = new_velocity
+                    # Positive or negative difference
+                    if x_diff > 1:
+                        new_velocity[0] = -1
+                    else:
+                        new_velocity[0] = 1
+            # Update the velocity
+            self._velocity = new_velocity
+        else:
+            self.override_update()
         return self._velocity
