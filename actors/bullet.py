@@ -26,6 +26,9 @@ class Bullet(Fighting_Actor):
         self._velocity = velocity
         
     def find_rotation(self, velocity):
+        """
+            Find the proper rotation of the Bullet (limited to 90 degree intervals)
+        """
         rotation = ROTATION[0]
         if velocity == [0, 0]:
             return rotation
@@ -44,3 +47,14 @@ class Bullet(Fighting_Actor):
                 rotation = ROTATION[1]
         
         return rotation
+
+    def is_hit(self, other_collider):
+        """
+            The bullet is deleted if it hits anything.
+        """
+        hit_something = super().is_hit(other_collider)
+        if hit_something:
+            # print(f"Bullet hit {other_collider.get_name()}")
+            self._alive = False
+
+        return hit_something

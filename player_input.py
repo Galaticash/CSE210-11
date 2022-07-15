@@ -12,7 +12,8 @@ class Player_Input():
         self._dy = 0
         
     def get_shoot(self):
-        if pyray.is_key_down(pyray.KeyboardKey.KEY_SPACE):
+        if pyray.is_key_pressed(pyray.KeyboardKey.KEY_SPACE):
+        #if pyray.is_key_down(pyray.KeyboardKey.KEY_SPACE):
             return True
         else:
             return False

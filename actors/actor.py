@@ -5,7 +5,7 @@ import copy
 class Actor():
     """
         An object that can be displayed on the GUI.
-        Given the spawn position, the font size, and color of itself. 
+        Given the spawn position, the pxiel size, and color of itself. 
         Has a Point position on the screen
         Has a symbol to represent itself with, can be a single character or a string of them (Message).
         Has Getters for each Attribute so the GUI can properly display the Actor.

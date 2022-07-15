@@ -88,11 +88,13 @@ class Window():
     # def _get_rectangle(self, actor):
     #     return Rectangle(actor.get_x(), actor.get_y(), actor.get_hitbox().right - actor.get_hitbox().left, actor.get_hitbox().bottom - actor.get_hitbox().top)
 
-    # def _print_circle(self, actor):
-    #     pyray.draw_circle(actor.get_x(), actor.get_y(), 5, pyray.GREEN)
+    def _print_circle(self, actor):
+        """
+            Print a green circle at the actor's point position.
+        """
+        pyray.draw_circle(actor.get_x(), actor.get_y(), 20, pyray.GREEN)
 
     def _flip_image(self, texture):
-
         pass
 
     def _print_actor_image(self, actor):
@@ -176,16 +178,19 @@ class Window():
             Prints the given button on the board. Has a box 
              surrounding it to differentiate itself as a button.
         """        
-        self._print_hitbox(button.get_hitbox())
-        pyray.draw_text(button.get_display(), button.get_x(), button.get_y(), button.get_size(), button.get_color())
+        self._print_hitbox(button.get_hitbox(), button.get_color())
+        pyray.draw_text(button.get_display(), button.get_x(), button.get_y(), button.get_size(), button.get_text_color())
         
-    def _print_hitbox(self, hitbox, color = pyray.RED):
+    def _print_hitbox(self, hitbox, color = ""):
         """
             Draws a given hitbox. Must be printed before text, 
              otherwise the Rectangle will draw on top of the text.
         """
-        # Draw a rectangle
-        hitbox_color = self._hitbox_test_hit_color if hitbox.get_is_hit() else self._hitbox_test_color
+        hitbox_color = color
+        if color == "":
+            # Draw a rectangle
+            hitbox_color = self._hitbox_test_hit_color if hitbox.get_is_hit() else self._hitbox_test_color
+
         pyray.draw_rectangle(hitbox.left, hitbox.top, hitbox.right - hitbox.left, hitbox.bottom - hitbox.top, hitbox_color)
 
         # Draw the outline
@@ -220,12 +225,14 @@ class Window():
         # DEBUG: Printing the walls/exit points
         walls = cast.get_walls()
         for direction in DIRECTIONS:
-                self._print_hitbox(walls[direction].get_hitbox(), pyray.BLUE)
-                #pass
+            #self._print_circle(walls[direction])
+            self._print_hitbox(walls[direction].get_hitbox(), pyray.BLUE)
 
         # Updates the Colliding Actors
         for actor in cast.get_colliders():
             self._print_actor_image(actor)
+
+        # TODO: Draw any rocks, objects, etc (decoration?)
 
         # Draw the GUI
         pyray.draw_rectangle(0, 0, WINDOW_MAX_X, UI_Y_POS, pyray.BLACK)
@@ -236,6 +243,7 @@ class Window():
 
         # Updates the Buttons
         for button in cast.get_buttons():
+            #self._print_circle(button)
             self._print_button(button)
 
         pyray.end_drawing()

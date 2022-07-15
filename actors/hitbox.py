@@ -8,6 +8,8 @@ class Hitbox():
         self._padding = padding
         # The bounds of the Hitbox
         self._limits = {"TOP": top - self._padding, "BOTTOM": bottom + self._padding, "LEFT": left - self._padding, "RIGHT": right + self._padding}
+        
+        # print(f"Box created c: {self._limits['LEFT']} to {self._limits['RIGHT']} | y: {self._limits['TOP']} to {self._limits['BOTTOM']}.")
         self._is_hit = False
 
     def update_position(self, position, size):
@@ -52,6 +54,12 @@ class Hitbox():
             self._is_hit = True
 
         return self._is_hit
+
+    def clicked(self, point):
+        """
+            Translates a point position into a Hitbox to check if hit
+        """
+        return self.hit(Hitbox(point.get_y(), point.get_y(), point.get_x(), point.get_x(), 1))
 
     def get_is_hit(self):
         """

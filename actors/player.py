@@ -6,20 +6,9 @@ from player_input import Player_Input, pyray
 # For Score/Inventory display
 from actors.counter import Counter
 
+
+from constants import STARTING_LIVES, STARTING_SHOTS, BULLET_PADDING, BULLET_SPEED
 # TODO: Move to constants file
-
-STARTING_LIVES = 3
-STARTING_SHOTS = 5
-BULLET_TIMER = 10
-
-# NOTE: Not implemented
-SPRITE_SOURCE = "Astronaut\\"
-RUNNING = "Astronaut_Run"
-IDLE = "Astronaut_Idle"
-IMAGE_FILETYPE = ".png"
-
-BULLET_PADDING = 100
-BULLET_SPEED = 5
 
 class Player(Fighting_Actor):
     """
@@ -32,10 +21,6 @@ class Player(Fighting_Actor):
         # TODO: Can adjust file order for animation to be less clunky?
         self._frames = ["Astronaut\\Astronaut_Idle3.png", "Astronaut\\Astronaut_Run1.png", "Astronaut\\Astronaut_Run2.png", "Astronaut\\Astronaut_Run1.png", "Astronaut\\Astronaut_Run3.png", "Astronaut\\Astronaut_Run4.png", "Astronaut\\Astronaut_Run5.png", "Astronaut\\Astronaut_Run6.png"]
         #assets\Astronaut\Astronaut_Run1.png
-
-        self._shot_reloading = False
-        self._bullet_timer = 0
-        self._bullet_reset = BULLET_TIMER
 
         # Give Player a Player_Input to determine velocity/movement
         self._player_input = Player_Input()
@@ -69,20 +54,10 @@ class Player(Fighting_Actor):
         if self._player_input.get_shoot():
             # If there are any bullets to shoot
             if self._shots.get_count() > 0:
-                # If the reload time has passed
-                if not(self._shot_reloading):                    
-                    # Start reload timer
-                    self._shot_reloading = True
-                    # Remove a shot and shoot it
-                    # DEBUG: Infinite gun
-                    # self._shots.add(-1)
-                    return self.fire_bullet()
-                else:
-                    self._bullet_timer += 1
-                    if self._bullet_timer >= self._bullet_reset:
-                        self._bullet_timer = 0
-                        self._shot_reloading = False
-                    return False
+                # Remove a shot and shoot it
+                # DEBUG: Infinite gun
+                # self._shots.add(-1)
+                return self.fire_bullet()
             else:
                 # out of bullets, sound cue?
                  return False
@@ -154,7 +129,6 @@ class Player(Fighting_Actor):
         """
             The Player will pickup the given item.
         """
-        # print(f"Player should pickup {item.get_name()}")
         if item.get_name() == "Heart_p":
             self._update_HP(item.get_amount())
         elif item.get_name() == "Life_p":
@@ -195,6 +169,7 @@ class Player(Fighting_Actor):
                     self._set_HP(self._max_HP)
                 else:
                     # Game over
+                    self._alive = False
                     # Make sure to display 0 as the minimum HP
                     self._set_HP(0)
                     self._color = Color("INVISIBLE")

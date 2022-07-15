@@ -13,5 +13,5 @@ class Mouse_Input():
     
         if pyray.is_mouse_button_pressed(pyray.MouseButton.MOUSE_BUTTON_LEFT):
             # Return the position of the Mouse Cursor
-            return Point(0, 0, pyray.get_mouse_x(), pyray.get_mouse_y())
+            return Point(pyray.get_mouse_x(), pyray.get_mouse_y())
         return None

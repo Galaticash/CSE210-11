@@ -20,7 +20,9 @@ class Point:
 
     # Called when point1 == point2?
     def __eq__(self, other):
-        if self._x == other._x:
+        if other == None:
+            return False
+        elif self._x == other._x:
             if self._y == other._y:
                 return True
         # Either the x or y position don't match

@@ -11,6 +11,27 @@ WINDOW_MAX_Y = 600
 
 # Actor/Font Sizing
 FONT_SIZE = 24
-# Note: Actors are currenlty 24 pixels, 
-# but they are upscaled up to be printed at this size
+# Note: The Player is 24 pixels/ Enemy 32 pixels, 
+# but the sprites are upscaled up to be printed at this size
 ACTOR_SIZE = 100
+
+# Actor Names
+PLAYER_NAME = "Player"
+
+
+# When the Collision Actor is flung by a collision, how long until it can change its velocity
+FREEZE_TIME = 15
+
+
+# Player Constants
+STARTING_LIVES = 3
+STARTING_SHOTS = 5
+
+# NOTE: Not implemented
+#SPRITE_SOURCE = "Astronaut\\"
+#RUNNING = "Astronaut_Run"
+#IDLE = "Astronaut_Idle"
+#IMAGE_FILETYPE = ".png"
+
+BULLET_PADDING = 100
+BULLET_SPEED = 5

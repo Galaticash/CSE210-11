@@ -3,12 +3,6 @@ from constants import *
 from actors.actor import Point
 from actors.wall import Wall
 
-# Probably unecessary, is there a better way than isinstance()?
-# Ex: type(collider) == Enemy
-from actors.player import Player
-from actors.pickup import Pickup
-from actors.bullet import Bullet
-
 class Scene_Manager():
     """
        An object that is in charge of making sure all objects in the current scene interact properly 
@@ -82,10 +76,11 @@ class Scene_Manager():
         # Will create the wall given the bounds of the scene
         # Point - The center of the wall
         # Top, Bottom, Left, Right - Bounds of the Hitbox (currently a thin line extending the length of the wall)
-        self._walls["TOP"] = Wall("TOP", Point((scene_edges["RIGHT"] - scene_edges["LEFT"])//2, (scene_edges["TOP"] - scene_edges["TOP"])//2), scene_edges["TOP"], scene_edges["TOP"], scene_edges["LEFT"], scene_edges["RIGHT"])
-        self._walls["LEFT"] = Wall("LEFT", Point((scene_edges["LEFT"] - scene_edges["LEFT"])//2, (scene_edges["BOTTOM"] - scene_edges["TOP"])//2), scene_edges["TOP"], scene_edges["BOTTOM"], scene_edges["LEFT"], scene_edges["LEFT"])
-        self._walls["RIGHT"] = Wall("RIGHT", Point((scene_edges["RIGHT"] - scene_edges["RIGHT"])//2, (scene_edges["BOTTOM"] - scene_edges["TOP"])//2), scene_edges["TOP"], scene_edges["BOTTOM"], scene_edges["RIGHT"], scene_edges["RIGHT"])
-        self._walls["BOTTOM"] = Wall("BOTTOM", Point((scene_edges["RIGHT"] - scene_edges["LEFT"])//2, (scene_edges["BOTTOM"] - scene_edges["BOTTOM"])//2), scene_edges["BOTTOM"], scene_edges["BOTTOM"], scene_edges["LEFT"], scene_edges["RIGHT"])
+        
+        self._walls["TOP"] = Wall("TOP", Point((scene_edges["RIGHT"] - scene_edges["LEFT"])//2, scene_edges["TOP"]), scene_edges["TOP"], scene_edges["TOP"], scene_edges["LEFT"], scene_edges["RIGHT"]) # TOP
+        self._walls["LEFT"] = Wall("LEFT", Point(scene_edges["LEFT"], (scene_edges["BOTTOM"] - scene_edges["TOP"])//2), scene_edges["TOP"], scene_edges["BOTTOM"], scene_edges["LEFT"], scene_edges["LEFT"]) #LEFT
+        self._walls["RIGHT"] = Wall("RIGHT", Point(scene_edges["RIGHT"], (scene_edges["BOTTOM"] - scene_edges["TOP"])//2), scene_edges["TOP"], scene_edges["BOTTOM"], scene_edges["RIGHT"], scene_edges["RIGHT"]) # RIGHT
+        self._walls["BOTTOM"] = Wall("BOTTOM", Point((scene_edges["RIGHT"] - scene_edges["LEFT"])//2, scene_edges["BOTTOM"]), scene_edges["BOTTOM"], scene_edges["BOTTOM"], scene_edges["LEFT"], scene_edges["RIGHT"]) # BOTTOM
 
         # Add walls in each direction
         for direction in DIRECTIONS:
@@ -123,26 +118,29 @@ class Scene_Manager():
         """
         return self._colliding_actors
 
-    def move_colliders(self):
+    def continue_game(self):
         """
             Moves all Colliders and checks their status (is_alive).
             (non-moving will have "pass" in their move method)
         """
+        # Move each colliding actor, but only if it is alive
         for collider in self._colliding_actors:
-            if not collider.is_alive() and not isinstance(collider, Wall):
-                if not isinstance(collider, Player):
-                    if isinstance(collider, Pickup):
-                        print(f"{collider.get_name()} was picked up.")
-                    elif isinstance(collider, Bullet):
-                        print(f"{collider.get_name()} hit something.")
-                    else:
-                        print(f"{collider.get_name()} has died!")
+            # If it is not alive
+            if not collider.is_alive():
+                if not collider.get_name() == PLAYER_NAME:
+                    # Remove the actor if it is not the Player
                     self._colliding_actors.remove(collider)
                 else:
-                    # The Player has died, call game_over methods
-                    print("The game should end here!")
-                    pass
+                    # The Player has died, and the game is over
+                    return False
             collider.move()
+        
+        # Then check for actions, and collision
+        self.check_actions()
+        self.check_collisions()
+        
+        # Return if the game should continue
+        return True
 
     def reset_player(self):
         """
@@ -154,9 +152,10 @@ class Scene_Manager():
         """
             Checks Player and Enemy Actions other than movement
         """
+        # Checks if the Player has shot a bullet
         new_bullet = self._colliding_actors[0].check_shoot()
+        # If there is a bullet to shoot
         if not (bool(new_bullet) == False):
-            print(f"Adding {new_bullet.get_name()} going {new_bullet.get_velocity()}")
             self._colliding_actors.append(new_bullet)
 
         # Check if the enemies should aggro onto the Player
@@ -168,13 +167,11 @@ class Scene_Manager():
         """
             Checks if there has been a collision between any of the colliders.
         """
-        if self._scene_loaded:
-            # Checks if the Player is attempting to exit the scene
-            #self._collision_handler.check_exit(self._colliding_actors[0], self._exits)
-            pass
         if len(self._colliding_actors) > 1:
             # Only check for collisions if there are other colliding Actors
-            self._collision_handler.check(self._colliding_actors)
+            exit_direction = self._collision_handler.check_exit(self._colliding_actors)
+            if not(exit_direction == None):
+                print(f"Player is trying to exit out {exit_direction}")
 
     def add_message(self, new_message):
         """

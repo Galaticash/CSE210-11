@@ -1,9 +1,5 @@
 import copy
-from point import Point
-from constants import DIRECTIONS
-from actors.pickup import Pickup
-
-FREEZE_TIME = 50
+from constants import DIRECTIONS, FREEZE_TIME, PLAYER_NAME
 
 # TODO: Objects should not move through eachother
 # TODO: Objects get stuck in an infinite loop of colliding, esp when pushed by another object
@@ -16,36 +12,37 @@ class Collision_Handler():
     """
     def __init__(self):
         pass
-    
-    def check_exit(self, player, given_walls):
-        """
-            Checks if the Player is exiting, returns which way they are leaving.
-        """
-        for wall_pos in DIRECTIONS:
-            if player.get_hitbox().hit(given_walls[wall_pos].get_hitbox()):
-                print(f"Attempting to exit via {wall_pos}")
-                return wall_pos
-        return None
 
     def fling_objects(self, collision_direction, collider_one, collider_two):
-        self.freeze_movement(collider_one, collider_two)
+        """
+            Given two colliders and the direction they are colliding, flings them opposite directions.
+        """
+        # Freezes the collider's ability to change their velocity
+        #   until after they have been flung.
+        self.freeze_movement(collider_one)
+        self.freeze_movement(collider_two)
+        
         # Send them flying opposite directions
-
         collider_two.set_velocity(collision_direction)
         opposite_velocity = [collision_direction[0]* -1, collision_direction[1]* -1]
         collider_one.set_velocity(opposite_velocity)
 
-    def freeze_movement(self, collider_one, collider_two):
+    def freeze_movement(self, collider):
+        """
+            Freezes the movement of the given collider
+        """
         # Freeze the collider's ability to move
-        collider_one.override_movement(FREEZE_TIME)
-        collider_two.override_movement(FREEZE_TIME)
+        collider.override_movement(FREEZE_TIME)
 
-    def check(self, given_colliders):
+    def check_exit(self, given_colliders):
         """
             Checks if there has been a collision between any of the colliders
         """
         # TODO: Is there a way to more efficiently check collisions, check only close ones? 
         # But I guess I'll have to check each one against each other collider (not too efficient, but effective)
+
+        # Will check if the Player is exiting
+        exit_direction = None
 
         # For every item in the list (while also counting with i)
         for i, collider_one in enumerate(given_colliders):
@@ -59,16 +56,27 @@ class Collision_Handler():
 
                     # Will reverse the direction the objects are currently travelling
                     collision_direction = copy.copy(collider_one.get_velocity())
-                    
+
                     # Guarantee at least one collider is moving
                     # But if the first one isn't moving, get velocity from the second
                     if collision_direction == [0, 0]:
                         collision_direction = copy.copy(collider_two.get_velocity())
                     
                     # Do not fling the colliders if one is a pickup OR a wall
-                    if isinstance(collider_one, Pickup) or isinstance(collider_two, Pickup):
+                    if collider_one.get_name()[-2:] == "_p" or collider_two.get_name()[-2:] == "_p":
+                        # print("Patrick, that's a pickup")
+                        #return
                         pass
-                    elif collider_one.get_name() in DIRECTIONS:
-                        pass
-                    else:
+                    # If one collider is the Player and the other is a wall    
+                    elif (collider_one.get_name() == PLAYER_NAME or collider_two.get_name() == PLAYER_NAME):
+                        if (collider_one.get_name() in DIRECTIONS):
+                            exit_direction = collider_one.get_name()
+                        elif(collider_two.get_name() in DIRECTIONS):
+                            exit_direction = collider_two.get_name()
+                        else:
+                            # The Player is colliding with something
+                            self.fling_objects(collision_direction, collider_one, collider_two)
+                    else:                    
                         self.fling_objects(collision_direction, collider_one, collider_two)
+
+        return exit_direction
