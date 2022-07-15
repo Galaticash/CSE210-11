@@ -2,7 +2,6 @@ import copy
 DIRECTIONS = ["TOP", "BOTTOM", "LEFT", "RIGHT"]
 
 # TODO: Objects cannot move through eachother
-# TODO: Check collisions between each object, only once and efficiently
 
 class Collision_Handler():
     """

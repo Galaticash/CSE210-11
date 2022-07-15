@@ -2,7 +2,8 @@ from actors.actor import *
 from actors.hitbox import Hitbox
 
 STEP_SIZE = 5
-COLOR_TIMER_MAX = 20
+COLOR_TIMER_MAX = 2
+COLLISION_TIMER = 50
 
 class Collision_Actor(Actor):
     """
@@ -11,7 +12,6 @@ class Collision_Actor(Actor):
     def __init__(self, name, position, size, image="", color="WHITE"):
         super().__init__(position, size, image, color)
         self._name = name
-        self._do_collisions = True
 
         # Health Points
         self._max_HP = 25
@@ -27,6 +27,10 @@ class Collision_Actor(Actor):
         self._movement_control = True
         self._control_timer = 0
         self._control_reset = 0
+
+        self._do_collisions = True
+        self._collision_timer = 0
+        self._collision_reset = COLLISION_TIMER
 
         # Hitbox math
         top = (self._position.get_y() - self._size//2)
@@ -140,14 +144,22 @@ class Collision_Actor(Actor):
                 if other_damage > 0:
                     self.damage(other_damage)
                     self._color = Color("RED")
+                    # Start timer of invulnerability
+                    self._do_collisions = False
             else:
+                # Color Timer instead of flashing Red for one second
                 if self._color_timer >= COLOR_TIMER_MAX:
                     self._color_timer = 0
                     self._color = Color("WHITE")
             return is_hit
         else:
-            # Not colliding with other actors, stay normal color
-            self._color = Color("WHITE")
+            # Not colliding with other actors, counter until it does
+            if self._collision_timer >= self._collision_reset:
+                self._collision_timer = 0
+                self._do_collisions = True
+            else:
+                self._collision_timer += 1
+
             return False
 
     def is_alive(self):
