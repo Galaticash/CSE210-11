@@ -1,15 +1,21 @@
 from actors.actor import *
 from actors.hitbox import Hitbox
+from actors.image import Image
+from constants import ACTOR_SIZE, FONT_SIZE
+import copy
 
 STEP_SIZE = 5
 COLOR_TIMER_MAX = 2
-COLLISION_TIMER = 50
+COLLISION_TIMER = 75
+
+# The frame at which the animation frame is updated
+UPDATE_FRAME = 5
 
 class Collision_Actor(Actor):
     """
         An Actor that can collide with other Collision Actors.
     """
-    def __init__(self, name, position, size, image="", color="WHITE"):
+    def __init__(self, name, position, size, image="blank.png", color="WHITE"):
         super().__init__(position, size, image, color)
         self._name = name
 
@@ -39,28 +45,69 @@ class Collision_Actor(Actor):
         right = (self._position.get_x() + (self._size//2)) 
         self._hitbox = Hitbox(top, bottom, left, right, -20)
 
+        # For animation
+        self._frame_counter = 0
+        self._frames = [self._image]
+        self._update_fame = UPDATE_FRAME
+        self._current_frame = 0
+
+        # Scale, rotation of image
+        self._scale = 10
+        self._facing = [1, 0]
+        self._rotation = 0
+
         # How far the Actor moves per step
         self._step_size = STEP_SIZE
 
     def __eq__(self, other):
         """
-            Can tell if it is the same instance if the name is the
+            Can tell if it is the same instance if the name is the same.
         """
         return self._name == other._name
             
-    # def _set_limits(self):
-    #     # The position is at the Top Left (determined by python.draw_text/etc)
-    #     self._limits[DIRECTIONS[0]] = (self._position.get_y() - self._size//2) - self._padding
-    #     self._limits[DIRECTIONS[2]] = (self._position.get_x() - (self._size//2)) - self._padding
+    def get_facing(self):
+        """
+            Returns the [x, y] direction the Actor is facing.
+        """
+        return self._facing
 
-    #     # Top point + (down) font_size = Bottom point
-    #     self._limits[DIRECTIONS[1]] = (self._position.get_y() + self._size//2) + self._padding
+    def get_frame(self):
+        """
+            Animates the character, returns the current frame.
+        """
+        # If the Actor is standing still, stay on first frame (idle)
+        # Also if the Actor only has one animation frame/sprite
+        if self._velocity == [0, 0] or len(self._frames) == 1:
+            return self._frames[0]
 
-    #     # Left point + (right) font_size * width = Right point
-    #     # The right side of the hitbox must be adjusted to the length of the symbol
-    #     self._limits[DIRECTIONS[3]] = (self._position.get_x() + (self._size//2)) + self._padding
+        # Check for the update frame
+        self._frame_counter += 1
+        if self._frame_counter == self._update_fame:
+            # Reset the counter and update the animation frame,
+            #  making sure to loop when it hits the end.
+            self._frame_counter = 0
+            self._current_frame += 1
+            if self._current_frame == len(self._frames):
+                self._current_frame = 1
+        # Return the filepath of the current frame
+        return self._frames[self._current_frame]
 
-        # How many pixels the Actor travels per Move method call.
+    def get_display(self):
+        """
+            Returns the frame of the Actor to display.
+        """
+        # Create and return an Image (the filepath, scale, and rotation)
+        texture = self.get_frame()
+        direction = self.get_velocity()
+        if direction[0] < 0:
+            # Going Left
+            #self._rotation = 180
+            self._scale = abs(self._scale) * -1
+        elif direction[0] > 0:
+            # Going Right
+            #self._rotation = 0
+            self._scale = abs(self._scale)
+        return Image(texture, self._scale, self._rotation, self._color)
 
     def get_name(self):
         """
@@ -77,11 +124,11 @@ class Collision_Actor(Actor):
         """
         return self._hitbox
 
-    def get_display(self):
+    def get_attack(self):
         """
-            Returns the Image of the Actor
+            Returns the damage this Actor does to other Fighting actors
         """
-        return self._image
+        return self._attack
 
     def override_movement(self, time):
         """
@@ -170,12 +217,6 @@ class Collision_Actor(Actor):
         """
         return self._alive
 
-    def get_attack(self):
-        """
-            Returns the damage this Actor does to other Fighting actors
-        """
-        return self._attack
-
     def damage(self, damage_points):
         # If the Actor is already out of HP points
         if self._current_HP <= 0:
@@ -186,5 +227,5 @@ class Collision_Actor(Actor):
             self._current_HP -= damage_points
             # If they are out of HP
             if self._current_HP <= 0:
-                pass
-               #self._alive = False
+                #pass
+                self._alive = False

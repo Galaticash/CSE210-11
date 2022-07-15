@@ -1,7 +1,11 @@
 import copy
+from point import Point
 DIRECTIONS = ["TOP", "BOTTOM", "LEFT", "RIGHT"]
 
-# TODO: Objects cannot move through eachother
+# TODO: Objects should not move through eachother
+# TODO: Objects get stuck in an infinite loop of colliding, esp when pushed by another object
+#       This is the objects colliding in the rectange instead of borders? so cut out a square
+#    in the middle where it says, hold up, you're in the middle of an object instead of on the edge?
 
 class Collision_Handler():
     """
@@ -43,23 +47,25 @@ class Collision_Handler():
                     # Find collision direction, send colliders in opposite directions?
                     # So even if the Player isn't moving, sees that the other actor was coming in from the left and sends the Player flying to the left?
 
-                    # Need a way to not collide more than once
                     # Option 1: Change Velocity
                     collision_direction = copy.copy(collider_one.get_velocity())
                     
                     # Guarantee at least on collider is moving
                     # But if the first one isn't moving, get velocity from the second
                     if collision_direction == [0, 0]:
-                        # Freeze the collider's ability to move
-                        freeze_time = 50
-                        collider_one.override_movement(freeze_time)
-                        collider_two.override_movement(freeze_time)
-                        
-                        # Send them flying opposite directions
-                        collision_direction = copy.copy(collider_two.get_velocity())
-                        collider_one.set_velocity(collision_direction)
-                        opposite_velocity = [collision_direction[0]* -1, collision_direction[1]* -1]
-                        collider_two.set_velocity(opposite_velocity)
+                        # print(f"collider one: {type(collider_one)} | two: {type(collider_two)}")
+                        # Also do not fling the Player if they pickup an item
+                        if not type(collider_one) == "Pickup":
+                            # Freeze the collider's ability to move
+                            freeze_time = 50
+                            collider_one.override_movement(freeze_time)
+                            collider_two.override_movement(freeze_time)
+                            
+                            # Send them flying opposite directions
+                            collision_direction = copy.copy(collider_two.get_velocity())
+                            collider_one.set_velocity(collision_direction)
+                            opposite_velocity = [collision_direction[0]* -1, collision_direction[1]* -1]
+                            collider_two.set_velocity(opposite_velocity)
                     else:
                         # Freeze the collider's ability to move
                         freeze_time = 50
@@ -72,7 +78,4 @@ class Collision_Handler():
                         collider_one.set_velocity(opposite_velocity)
 
                     # Option 1 Part 2: Add some kick to the velocity, Knockback
-
-
-                    # Option 3: Timer - can only check for collisions every # frames/checks
-                    # Kinda implemented? Would be handled in collision actor
+                    # BUT then have to add the slow down velocity bit to movement/velocity checks

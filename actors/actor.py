@@ -10,7 +10,7 @@ class Actor():
         Has a symbol to represent itself with, can be a single character or a string of them (Message).
         Has Getters for each Attribute so the GUI can properly display the Actor.
     """
-    def __init__(self, position, size, image = "", color = "WHITE"):
+    def __init__(self, position, size, image="blank.png", color = "WHITE"):
         # Spawn point at the center of the screen
         self._spawn_point = position
         self._position = self._spawn_point # Could replay the game and set the actor back to the start

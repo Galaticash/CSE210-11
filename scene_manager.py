@@ -12,10 +12,13 @@ class Scene_Manager():
         self._max_x = max_x
         self._max_y = max_y
         
-        # TODO: Change to have a different list of Enemies/Colliders based on scene
+        # Could make player it's own object to simplify the reset of colliding actors, enemies, and object lists?
+        #self._player = None
+
         # Colliders can include things like walls, barrels, etc <-- Another new class or just a Collision Actor with no movement (Collision Actor's Move method is just 'pass' then Enemy and Player would override Move)
         self._colliding_actors = []
 
+        # These items are added to the colliding actors list, but have their own lists for specific functions
         self._enemies = []
         self._objects = []
 
@@ -29,7 +32,13 @@ class Scene_Manager():
         # Scene Loading
         self._scene_loaded = False
         self._walls = {"TOP": None, "LEFT": None, "RIGHT": None, "BOTTOM": None}
+
+        # NOTE: These items could be in the Scene object, but then the Scene Manager goes
+        #       self._current_scene.exit("TOP") --> returned a new Scene to load (or False if no connection there)
+        # The Scenes connected to the current scene        
         self._scene_connections = {"TOP": None, "LEFT": None, "RIGHT": None, "BOTTOM": None}
+        # The Hitbox areas the Player needs to step in to leave the scene in the specified direction
+        self._exits = {"TOP": None, "LEFT": None, "RIGHT": None, "BOTTOM": None}
 
         self._collision_handler = Collision_Handler()
 
@@ -48,7 +57,6 @@ class Scene_Manager():
         self.add_walls()
 
     def setup_scene(self, scene):
-        
         #self.add_walls(scene)
         # self._colliding_actors = scene.get_actors
         pass
@@ -90,9 +98,10 @@ class Scene_Manager():
     #def exit_scene()
         # removes all the colliders from the other scene (self._collider = just the player)
 
-    #def add_scene_border(self):
-
     def add_enemy(self, enemy):
+        """
+            Adds a new enemy to the loaded Scene.
+        """
         self._enemies.append(enemy)
         self.add_collider(enemy)
 
@@ -104,19 +113,26 @@ class Scene_Manager():
 
     def get_colliders(self):
         """
-            Returns the list of Colliders.
+            Returns the list of Colliders. For detecting collisions.
         """
         return self._colliding_actors
 
     def move_colliders(self):
         """
-            Moves all moving Colliders.
-            Any non-moving will have "pass" in their move method
+            Moves all Colliders.
+            (non-moving will have "pass" in their move method)
         """
         for collider in self._colliding_actors:
             if not collider.is_alive():
-                print(f"{collider.get_name()} has died!")
-                self._colliding_actors.remove(collider)
+                if not (type(collider) == "Player"):
+                    if type(collider) == "Pickup":
+                        print(f"{collider.get_name()} was picked up.")
+                    else:
+                        print(f"{collider.get_name()} has died!")
+                    self._colliding_actors.remove(collider)
+                else:
+                    # The Player has died, call game_over methods
+                    pass
             collider.move()
 
     def reset_player(self):
@@ -127,16 +143,17 @@ class Scene_Manager():
 
     def check_actions(self):
         """
-            Checks Player Actions other than movement
+            Checks Player and Enemy Actions other than movement
         """
         new_bullet = self._colliding_actors[0].check_shoot()
         if not (bool(new_bullet) == False):
             print(f"Adding {new_bullet.get_name()} going {new_bullet.get_velocity()}")
             self._colliding_actors.append(new_bullet)
 
+        # Check if the enemies should aggro onto the Player
         for enemy in self._enemies:
+            # Check if the Player is close enough to attack
             enemy.get_aggro(self._colliding_actors[0].get_point_position())
-
 
     def check_collisions(self):
         """
@@ -144,7 +161,7 @@ class Scene_Manager():
         """
         if self._scene_loaded:
             # Checks if the Player is attempting to exit the scene
-            #self._collision_handler.check_exit(self._colliding_actors[0], self._walls)s
+            #self._collision_handler.check_exit(self._colliding_actors[0], self._exits)
             pass
         if len(self._colliding_actors) > 1:
             # Only check for collisions if there are other colliding Actors

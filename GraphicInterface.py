@@ -1,9 +1,8 @@
 import os
-from matplotlib.pyplot import text
-import py
 import pyray
 from pyray import Rectangle
 import pathlib
+from actors.image import Image
 
 from constants import UI_Y_POS, WINDOW_MAX_X
 
@@ -77,11 +76,13 @@ class Window():
             elif extension == "":
                 # Rename, know it is NOT a singular file
                 folder = file
-                sub_directory = directory + "\\" + folder
-                sub_files = os.listdir(sub_directory)
-                # Add all files within it to the files to look over
-                for sub_file in sub_files:            
-                    files.append(folder + "\\" + sub_file)
+                # Wont load files from file named NotLoaded
+                if not(folder == "NotLoaded"):
+                    sub_directory = directory + "\\" + folder
+                    sub_files = os.listdir(sub_directory)
+                    # Add all files within it to the files to look over
+                    for sub_file in sub_files:            
+                        files.append(folder + "\\" + sub_file)
         return filepaths
 
     # def _get_rectangle(self, actor):
@@ -90,10 +91,16 @@ class Window():
     # def _print_circle(self, actor):
     #     pyray.draw_circle(actor.get_x(), actor.get_y(), 5, pyray.GREEN)
 
+    def _rotate_image(self, texture):
+
+        pass
+
     def _print_actor_image(self, actor):
         """
             Prints the given actor's image on the screen.
         """
+        redraw = actor.get_facing()[0] < 0
+
         # Checks if the actor has an image
         image = actor.get_display()
         if not (image == ""):
@@ -103,8 +110,13 @@ class Window():
                 # texture = self._textures[filepath]
                 texture = self._textures[filepath]
             except KeyError:
-                print("Invalid filepath")
+                print(f"Invalid filepath, {actor.get_name()}: {filepath}")
                 return
+
+            # Flipping left
+            if redraw:
+                # print("Draw Left")
+                pass
 
             size = actor.get_size()
             # print(f"size: {size}, Texture Width: {texture.width}, Height: {texture.height}")
@@ -126,8 +138,9 @@ class Window():
 
             #pyray.draw_texture(texture, pos_x, pos_y, tint)
             pyray.draw_texture_ex(texture, raylib_position, rotation, scale, tint)
+
         else:
-            # print(f"There is no image for the actor at position [{actor.get_x()}, {actor.get_y}]")
+            print(f"There is no image for the actor at position [{actor.get_x()}, {actor.get_y}]")
             return
 
     def _print_actor(self, actor):
@@ -193,10 +206,10 @@ class Window():
         for actor in cast.get_colliders():
             # DEBUG: Prints Hitbox
             self._print_hitbox(actor.get_hitbox())
-            #self._print_circle(player)
+            # pyray.draw_circle(actor.get_x(), actor.get_y(), 10, pyray.GREEN)
             self._print_actor_image(actor)
 
-
+        # Draw the GUI
         pyray.draw_rectangle(0, 0, WINDOW_MAX_X, UI_Y_POS, pyray.BLACK)
 
         # Updates the Messages

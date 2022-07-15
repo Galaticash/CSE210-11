@@ -1,6 +1,5 @@
+from actors.collision_actor import *
 from actors.Fighting_Actor import Fighting_Actor
-from point import Point
-from constants import ACTOR_SIZE
 
 SPIRTE_PATH = "assets\\Alien\\Alien_idle3.png"
 
@@ -30,7 +29,7 @@ class Route():
 
 # TODO: Double check that Collision Actor has all shared code between Enemy and Player
 class Enemy(Fighting_Actor):
-    def __init__(self, name, position, size, path = [Point(500, 300), Point(100, 300), Point(100, 500), Point(500, 500)], image="", color="WHITE"):
+    def __init__(self, name, position, size, path = [Point(500, 300), Point(100, 300), Point(100, 500), Point(500, 500)], image="blank.png", color="WHITE"):
         # Above, when creating Enemy, pass in a path (list of Points [Point(1, 2)])
         super().__init__(name, position, size, image, color)
         self._frames = ["Alien\\Alien_idle3.png"]
