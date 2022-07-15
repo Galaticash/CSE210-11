@@ -2,7 +2,8 @@ from actors.collision_actor import Collision_Actor
 
 GEM_ICON = "OtherSprites\\Diamond.png"
 BULLET_ICON = "OtherSprites\\EnergyPack.png"
-HEALTH_ICON = ""
+HEALTH_ICON = "OtherSprites\\Heart.png"
+LIFE_ICON = "OtherSprites\\LivesCounter.png"
 
 class Pickup(Collision_Actor):
     """
@@ -17,6 +18,8 @@ class Pickup(Collision_Actor):
             image = BULLET_ICON
         elif name == "Heart_p":
             image = HEALTH_ICON
+        elif name == "Life_p":
+            image = LIFE_ICON
 
         super().__init__(name, position, size, image, color)
 
@@ -39,6 +42,24 @@ class Pickup(Collision_Actor):
             if is_hit:
                 other_collider.pickup(self)
                 self._alive = False
+            return is_hit
+        else:
+            return False
+
+class ReusablePickup(Pickup):
+    """
+        A type of interactable that doesn't disappear after being 'picked up'
+    """
+    def __init__(self, name, position, amount, size, image="blank.png", color="WHITE"):
+        super().__init__(name, position, amount, size, image, color)
+
+    def is_hit(self, other_collider):
+        if self._do_collisions and other_collider.get_name() == "Player":
+            is_hit = self._hitbox.hit(other_collider.get_hitbox())
+            if is_hit:
+                other_collider.pickup(self)
+                # Just remove deletion
+                #self._alive = False
             return is_hit
         else:
             return False

@@ -3,6 +3,12 @@ from constants import *
 from actors.actor import Point
 from actors.wall import Wall
 
+# Probably unecessary, is there a better way than isinstance()?
+# Ex: type(collider) == Enemy
+from actors.player import Player
+from actors.pickup import Pickup
+from actors.bullet import Bullet
+
 class Scene_Manager():
     """
        An object that is in charge of making sure all objects in the current scene interact properly 
@@ -119,19 +125,22 @@ class Scene_Manager():
 
     def move_colliders(self):
         """
-            Moves all Colliders.
+            Moves all Colliders and checks their status (is_alive).
             (non-moving will have "pass" in their move method)
         """
         for collider in self._colliding_actors:
-            if not collider.is_alive():
-                if not (type(collider) == "Player"):
-                    if type(collider) == "Pickup":
+            if not collider.is_alive() and not isinstance(collider, Wall):
+                if not isinstance(collider, Player):
+                    if isinstance(collider, Pickup):
                         print(f"{collider.get_name()} was picked up.")
+                    elif isinstance(collider, Bullet):
+                        print(f"{collider.get_name()} hit something.")
                     else:
                         print(f"{collider.get_name()} has died!")
                     self._colliding_actors.remove(collider)
                 else:
                     # The Player has died, call game_over methods
+                    print("The game should end here!")
                     pass
             collider.move()
 

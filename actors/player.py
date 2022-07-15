@@ -155,7 +155,11 @@ class Player(Fighting_Actor):
             The Player will pickup the given item.
         """
         # print(f"Player should pickup {item.get_name()}")
-        if item.get_name() == "Gem_p":
+        if item.get_name() == "Heart_p":
+            self._update_HP(item.get_amount())
+        elif item.get_name() == "Life_p":
+            self._lives.add(item.get_amount())
+        elif item.get_name() == "Gem_p":
             self._gems.add(item.get_amount())
         elif item.get_name() == "Bullet_p":
             self._shots.add(item.get_amount())
@@ -184,7 +188,7 @@ class Player(Fighting_Actor):
         """
         # If ther HP isn't already 0
         if self._current_HP >= 0:
-            self._update_HP(damage_points)
+            self._update_HP(-1 * damage_points)
             if self._current_HP <= 0:
                 if self._lives.get_count() > 0:
                     self._lives.add(-1)

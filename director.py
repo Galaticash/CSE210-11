@@ -64,6 +64,7 @@ class Director():
         
         self._scene_manager.setup_scene("SPAWN")
         # TODO: All the enemies will be created with the scene, these are for testing
+        #       Put all of these test items in a Scene called "TEST"
         self._scene_manager.add_enemy(Enemy("Enemy1", Point(int(self._max_x * 2/3) - 5, self._max_y//2), self._actor_size))
         self._scene_manager.add_enemy(Enemy("Enemy2", Point(int(self._max_x * 1/3), self._max_y//2), self._actor_size))
         self._scene_manager.add_enemy(Enemy("Enemy3", Point(int(self._max_x * 2/3) + 75, self._max_y//2), self._actor_size))
@@ -71,8 +72,11 @@ class Director():
         #self._scene_manager.add_enemy(Enemy("Enemy5", Point(200a, 200), self._actor_size, [Point(450, 200), Point(550, 200)]))
         
         # Add some pickup items
-        self._scene_manager.add_collider(Pickup("Bullet", Point(550, 150), 1, self._actor_size))
-        #self._scene_manager.add_collider(Pickup("Gem", Point(550, 150), 5, self._actor_size))
+        self._scene_manager.add_collider(Pickup("Gem", Point(300, 150), 5, self._actor_size))        
+        self._scene_manager.add_collider(Pickup("Life", Point(400, 150), 1, self._actor_size))        
+        self._scene_manager.add_collider(Pickup("Heart", Point(500, 150), 10, self._actor_size))
+        self._scene_manager.add_collider(Pickup("Bullet", Point(600, 150), 1, self._actor_size))
+        
         #self._scene_manager.add_collider(Pickup("Bullet", Point(550, 150), 1, self._actor_size))
 
     def update_game(self):

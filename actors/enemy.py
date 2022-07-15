@@ -106,3 +106,12 @@ class Enemy(Fighting_Actor):
         else:
             self.override_update()
         return super().get_velocity()
+
+    def is_hit(self, other_collider):
+        """
+            Other enemies do not hurt eachother
+        """
+        if not (isinstance(other_collider, Enemy)):
+            return super().is_hit(other_collider)
+        else:
+            return False

@@ -219,12 +219,11 @@ class Collision_Actor(Actor):
     def damage(self, damage_points):
         # If the Actor is already out of HP points
         if self._current_HP <= 0:
-            # Don't do anything
-            pass
+            # Should be dead
+            self._alive = False
         else:
             # The Actor is damaged
             self._current_HP -= damage_points
             # If they are out of HP
             if self._current_HP <= 0:
-                #pass
                 self._alive = False
