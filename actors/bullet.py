@@ -1,4 +1,5 @@
 from actors.Fighting_Actor import Fighting_Actor
+from constants import ROTATION
 
 IMAGE_SOURCE = "Bolt\\"
 IMAGE_NAME = "arrow1_"
@@ -16,10 +17,30 @@ class Bullet(Fighting_Actor):
         self._current_HP = 0
 
         self._frames = ["Bolt\\arrow1_6.png", "Bolt\\arrow1_7.png", "Bolt\\arrow1_8.png", "Bolt\\arrow1_9.png", "Bolt\\arrow1_10.png", "Bolt\\arrow1_11.png"]
-        self._scale = 100
-        self._rotation = 275
+        self._scale = 2
+
+        self._rotation = self.find_rotation(velocity)
 
         self._attack = 5
 
         self._velocity = velocity
         
+    def find_rotation(self, velocity):
+        rotation = ROTATION[0]
+        if velocity == [0, 0]:
+            return rotation
+
+        # If velocity_x is nothing, check y
+        if velocity[0] == 0:
+            if velocity[1] > 0:
+                rotation = ROTATION[0]
+            else:
+                rotation = ROTATION[2]
+        # Velocity Y has to be nothing (grid-based)
+        else:
+            if velocity[0] > 0:
+                rotation = ROTATION[3]
+            else:
+                rotation = ROTATION[1]
+        
+        return rotation

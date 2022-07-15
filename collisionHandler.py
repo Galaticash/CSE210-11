@@ -1,6 +1,9 @@
 import copy
 from point import Point
-DIRECTIONS = ["TOP", "BOTTOM", "LEFT", "RIGHT"]
+from constants import DIRECTIONS
+from actors.pickup import Pickup
+
+FREEZE_TIME = 50
 
 # TODO: Objects should not move through eachother
 # TODO: Objects get stuck in an infinite loop of colliding, esp when pushed by another object
@@ -24,15 +27,26 @@ class Collision_Handler():
                 return wall_pos
         return None
 
+    def fling_objects(self, collision_direction, collider_one, collider_two):
+        self.freeze_movement(collider_one, collider_two)
+        # Send them flying opposite directions
+
+        collider_two.set_velocity(collision_direction)
+        opposite_velocity = [collision_direction[0]* -1, collision_direction[1]* -1]
+        collider_one.set_velocity(opposite_velocity)
+
+    def freeze_movement(self, collider_one, collider_two):
+        # Freeze the collider's ability to move
+        collider_one.override_movement(FREEZE_TIME)
+        collider_two.override_movement(FREEZE_TIME)
+
     def check(self, given_colliders):
         """
             Checks if there has been a collision between any of the colliders
         """
         # TODO: Is there a way to more efficiently check collisions, check only close ones? 
         # But I guess I'll have to check each one against each other collider (not too efficient, but effective)
-        
-        # This is the same way I coded it (I know bc there are the same bugs), 
-        #  but it just looks a little neater
+
         # For every item in the list (while also counting with i)
         for i, collider_one in enumerate(given_colliders):
             # Check a sub section of the list
@@ -40,42 +54,21 @@ class Collision_Handler():
                 collider_two = given_colliders[j]
                 # Check if the first object collided with the other object
                 if collider_one.is_hit(collider_two):
-                    # print(f"{collider_one.get_name()} and {collider_two.get_name()}")
                     # Other collider hits the first collider back
                     collider_two.is_hit(collider_one)
 
-                    # Find collision direction, send colliders in opposite directions?
-                    # So even if the Player isn't moving, sees that the other actor was coming in from the left and sends the Player flying to the left?
-
-                    # Option 1: Change Velocity
+                    # Will reverse the direction the objects are currently travelling
                     collision_direction = copy.copy(collider_one.get_velocity())
                     
-                    # Guarantee at least on collider is moving
+                    # Guarantee at least one collider is moving
                     # But if the first one isn't moving, get velocity from the second
                     if collision_direction == [0, 0]:
-                        # print(f"collider one: {type(collider_one)} | two: {type(collider_two)}")
-                        # Also do not fling the Player if they pickup an item
-                        if not type(collider_one) == "Pickup":
-                            # Freeze the collider's ability to move
-                            freeze_time = 50
-                            collider_one.override_movement(freeze_time)
-                            collider_two.override_movement(freeze_time)
-                            
-                            # Send them flying opposite directions
-                            collision_direction = copy.copy(collider_two.get_velocity())
-                            collider_one.set_velocity(collision_direction)
-                            opposite_velocity = [collision_direction[0]* -1, collision_direction[1]* -1]
-                            collider_two.set_velocity(opposite_velocity)
+                        collision_direction = copy.copy(collider_two.get_velocity())
+                    
+                    # Do not fling the colliders if one is a pickup OR a wall
+                    if isinstance(collider_one, Pickup) or isinstance(collider_two, Pickup):
+                        pass
+                    elif collider_one.get_name() in DIRECTIONS:
+                        pass
                     else:
-                        # Freeze the collider's ability to move
-                        freeze_time = 50
-                        collider_one.override_movement(freeze_time)
-                        collider_two.override_movement(freeze_time)
-
-                        # Send them flying opposite directions
-                        collider_two.set_velocity(collision_direction)
-                        opposite_velocity = [collision_direction[0]* -1, collision_direction[1]* -1]
-                        collider_one.set_velocity(opposite_velocity)
-
-                    # Option 1 Part 2: Add some kick to the velocity, Knockback
-                    # BUT then have to add the slow down velocity bit to movement/velocity checks
+                        self.fling_objects(collision_direction, collider_one, collider_two)

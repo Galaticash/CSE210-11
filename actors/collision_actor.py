@@ -52,7 +52,7 @@ class Collision_Actor(Actor):
         self._current_frame = 0
 
         # Scale, rotation of image
-        self._scale = 10
+        self._scale = 1
         self._facing = [1, 0]
         self._rotation = 0
 
@@ -96,17 +96,8 @@ class Collision_Actor(Actor):
         """
             Returns the frame of the Actor to display.
         """
-        # Create and return an Image (the filepath, scale, and rotation)
-        texture = self.get_frame()
-        direction = self.get_velocity()
-        if direction[0] < 0:
-            # Going Left
-            #self._rotation = 180
-            self._scale = abs(self._scale) * -1
-        elif direction[0] > 0:
-            # Going Right
-            #self._rotation = 0
-            self._scale = abs(self._scale)
+        # Create and return an Image (the filepath, scale, rotation, and color/tint)
+        texture = self.get_frame()        
         return Image(texture, self._scale, self._rotation, self._color)
 
     def get_name(self):
@@ -148,6 +139,14 @@ class Collision_Actor(Actor):
         self._control_timer += 1
         if self._control_timer >= self._control_reset:
             self._movement_control = True
+
+    def get_velocity(self):
+        """
+            Returns the velocity, but also updates which way the actor is facing.
+        """
+        if not (self._velocity == [0, 0]):
+            self._facing = self._velocity
+        return super().get_velocity()
 
     def move(self):
         """

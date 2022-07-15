@@ -4,9 +4,8 @@ from pyray import Rectangle
 import pathlib
 from actors.image import Image
 
-from constants import UI_Y_POS, WINDOW_MAX_X
+from constants import DIRECTIONS, UI_Y_POS, WINDOW_MAX_X, ROTATION
 
-DIRECTIONS = ["TOP", "BOTTOM", "LEFT", "RIGHT"]
 FRAME_RATES = {"easy": 12, "medium": 30, "hard": 60}
 FRAME_RATE = FRAME_RATES["medium"]
 
@@ -14,7 +13,8 @@ FRAME_RATE = FRAME_RATES["medium"]
     Note: The GUI does NOT update the position of anything, only displays their current position.
     Requires:
         A Cast with:
-            Player, inherits from Actor
+            Player, inherits from Collision Actor
+            Enemies, inherits from Collision Actor
             Messages, inherits from Actor
 """
 class Window():
@@ -91,7 +91,7 @@ class Window():
     # def _print_circle(self, actor):
     #     pyray.draw_circle(actor.get_x(), actor.get_y(), 5, pyray.GREEN)
 
-    def _rotate_image(self, texture):
+    def _flip_image(self, texture):
 
         pass
 
@@ -99,6 +99,11 @@ class Window():
         """
             Prints the given actor's image on the screen.
         """
+        # DEBUG: Prints Hitbox
+        # self._print_hitbox(actor.get_hitbox())
+        # DEBUG: Prints point position
+        #pyray.draw_circle(actor.get_x(), actor.get_y(), 10, pyray.GREEN)
+        
         redraw = actor.get_facing()[0] < 0
 
         # Checks if the actor has an image
@@ -113,32 +118,48 @@ class Window():
                 print(f"Invalid filepath, {actor.get_name()}: {filepath}")
                 return
 
+            size = actor.get_size() * image.get_scale()
+            scale = size // texture.width # Make sure it fits within the box
+
+            # ROTATION
+            rotation = image.get_rotation()
+
+            # Actor Position is the center
+            center_x = actor.get_x()
+            center_y = actor.get_y()
+
+            width_radius = texture.width//2 * scale
+            height_radius = texture.height//2 * scale
+
+            # Calculate top/left print position from center
+            position_x = center_x - width_radius
+            position_y = center_y - height_radius
+
+            # If rotated, adjust position so the image
+            #  stays centered on the Actor's Position
+            if rotation == ROTATION[1]:
+                position_x = center_x + height_radius
+            elif rotation == ROTATION[2]: 
+                position_x = center_x + width_radius
+                position_y = center_y + height_radius
+            elif rotation == ROTATION[3]: 
+                position_y = center_y + width_radius
+            
+            # Convert position to a 2D Vector
+            raylib_position = pyray.Vector2(position_x, position_y)
+            
+            # NOTE: MUST put full Alpha or the image is not shown
+            tint = image.get_tint()
+
             # Flipping left
             if redraw:
                 # print("Draw Left")
+                #tint = pyray.BLACK
+                
+                # pyray.Texture
                 pass
 
-            size = actor.get_size()
-            # print(f"size: {size}, Texture Width: {texture.width}, Height: {texture.height}")
-            # GOAL: Texture should fit within the hitbox of size
-            # image.get_scale() <-- could scale the image manually
-            scale = size // texture.width # or with math
-
-            rotation = image.get_rotation()
-            # actor.get_x() - texture.width//2 <- centers on Point Position
-            pos_x = actor.get_x() - (texture.width//2 * scale)
-            pos_y = actor.get_y() - (texture.height//2 * scale)
-            raylib_position = pyray.Vector2(pos_x, pos_y)
-
-            # NOTE: MUST put full Alpha or the image is not shown
-            #tint = (255, 255, 255, 255)
-            tint = image.get_tint()
-            # NOTE: okay.. this is messed up
-            #pyray.draw_texture_rec(texture, self._get_rectangle(actor), raylib_position, tint)
-
-            #pyray.draw_texture(texture, pos_x, pos_y, tint)
             pyray.draw_texture_ex(texture, raylib_position, rotation, scale, tint)
-
         else:
             print(f"There is no image for the actor at position [{actor.get_x()}, {actor.get_y}]")
             return
@@ -204,9 +225,6 @@ class Window():
 
         # Updates the Colliding Actors
         for actor in cast.get_colliders():
-            # DEBUG: Prints Hitbox
-            self._print_hitbox(actor.get_hitbox())
-            # pyray.draw_circle(actor.get_x(), actor.get_y(), 10, pyray.GREEN)
             self._print_actor_image(actor)
 
         # Draw the GUI

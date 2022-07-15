@@ -6,6 +6,8 @@ from player_input import Player_Input, pyray
 # For Score/Inventory display
 from actors.counter import Counter
 
+# TODO: Move to constants file
+
 STARTING_LIVES = 3
 STARTING_SHOTS = 5
 BULLET_TIMER = 10
@@ -94,11 +96,9 @@ class Player(Fighting_Actor):
         if self._movement_control:
             # Update the player to move the direction the user has specified.
             self._velocity = self._player_input.get_direction()
-            if not (self._velocity == [0, 0]):
-                self._facing = self._velocity
         else:
             self.override_update()
-        return self._velocity
+        return super().get_velocity()
 
     def respawn(self):
         """

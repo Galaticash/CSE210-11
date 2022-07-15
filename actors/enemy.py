@@ -1,8 +1,9 @@
 from actors.collision_actor import *
 from actors.Fighting_Actor import Fighting_Actor
 
-SPIRTE_PATH = "assets\\Alien\\Alien_idle3.png"
+SPIRTE_PATH = "Alien\\Alien_idle3.png"
 
+# TODO: Move these comments to notes
 # Player Aggro
 """
 move()
@@ -27,12 +28,11 @@ class Route():
 
 """
 
-# TODO: Double check that Collision Actor has all shared code between Enemy and Player
 class Enemy(Fighting_Actor):
     def __init__(self, name, position, size, path = [Point(500, 300), Point(100, 300), Point(100, 500), Point(500, 500)], image="blank.png", color="WHITE"):
         # Above, when creating Enemy, pass in a path (list of Points [Point(1, 2)])
         super().__init__(name, position, size, image, color)
-        self._frames = ["Alien\\Alien_idle3.png"]
+        self._frames = ["Alien\\Alien_idle3.png", "Alien\\Alien_run1.png", "Alien\\Alien_run2.png", "Alien\\Alien_run3.png", "Alien\\Alien_run4.png", "Alien\\Alien_run5.png", "Alien\\Alien_run6.png"]
         self._velocity = [-1, 0]
         self._max_HP = 15
         self._current_HP = self._max_HP
@@ -105,4 +105,4 @@ class Enemy(Fighting_Actor):
             self._velocity = new_velocity
         else:
             self.override_update()
-        return self._velocity
+        return super().get_velocity()

@@ -85,7 +85,7 @@ class Director():
         self._scene_manager.check_actions()
         self._scene_manager.check_collisions()
         
-        # Check if the game is currently overs
+        # Check if the game is currently over
         if not self._game_over:
             # TODO: Figure out specifics of the game/what ends the game, win condition?
             #       Insert some kind of check for game over, Player lives = 0, etc
