@@ -10,13 +10,19 @@ UI_Y_POS = 100 # So the scene working space is between 100 - 900
 WINDOW_MAX_Y = 600
 
 # Actor/Font Sizing
-FONT_SIZE = 24
+FONT_SIZE = 30
 # Note: The Player is 24 pixels/ Enemy 32 pixels, 
 # but the sprites are upscaled up to be printed at this size
 ACTOR_SIZE = 100
 
 # Actor Names
 PLAYER_NAME = "Player"
+
+# Icons
+GEM_ICON = "OtherSprites\\Diamond.png"
+BULLET_ICON = "OtherSprites\\EnergyPack.png"
+HEALTH_ICON = "OtherSprites\\Heart.png"
+LIFE_ICON = "OtherSprites\\LivesCounter.png"
 
 
 # When the Collision Actor is flung by a collision, how long until it can change its velocity

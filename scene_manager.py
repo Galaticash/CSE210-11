@@ -14,6 +14,7 @@ class Scene_Manager():
         
         # Could make player it's own object to simplify the reset of colliding actors, enemies, and object lists?
         #self._player = None
+        self._HUD = []
 
         # Colliders can include things like walls, barrels, etc <-- Another new class or just a Collision Actor with no movement (Collision Actor's Move method is just 'pass' then Enemy and Player would override Move)
         self._colliding_actors = []
@@ -50,11 +51,23 @@ class Scene_Manager():
         """
         self.add_collider(new_player)
         player_HUD = new_player.get_HUD()
-        for message in player_HUD:
-            self.add_message(message)
+        for counter in player_HUD:
+            self.add_HUD(counter)
 
         # TODO: Temporary position
         self.add_walls()
+
+    def add_HUD(self, HUD_item):
+        """
+            Adds a new Counter to the HUD
+        """
+        self._HUD.append(HUD_item)
+
+    def get_HUD(self):
+        """
+            Returns the HUD items
+        """
+        return self._HUD
 
     def setup_scene(self, scene):
         #self.add_walls(scene)

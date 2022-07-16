@@ -6,9 +6,13 @@ from player_input import Player_Input, pyray
 # For Score/Inventory display
 from actors.counter import Counter
 
-
 from constants import STARTING_LIVES, STARTING_SHOTS, BULLET_PADDING, BULLET_SPEED
+# Inventory Icons
+from constants import GEM_ICON, BULLET_ICON, HEALTH_ICON, LIFE_ICON
+
 # TODO: Move to constants file
+
+#GEMS_IMAGE = "assets\\OtherSprites\\Diamond.png"
 
 class Player(Fighting_Actor):
     """
@@ -28,10 +32,10 @@ class Player(Fighting_Actor):
 
         # TODO: Change to UI/inventory?
         # Create a Counter for each item
-        self._gems = Counter(Point(FONT_SIZE *2, 0), FONT_SIZE, "Gems:")
-        self._lives = Counter(Point(FONT_SIZE *2, FONT_SIZE), FONT_SIZE, "Lives:")
-        self._health = Counter(Point(FONT_SIZE *2, FONT_SIZE *2), FONT_SIZE, "Health:")   
-        self._shots = Counter(Point(FONT_SIZE *2, FONT_SIZE *3), FONT_SIZE, "Shots:")
+        self._gems = Counter(Point(500, FONT_SIZE), FONT_SIZE, "Gems:", GEM_ICON)
+        self._lives = Counter(Point(50, FONT_SIZE), FONT_SIZE, "Lives:", LIFE_ICON)
+        self._health = Counter(Point(50, FONT_SIZE *2), FONT_SIZE, "Health:", HEALTH_ICON)   
+        self._shots = Counter(Point(300, FONT_SIZE), FONT_SIZE, "Shots:", BULLET_ICON)
 
         # Initialize all the Player stats
         self.start_stats()
@@ -55,8 +59,8 @@ class Player(Fighting_Actor):
             # If there are any bullets to shoot
             if self._shots.get_count() > 0:
                 # Remove a shot and shoot it
-                # DEBUG: Infinite gun
-                # self._shots.add(-1)
+                # DEBUG: Remove to get infinite gun
+                self._shots.add(-1)
                 return self.fire_bullet()
             else:
                 # out of bullets, sound cue?

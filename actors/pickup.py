@@ -1,9 +1,5 @@
 from actors.collision_actor import Collision_Actor
-
-GEM_ICON = "OtherSprites\\Diamond.png"
-BULLET_ICON = "OtherSprites\\EnergyPack.png"
-HEALTH_ICON = "OtherSprites\\Heart.png"
-LIFE_ICON = "OtherSprites\\LivesCounter.png"
+from constants import GEM_ICON, BULLET_ICON, HEALTH_ICON, LIFE_ICON
 
 class Pickup(Collision_Actor):
     """

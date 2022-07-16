@@ -6,7 +6,7 @@ from GraphicInterface import Window
 from mouse_input import Mouse_Input
 from Scene import Scene, Scene1, Boss_Scene
 from actors.enemy import Enemy
-from actors.pickup import Pickup
+from actors.pickup import Pickup, ReusablePickup
 from constants import *
 from point import Point
 
@@ -62,6 +62,8 @@ class Director():
         self._scene_manager.add_player(Player(PLAYER_NAME, Point(100,  150), self._actor_size))
         
         self._scene_manager.setup_scene("SPAWN")
+
+        
         # TODO: All the enemies will be created with the scene, these are for testing
         #       Put all of these test items in a Scene called "TEST"
         self._scene_manager.add_enemy(Enemy("Enemy1", Point(int(self._max_x * 2/3) - 5, self._max_y//2), self._actor_size))
@@ -72,10 +74,16 @@ class Director():
         
         pickup_size = self._actor_size //2
         # Add some pickup items
-        self._scene_manager.add_collider(Pickup("Gem", Point(300, 150), 5, pickup_size))        
-        self._scene_manager.add_collider(Pickup("Life", Point(400, 150), 1, pickup_size))        
-        self._scene_manager.add_collider(Pickup("Heart", Point(500, 150), 10, pickup_size))
-        self._scene_manager.add_collider(Pickup("Bullet", Point(600, 150), 1, pickup_size))
+        #self._scene_manager.add_collider(Pickup("Gem", Point(300, 150), 5, pickup_size))        
+        #self._scene_manager.add_collider(Pickup("Life", Point(400, 150), 1, pickup_size))        
+        #self._scene_manager.add_collider(Pickup("Heart", Point(500, 150), 10, pickup_size))
+        #self._scene_manager.add_collider(Pickup("Bullet", Point(600, 150), 1, pickup_size))
+        
+        # Infinity hahaha
+        self._scene_manager.add_collider(ReusablePickup("Gem", Point(300, 150), 5, pickup_size))        
+        self._scene_manager.add_collider(ReusablePickup("Life", Point(400, 150), 1, pickup_size))        
+        self._scene_manager.add_collider(ReusablePickup("Heart", Point(500, 150), 10, pickup_size))
+        self._scene_manager.add_collider(ReusablePickup("Bullet", Point(600, 150), 1, pickup_size))
         
         #self._scene_manager.add_collider(Pickup("Bullet", Point(550, 150), 1, self._actor_size))
 

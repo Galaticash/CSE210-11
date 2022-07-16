@@ -164,7 +164,6 @@ class Window():
             pyray.draw_texture_ex(texture, raylib_position, rotation, scale, tint)
         else:
             print(f"There is no image for the actor at position [{actor.get_x()}, {actor.get_y}]")
-            return
 
     def _print_actor(self, actor):
         """
@@ -173,12 +172,22 @@ class Window():
         """
         pyray.draw_text(actor.get_display(), actor.get_x(), actor.get_y(), actor.get_size(), actor.get_color())
 
+    def _print_counter(self, counter):
+        """
+            Draws a Counter with in a Image x count format
+        """
+        # some math to figure out how far away from the image it should be
+        buffer_x = counter.get_size()
+        buffer_y = counter.get_size()//2
+        pyray.draw_text("x " + str(counter.get_count()), counter.get_x() + buffer_x, counter.get_y() - buffer_y, counter.get_size(), counter.get_color())
+        self._print_actor_image(counter)
+
     def _print_button(self, button):
         """
             Prints the given button on the board. Has a box 
              surrounding it to differentiate itself as a button.
         """        
-        self._print_hitbox(button.get_hitbox(), button.get_color())
+        # self._print_hitbox(button.get_hitbox(), button.get_color())
         pyray.draw_text(button.get_display(), button.get_x(), button.get_y(), button.get_size(), button.get_text_color())
         
     def _print_hitbox(self, hitbox, color = ""):
@@ -223,10 +232,10 @@ class Window():
         # TODO: Print background of the scene (gotten from Cast)
 
         # DEBUG: Printing the walls/exit points
-        walls = cast.get_walls()
-        for direction in DIRECTIONS:
-            #self._print_circle(walls[direction])
-            self._print_hitbox(walls[direction].get_hitbox(), pyray.BLUE)
+        # walls = cast.get_walls()
+        # for direction in DIRECTIONS:
+        #     #self._print_circle(walls[direction])
+        #     self._print_hitbox(walls[direction].get_hitbox(), pyray.BLUE)
 
         # Updates the Colliding Actors
         for actor in cast.get_colliders():
@@ -236,6 +245,10 @@ class Window():
 
         # Draw the GUI
         pyray.draw_rectangle(0, 0, WINDOW_MAX_X, UI_Y_POS, pyray.BLACK)
+
+        # Prints the HUD items (Counter)
+        for item in cast.get_HUD():
+            self._print_counter(item)
 
         # Updates the Messages
         for message in cast.get_messages():

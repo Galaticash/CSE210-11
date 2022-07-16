@@ -17,6 +17,8 @@ class Actor():
         self._velocity = [0, 0] # The X and Y velocity
         self._velocity_prev = copy.copy(self._velocity) # Copy values only
         
+        self._facing = [1, 0]
+
         self._symbol = "#" 
         self._image = image
         self._size = size
@@ -71,6 +73,12 @@ class Actor():
             Returns the string or image that is used to display the Actor.
         """
         return self._symbol
+
+    def get_facing(self):
+        """
+            Returns the [x, y] direction the Actor is facing.
+        """
+        return self._facing
 
     def get_size(self):
         """

@@ -65,11 +65,6 @@ class Collision_Actor(Actor):
         """
         return self._name == other._name
             
-    def get_facing(self):
-        """
-            Returns the [x, y] direction the Actor is facing.
-        """
-        return self._facing
 
     def get_frame(self):
         """
