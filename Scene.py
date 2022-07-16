@@ -1,6 +1,8 @@
+from actors.actor import Actor
 from actors.enemy import Enemy, Point, ACTOR_SIZE
 from actors.Boss import Boss
 from actors.hitbox import Hitbox
+from actors.background_obj import background_obj, collidable_obj
 
 """
     Add all the items, Enemies, Boss to the things in a scene
@@ -14,7 +16,7 @@ class Scene():
         # Just anything the Player can collide with
         # self._colliders, self._background_objects
         # Object Parameters - Position (Top, Bottom, Left, Right) or XY coordinate for TL/BR, color
-        self._objects = []
+        self._objects = [collidable_obj("Wall", 450, 100), ACTOR_SIZE), ]
 
         self._exit_areas = {"TOP": None, "BOTTOM": None, "LEFT": None, "RIGHT": None}
         self._connections = {"TOP": None, "BOTTOM": None, "LEFT": None, "RIGHT": None}
