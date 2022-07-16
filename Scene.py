@@ -1,3 +1,4 @@
+from turtle import back
 from actors.enemy import Enemy, Point, ACTOR_SIZE
 from actors.Boss import Boss
 from actors.hitbox import Hitbox
@@ -56,7 +57,8 @@ class Spawn_scene(Scene):
         super().__init__()
         self._name = "Spawn"
         #self._enemies = []
-        self._bg_objects = [background_obj(Point(0, 100), ACTOR_SIZE, ROCK_BLACK)]
+        self._bg_objects = [background_obj(Point(0, 100), ACTOR_SIZE, ROCK_BLACK), background_obj(Point(100, 300), ACTOR_SIZE, ROCK_BLACK_LONG), background_obj(Point(500, 700), ACTOR_SIZE, ROCK_BLUE_LONG)]
+        
         #self._objects = [collidable_obj("Wall", Point(450, 100), ACTOR_SIZE)]
 
 class Scene2(Scene):
@@ -87,7 +89,7 @@ class TestScene(Scene):
         self._objects = [ReusablePickup("Gem", Point(300, 150), 5, pickup_size), ReusablePickup("Life", Point(400, 150), 1, pickup_size), ReusablePickup("Heart", Point(500, 150), 10, pickup_size), ReusablePickup("Bullet", Point(600, 150), 1, pickup_size)]
         
         # Things that don't collide
-        self._bg_objects = [background_obj(Point(550, 500), ACTOR_SIZE, ROCK_BLUE)]
+        self._bg_objects = [background_obj(Point(550, 500), ACTOR_SIZE, ROCK_BLUE), background_obj(Point(0, 150), ACTOR_SIZE, ROCK_BLACK_LONG), background_obj(Point(500, 150), ACTOR_SIZE, ROCK_BLUE_LONG), background_obj(Point(0, 600), ACTOR_SIZE, ROCK_BLACK_LONG), background_obj(Point(800, 750), ACTOR_SIZE, ROCK_BLUE_LONG)]
         
         # Things that do collide but DON'T move
         self._objects = [collidable_obj("Rock", Point(650, 500), ACTOR_SIZE, ROCK_BLACK)]
