@@ -40,6 +40,10 @@ class Player(Fighting_Actor):
         # Initialize all the Player stats
         self.start_stats()
 
+    def enter_scene(self, position):
+        # simply override the position
+        self._position = position
+
     def start_stats(self):
         """
             Changes the Player's stats to the starting amounts

@@ -2,7 +2,7 @@ from color import Color
 
 class Image():
     def __init__(self, filepath, scale = 1, rotation = 0, tint = Color("WHITE")):
-        self._filepath = "assets\\" + filepath
+        self._filepath = "assets\\" + str(filepath)
         self._tint = tint
         self._scale = scale
         self._rotation = rotation

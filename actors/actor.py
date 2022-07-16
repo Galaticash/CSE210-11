@@ -1,6 +1,7 @@
 from color import Color
 from point import Point
 import copy
+from actors.image import Image
 
 class Actor():
     """
@@ -18,12 +19,21 @@ class Actor():
         self._velocity_prev = copy.copy(self._velocity) # Copy values only
         
         self._facing = [1, 0]
+        self._alive = True
 
         self._symbol = "#" 
         self._image = image
         self._size = size
         self._base_color = Color(color)
         self._color = copy.copy(self._base_color)
+
+    def is_alive(self):
+        """
+            Tells the scene manager if the Actor is alive still,
+             otherwise it will be deleted. The Player, however 
+             has a lives system, and will never have alive = False
+        """
+        return self._alive
 
     def move(self, x, y):
         """
@@ -72,6 +82,7 @@ class Actor():
         """
             Returns the string or image that is used to display the Actor.
         """
+        # if self.
         return self._symbol
 
     def get_facing(self):

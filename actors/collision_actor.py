@@ -203,14 +203,6 @@ class Collision_Actor(Actor):
 
             return False
 
-    def is_alive(self):
-        """
-            Tells the scene manager if the Actor is alive still,
-             otherwise it will be deleted. The Player, however 
-             has a lives system, and will never have alive = False
-        """
-        return self._alive
-
     def damage(self, damage_points):
         # If the Actor is already out of HP points
         if self._current_HP <= 0:

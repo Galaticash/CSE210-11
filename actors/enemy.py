@@ -46,11 +46,6 @@ class Enemy(Fighting_Actor):
         self._route_item = 0
         self._goal_position = self._route[self._route_item]
 
-        enemy1 = Enemy(enemy1, Point(100, 650), ACTOR_SIZE, [Point(100, 650), Point(300, 650)])
-        enemy2 = Enemy(enemy2, Point(200, 400), ACTOR_SIZE, [Point(400, 400), Point(200, 400)])
-        enemy3 = Enemy(enemy3, Point(150, 200), ACTOR_SIZE, [Point(350, 200), Point(150, 200)])
-
-    
     def get_aggro(self, player_pos):
         # TODO: Is the Player close enough for the enemy to want to move towards the Player?
         # Calculate difference between the Player and self

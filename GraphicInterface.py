@@ -232,16 +232,22 @@ class Window():
         # TODO: Print background of the scene (gotten from Cast)
 
         # DEBUG: Printing the walls/exit points
-        # walls = cast.get_walls()
-        # for direction in DIRECTIONS:
-        #     #self._print_circle(walls[direction])
-        #     self._print_hitbox(walls[direction].get_hitbox(), pyray.BLUE)
+        walls = cast.get_walls()
+        for direction in DIRECTIONS:
+            #self._print_circle(walls[direction])
+            self._print_hitbox(walls[direction].get_hitbox(), pyray.BLUE)
 
         # Updates the Colliding Actors
         for actor in cast.get_colliders():
             self._print_actor_image(actor)
 
         # TODO: Draw any rocks, objects, etc (decoration?)
+        for item in cast.get_bg_objects():
+            self._print_actor_image(item)
+
+        # Objects with colliders
+        for item in cast.get_objects():
+            self._print_actor_image(item)
 
         # Draw the GUI
         pyray.draw_rectangle(0, 0, WINDOW_MAX_X, UI_Y_POS, pyray.BLACK)

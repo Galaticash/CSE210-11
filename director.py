@@ -4,11 +4,10 @@ from actors.message import Message
 from actors.button import Button
 from GraphicInterface import Window
 from mouse_input import Mouse_Input
-from Scene import Scene, Scene1, Boss_Scene
+from Scene import *
 from actors.enemy import Enemy
 from actors.pickup import Pickup, ReusablePickup
 from constants import *
-from point import Point
 
 class Director():
     """
@@ -38,15 +37,20 @@ class Director():
 
     def create_scenes(self):
         """
-            Creates all the scenes in the game
+            Creates all the scenes in the game and adds connections
         """
-        self._game_scenes["SPAWN"] = Scene()
-        self._game_scenes["BOSS"] = Scene()
-        self._game_scenes["TWO"] = Scene()
+        # {"SPAWN": Scene() }
+        self._game_scenes["TEST"] = TestScene()
+        self._game_scenes["SPAWN"] = Spawn_scene()
+        self._game_scenes["BOSS"] = Boss_Scene()
+        self._game_scenes["ONE"] = Scene1()
+        self._game_scenes["TWO"] = Scene2()
 
-        self._game_scenes["SPAWN"]
+        self._game_scenes["SPAWN"].add_connection("TOP", "BOSS")
+        self._game_scenes["SPAWN"].add_connection("RIGHT", "ONE")
+        self._game_scenes["SPAWN"].add_connection("LEFT", "TWO")
 
-        pass
+
 
     def start_game(self):
         """
@@ -61,32 +65,9 @@ class Director():
         # Add the Player (user) and Enemies to the Cast.
         self._scene_manager.add_player(Player(PLAYER_NAME, Point(100,  150), self._actor_size))
         
-        self._scene_manager.setup_scene("SPAWN")
+        self._scene_manager.setup_scene(self._game_scenes["TEST"])
 
         
-        # TODO: All the enemies will be created with the scene, these are for testing
-        #       Put all of these test items in a Scene called "TEST"
-        self._scene_manager.add_enemy(Enemy("Enemy1", Point(int(self._max_x * 2/3) - 5, self._max_y//2), self._actor_size))
-        self._scene_manager.add_enemy(Enemy("Enemy2", Point(int(self._max_x * 1/3), self._max_y//2), self._actor_size))
-        self._scene_manager.add_enemy(Enemy("Enemy3", Point(int(self._max_x * 2/3) + 75, self._max_y//2), self._actor_size))
-        self._scene_manager.add_enemy(Enemy("Enemy4", Point(int(self._max_x * 1/3) - 75, self._max_y//2), self._actor_size))
-        #self._scene_manager.add_enemy(Enemy("Enemy5", Point(200a, 200), self._actor_size, [Point(450, 200), Point(550, 200)]))
-        
-        pickup_size = self._actor_size //2
-        # Add some pickup items
-        #self._scene_manager.add_collider(Pickup("Gem", Point(300, 150), 5, pickup_size))        
-        #self._scene_manager.add_collider(Pickup("Life", Point(400, 150), 1, pickup_size))        
-        #self._scene_manager.add_collider(Pickup("Heart", Point(500, 150), 10, pickup_size))
-        #self._scene_manager.add_collider(Pickup("Bullet", Point(600, 150), 1, pickup_size))
-        
-        # Infinity hahaha
-        self._scene_manager.add_collider(ReusablePickup("Gem", Point(300, 150), 5, pickup_size))        
-        self._scene_manager.add_collider(ReusablePickup("Life", Point(400, 150), 1, pickup_size))        
-        self._scene_manager.add_collider(ReusablePickup("Heart", Point(500, 150), 10, pickup_size))
-        self._scene_manager.add_collider(ReusablePickup("Bullet", Point(600, 150), 1, pickup_size))
-        
-        #self._scene_manager.add_collider(Pickup("Bullet", Point(550, 150), 1, self._actor_size))
-
     def update_game(self):
         """
             Updates all members of the cast while the game is not over (self._game_over)
@@ -94,12 +75,19 @@ class Director():
         """
         # Check if the game is currently over
         if not self._game_over:
+            # Continue playing the game,
+
+            # Check if the game is over (the Player has died)
             self._game_over = not(self._scene_manager.continue_game())
             # DEBUG: Immediate game over
             #self._game_over = True
-
-            # TODO: Figure out specifics of the game/what ends the game, win condition?
-            #       Insert some kind of check for game over, Player lives = 0, etc
+            
+            # Check if the Player is trying to exit
+            next_scene = self._scene_manager.check_collisions()
+            if not (next_scene == None):
+                self._scene_manager.setup_scene(self._game_scenes[next_scene])
+        
+            # If the last check is done and sees that the game is over
             if self._game_over:
                 self.add_game_over()
         else:
