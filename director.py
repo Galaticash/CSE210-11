@@ -5,8 +5,6 @@ from actors.button import Button
 from GraphicInterface import Window
 from mouse_input import Mouse_Input
 from Scene import *
-from actors.enemy import Enemy
-from actors.pickup import Pickup, ReusablePickup
 from constants import *
 
 class Director():
@@ -76,7 +74,7 @@ class Director():
         self.create_scenes()
 
         # Add the Player (user) and Enemies to the Cast.
-        PLAYER_SPAWN = Point(450, 300)
+        PLAYER_SPAWN = Point(300, 325)
         self._scene_manager.add_player(Player(PLAYER_NAME, PLAYER_SPAWN, self._actor_size))
         
         # Start at the SPAWN scene
@@ -156,11 +154,10 @@ class Director():
     def replay(self):
         """
             Resets the game, but keeps the current scores.
-            TODO: Adjust for Final Game
         """
         self._game_over = False
 
-        self._scene_manager.setup_scene("SPAWN")
+        self._scene_manager.setup_scene(self._game_scenes["SPAWN"])
 
         # Removes game_over cast members (Game Over menu).
         self._scene_manager.remove_game_over()

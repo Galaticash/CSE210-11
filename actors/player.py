@@ -6,7 +6,7 @@ from player_input import Player_Input, pyray
 # For Score/Inventory display
 from actors.counter import Counter
 
-from constants import STARTING_LIVES, STARTING_SHOTS, BULLET_PADDING, BULLET_SPEED
+from constants import STARTING_LIVES, PLAYER_HP, STARTING_SHOTS, BULLET_PADDING, BULLET_SPEED
 # Inventory Icons
 from constants import GEM_ICON, BULLET_ICON, HEALTH_ICON, LIFE_ICON
 
@@ -20,6 +20,8 @@ class Player(Fighting_Actor):
     """
     def __init__(self, name, position, size, image="blank.png", color="WHITE"):
         super().__init__(name, position, size, image, color)
+        self._max_HP = PLAYER_HP
+        self._spawn_point = position
 
         # Overwrite the Images
         # TODO: Can adjust file order for animation to be less clunky?
@@ -68,13 +70,18 @@ class Player(Fighting_Actor):
 
     def start_stats(self):
         """
-            Changes the Player's stats to the starting amounts
-            Assumes all stat counters start at 0
+            Changes the Player's stats to the starting amounts.
         """
+        self._alive = True
         self._current_HP = self._max_HP
+        self._position = copy.copy(self._spawn_point) # TODO: Player doesn't reset position?
+        
+        # DEBUG: Immediate Boss fight
+        #self._key.set_count(1)
         self._lives.set_count(STARTING_LIVES)
         self._health.set_count(self._current_HP)
         self._shots.set_count(STARTING_SHOTS)
+
 
     def check_shoot(self):
         """

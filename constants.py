@@ -22,6 +22,7 @@ PICKUP_SIZE = ACTOR_SIZE //2
 PLAYER_NAME = "Player"
 
 # Icons
+BLANK_ICON = "blank.png"
 GEM_ICON = "OtherSprites\\Diamond.png"
 BULLET_ICON = "OtherSprites\\EnergyPack.png"
 HEALTH_ICON = "OtherSprites\\Heart.png"
@@ -40,6 +41,7 @@ FREEZE_TIME = 15
 
 # Player Constants
 STARTING_LIVES = 3
+PLAYER_HP = 25
 STARTING_SHOTS = 50
 
 # NOTE: Not implemented
