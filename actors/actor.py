@@ -27,6 +27,12 @@ class Actor():
         self._base_color = Color(color)
         self._color = copy.copy(self._base_color)
 
+    def revive(self):
+        """
+            Revives the Actor
+        """
+        self._alive = True
+
     def is_alive(self):
         """
             Tells the scene manager if the Actor is alive still,

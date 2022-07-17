@@ -16,7 +16,7 @@ FONT_SIZE = 30
 # Note: The Player is 24 pixels/ Enemy 32 pixels, 
 # but the sprites are upscaled up to be printed at this size
 ACTOR_SIZE = 100
-
+PICKUP_SIZE = ACTOR_SIZE //2
 
 # Actor Names
 PLAYER_NAME = "Player"
@@ -26,7 +26,10 @@ GEM_ICON = "OtherSprites\\Diamond.png"
 BULLET_ICON = "OtherSprites\\EnergyPack.png"
 HEALTH_ICON = "OtherSprites\\Heart.png"
 LIFE_ICON = "OtherSprites\\LivesCounter.png"
+KEY_ICON = "OtherSprites\\Diamond.png"
 
+SPACESHIP_ICON = "SmallDriller.png"
+#"8-bit-space-ship.png"
 ROCK_BLACK = "Rock\\rock_black.png"
 ROCK_BLACK_LONG = "Rock\\rock_black_long.png"
 ROCK_BLUE = "Rock\\rock_blue.png"
@@ -35,10 +38,9 @@ ROCK_BLUE_LONG = "Rock\\rock_blue_long.png"
 # When the Collision Actor is flung by a collision, how long until it can change its velocity
 FREEZE_TIME = 15
 
-
 # Player Constants
-STARTING_LIVES = 0
-STARTING_SHOTS = 5
+STARTING_LIVES = 3
+STARTING_SHOTS = 50
 
 # NOTE: Not implemented
 #SPRITE_SOURCE = "Astronaut\\"

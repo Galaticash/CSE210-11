@@ -121,7 +121,13 @@ class Window():
                 return
 
             size = actor.get_size() * image.get_scale()
-            scale = size // texture.width # Make sure it fits within the box
+            if texture.width == 0:
+                # Error catching
+                scale = size
+            else:
+                scale = size // texture.height # Make sure it fits within the box
+
+            # Goal - print the image according to the actor's size (pixels)
 
             # ROTATION
             rotation = image.get_rotation()
@@ -195,10 +201,12 @@ class Window():
             Draws a given hitbox. Must be printed before text, 
              otherwise the Rectangle will draw on top of the text.
         """
+        color = pyray.RED
         hitbox_color = color
         if color == "":
             # Draw a rectangle
             hitbox_color = self._hitbox_test_hit_color if hitbox.get_is_hit() else self._hitbox_test_color
+        
 
         pyray.draw_rectangle(hitbox.left, hitbox.top, hitbox.right - hitbox.left, hitbox.bottom - hitbox.top, hitbox_color)
 
@@ -233,20 +241,21 @@ class Window():
         
 
         # DEBUG: Printing the walls/exit points
-        exits = cast.get_exits()
-        for direction in DIRECTIONS:
-            #self._print_circle(walls[direction])
-            self._print_hitbox(exits[direction].get_hitbox(), pyray.BLUE)
+        #exits = cast.get_exits()
+        #for direction in DIRECTIONS:
+        #    #self._print_circle(walls[direction])
+        #    self._print_hitbox(exits[direction].get_hitbox(), pyray.BLUE)
 
         # Updates the Colliding Actors
         for actor in cast.get_colliders():
+            # self._print_hitbox(actor.get_hitbox())
             self._print_actor_image(actor)
 
         # TODO: Draw any rocks, objects, etc (decoration?)
         for item in cast.get_bg_objects():
             self._print_actor_image(item)
 
-        # Objects with colliders
+        # Objects with colliders ???
         for item in cast.get_objects():
             self._print_actor_image(item)
 
@@ -255,7 +264,10 @@ class Window():
 
         # Prints the HUD items (Counter)
         for item in cast.get_HUD():
-            self._print_counter(item)
+            if item.has_image():
+                self._print_counter(item)
+            else:
+                self._print_actor(item)
 
         # Updates the Messages
         for message in cast.get_messages():

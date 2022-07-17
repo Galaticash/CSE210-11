@@ -27,7 +27,6 @@ class Route():
         self._path = [Point(500, 300), Point(100, 300), Point(100, 500), Point(500, 500)]
 
 """
-
 class Enemy(Fighting_Actor):
     def __init__(self, name, position, size, path = [Point(500, 300), Point(100, 300), Point(100, 500), Point(500, 500)], image="blank.png", color="WHITE"):
         # Above, when creating Enemy, pass in a path (list of Points [Point(1, 2)])
@@ -45,6 +44,12 @@ class Enemy(Fighting_Actor):
         
         self._route_item = 0
         self._goal_position = self._route[self._route_item]
+
+    def set_aggro(self, bool):
+        """
+            Change the agrro values
+        """
+        self._aggro = bool
 
     def get_aggro(self, player_pos):
         # TODO: Is the Player close enough for the enemy to want to move towards the Player?

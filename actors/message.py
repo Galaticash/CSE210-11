@@ -1,7 +1,6 @@
 from actors.actor import *
 
 class Message(Actor):
-    
     """
         An Actor that displays a given message at a given position.
     """
@@ -16,3 +15,30 @@ class Message(Actor):
             Returns the string that is used to display the Actor.
         """
         return self._message
+
+class Temp_Message(Message):
+    """
+        A type of message that fades over time
+    """
+    def __init__(self, position, size, message, fade_speed, image="", color="WHITE"):
+        super().__init__(position, size, message, image, color)
+        self._fade_speed = fade_speed
+        self._timer = 0
+       
+    def is_alive(self):
+        return super().is_alive()
+
+    def get_color(self):
+        # Make a faded version of the color
+        color = self._color.to_tuple()
+        transparency = 255 - self._timer
+        if self._timer < 255:
+            self._timer += self._fade_speed
+        else:
+            transparency = 0
+            self.is_alive = False
+            
+        fading = (color[0], color[1], color[2], transparency)
+         
+        return fading
+

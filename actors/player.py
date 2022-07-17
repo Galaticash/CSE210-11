@@ -32,17 +32,39 @@ class Player(Fighting_Actor):
 
         # TODO: Change to UI/inventory?
         # Create a Counter for each item
-        self._gems = Counter(Point(500, FONT_SIZE), FONT_SIZE, "Gems:", GEM_ICON)
+        self._gems = Counter(Point(400, FONT_SIZE), FONT_SIZE, "Gems:", GEM_ICON)
         self._lives = Counter(Point(50, FONT_SIZE), FONT_SIZE, "Lives:", LIFE_ICON)
         self._health = Counter(Point(50, FONT_SIZE *2), FONT_SIZE, "Health:", HEALTH_ICON)   
-        self._shots = Counter(Point(300, FONT_SIZE), FONT_SIZE, "Shots:", BULLET_ICON)
+        self._shots = Counter(Point(250, FONT_SIZE), FONT_SIZE, "Shots:", BULLET_ICON)
+
+        self._key = Counter(Point(500, FONT_SIZE//2), FONT_SIZE, "Key: ")
+
+        self._print_x = Counter(Point(750, FONT_SIZE), FONT_SIZE, "X")
+        self._print_y = Counter(Point(750, FONT_SIZE *2), FONT_SIZE, "Y")
 
         # Initialize all the Player stats
         self.start_stats()
 
-    def enter_scene(self, position):
-        # simply override the position
+    def set_position(self, position):
+        """
+            Overrides the position of the Player.
+        """
         self._position = position
+
+    def move(self):
+        """
+            Moves the Player, but also updates the x/y coordinate display
+        """
+        return_item = super().move()
+        self._print_x.set_count(self._position.get_x())
+        self._print_y.set_count(self._position.get_y())
+        return return_item
+    
+    def has_key(self):
+        """
+            Returns if the Player has found the boss key.
+        """
+        return self._key.get_count() == 1
 
     def start_stats(self):
         """
@@ -104,7 +126,7 @@ class Player(Fighting_Actor):
         """
             Returns the Player's HUD objects.
         """
-        return [self._gems, self._health, self._lives, self._shots]
+        return [self._gems, self._health, self._lives, self._shots, self._print_x, self._print_y, self._key]
 
     def fire_bullet(self):
         """
@@ -137,14 +159,16 @@ class Player(Fighting_Actor):
         """
             The Player will pickup the given item.
         """
-        if item.get_name() == "Heart_p":
-            self._update_HP(item.get_amount())
-        elif item.get_name() == "Life_p":
-            self._lives.add(item.get_amount())
-        elif item.get_name() == "Gem_p":
+        if item.get_name()[0] == "G":
             self._gems.add(item.get_amount())
-        elif item.get_name() == "Bullet_p":
+        elif item.get_name()[0] == "B":
             self._shots.add(item.get_amount())
+        elif item.get_name()[0] == "H":
+            self._update_HP(item.get_amount())
+        elif item.get_name()[0] == "L":
+            self._lives.add(item.get_amount())
+        elif item.get_name()[0] == "K":
+            self._key.add(item.get_amount())
         else:
             print("Unidentified Item")
 

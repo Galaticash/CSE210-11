@@ -38,12 +38,7 @@ class Collision_Actor(Actor):
         self._collision_timer = 0
         self._collision_reset = COLLISION_TIMER
 
-        # Hitbox math
-        top = (self._position.get_y() - self._size//2)
-        bottom = (self._position.get_y() + self._size//2) 
-        left = (self._position.get_x() - (self._size//2)) 
-        right = (self._position.get_x() + (self._size//2)) 
-        self._hitbox = Hitbox(top, bottom, left, right, -20)
+        self._hitbox = self.calculate_hitbox(20, size)
 
         # For animation
         self._frame_counter = 0
@@ -64,7 +59,18 @@ class Collision_Actor(Actor):
             Can tell if it is the same instance if the name is the same.
         """
         return self._name == other._name
-            
+
+    def calculate_hitbox(self, padding, height, width = 0):
+        if width == 0:
+            width = height
+
+        # Hitbox math
+        top = (self._position.get_y() - height//2)
+        bottom = (self._position.get_y() + height//2) 
+        left = (self._position.get_x() - (width//2)) 
+        right = (self._position.get_x() + (width//2)) 
+        return Hitbox(top, bottom, left, right, -1 * padding)
+
 
     def get_frame(self):
         """

@@ -1,6 +1,6 @@
 from scene_manager import Scene_Manager
 from actors.player import *
-from actors.message import Message
+from actors.message import Message, Temp_Message
 from actors.button import Button
 from GraphicInterface import Window
 from mouse_input import Mouse_Input
@@ -16,7 +16,7 @@ class Director():
     def __init__(self):
         # Determine if the game is over.
         self._game_over = False
-        # Determine if the window should close (exit program).
+        # Determine iwf the window should close (exit program).
         self._window_close = False
         # Add all the constants
         self._max_x = WINDOW_MAX_X
@@ -76,11 +76,11 @@ class Director():
         self.create_scenes()
 
         # Add the Player (user) and Enemies to the Cast.
-        self._scene_manager.add_player(Player(PLAYER_NAME, Point(100,  150), self._actor_size))
+        PLAYER_SPAWN = Point(450, 300)
+        self._scene_manager.add_player(Player(PLAYER_NAME, PLAYER_SPAWN, self._actor_size))
         
         # Start at the SPAWN scene
         self._scene_manager.setup_scene(self._game_scenes["SPAWN"])
-
         
     def update_game(self):
         """
@@ -99,7 +99,12 @@ class Director():
             # Check if the Player is trying to exit
             next_scene = self._scene_manager.check_collisions()
             if not (next_scene == None):
-                self._scene_manager.setup_scene(self._game_scenes[next_scene])
+                if next_scene == "BOSS" and not (self._scene_manager.get_player().has_key()):
+                    # Tell the Player to get the key
+                    #self._scene_manager.add_message(Message(Point(450, 300), FONT_SIZE, "Must first have the key"))
+                    self._scene_manager.add_message(Temp_Message(Point(450, 300), FONT_SIZE, "Must first have the key", 4))
+                else:
+                    self._scene_manager.setup_scene(self._game_scenes[next_scene])
         
             # If the last check is done and sees that the game is over
             if self._game_over:

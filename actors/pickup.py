@@ -7,15 +7,18 @@ class Pickup(Collision_Actor):
     """
     def __init__(self, name, position, amount, size, image="blank.png", color="WHITE"):        
         # Add a pickup identifier
+        # VERY Hardcoded but it works
         name += "_p"
-        if name == "Gem_p":
+        if name[0] == "G":
             image = GEM_ICON
-        elif name == "Bullet_p":
+        elif name[0] == "B":
             image = BULLET_ICON
-        elif name == "Heart_p":
+        elif name[0] == "H":
             image = HEALTH_ICON
-        elif name == "Life_p":
+        elif name[0] == "L":
             image = LIFE_ICON
+        elif name[0] == "K":
+            image = KEY_ICON
 
         super().__init__(name, position, size, image, color)
 

@@ -92,7 +92,7 @@ class Scene_Manager():
         
         if not (self._player_entrance == None):
             # Move player to the entrance
-            self._colliding_actors[0].enter_scene(Point(450, 300))
+            self._colliding_actors[0].set_position(Point(450, 300))
 
         for direction in DIRECTIONS:
             self._colliding_actors.append(self._exits[direction])
@@ -115,16 +115,18 @@ class Scene_Manager():
         new_objects = self._current_scene.get_objects()
         new_bg_objects = self._current_scene.get_bg_objects()
 
+        # Make sure dead objects aren't added
         for enemy in new_enemies:
-            self.add_enemy(enemy)
+            if enemy.is_alive():
+                self.add_enemy(enemy)
         
         for object in new_objects:
-            self.add_collider(object)
+            if object.is_alive():
+                self.add_collider(object)
 
         for bg_object in new_bg_objects:
             self.add_image(bg_object)
 
-        # NOTE: Move this to a place after scene connections, enemies, etc are loaded
         self._scene_loaded = True
 
     def add_image(self, actor):
@@ -196,6 +198,12 @@ class Scene_Manager():
         """
         self._colliding_actors[0].respawn()
 
+    def get_player(self):
+        """
+            Returns the Player (first colliding Actor)
+        """
+        return self._colliding_actors[0]
+
     def check_actions(self):
         """
             Checks Player and Enemy Actions other than movement
@@ -220,7 +228,7 @@ class Scene_Manager():
             # Only check for collisions if there are other colliding Actors
             exit_direction = self._collision_handler.check_exit(self._colliding_actors)
             if not(exit_direction == None):
-                print(f"Player is trying to exit {exit_direction} to {self._scene_connections[exit_direction]}")
+                # print(f"Player is trying to exit {exit_direction} to {self._scene_connections[exit_direction]}")
                 self._player_entrance = self.get_opposite_direction(exit_direction)
                 return self._scene_connections[exit_direction]
         # If there is no exiting

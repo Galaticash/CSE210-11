@@ -16,6 +16,9 @@ class Counter(Message):
         # If there is an image, then display that
         self._display_image = not image_file == ""
 
+    def has_image(self):
+        return self._display_image
+
     def reset_count(self):
         """
             Resets the point count to 0.

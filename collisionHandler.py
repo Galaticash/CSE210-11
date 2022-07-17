@@ -64,8 +64,6 @@ class Collision_Handler():
                     
                     # Do not fling the colliders if one is a pickup OR a wall
                     if collider_one.get_name()[-2:] == "_p" or collider_two.get_name()[-2:] == "_p":
-                        # print("Patrick, that's a pickup")
-                        #return
                         pass
                     # If one collider is the Player and the other is a wall    
                     elif (collider_one.get_name() == PLAYER_NAME or collider_two.get_name() == PLAYER_NAME):
@@ -76,6 +74,10 @@ class Collision_Handler():
                         else:
                             # The Player is colliding with something
                             self.fling_objects(collision_direction, collider_one, collider_two)
+                        
+                        if exit_direction == None:
+                            # Normal collisions
+                            pass
                     else:                    
                         self.fling_objects(collision_direction, collider_one, collider_two)
 
