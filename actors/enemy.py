@@ -3,45 +3,29 @@ from actors.Fighting_Actor import Fighting_Actor
 
 SPIRTE_PATH = "Alien\\Alien_idle3.png"
 
-# TODO: Move these comments to notes
-# Player Aggro
-"""
-move()
-If the Player's position within (DETECTION_RANGE)
-    then Enemy's velocity --> Player's position
-    (figuring out difference in positions and)
+# Idea: Add gem pickup spawning after defeat (similar to Bullet creation)
 
-Else
-    Continue moving on it's path
-    Move towards next point
--   -   -   -   -
-
-Enemy --> point
-point can be reassinged to the Player's position (aggro)
-
-"""
-
-"""
-class Route():
-    def __init__(self):
-        self._path = [Point(500, 300), Point(100, 300), Point(100, 500), Point(500, 500)]
-
-"""
 class Enemy(Fighting_Actor):
+    """
+        An Actor that the Player can fight against and defeat.
+        It will follow a given path, and can aggro onto the Player.
+    """
     def __init__(self, name, position, size, path = [Point(500, 300), Point(100, 300), Point(100, 500), Point(500, 500)], image="blank.png", color="WHITE"):
-        # Above, when creating Enemy, pass in a path (list of Points [Point(1, 2)])
         super().__init__(name, position, size, image, color)
+        # Animation
         self._frames = ["Alien\\Alien_idle3.png", "Alien\\Alien_run1.png", "Alien\\Alien_run2.png", "Alien\\Alien_run3.png", "Alien\\Alien_run4.png", "Alien\\Alien_run5.png", "Alien\\Alien_run6.png"]
-        self._velocity = [-1, 0]
+        
+        # HP setup
         self._max_HP = 15
         self._current_HP = self._max_HP
 
+        # Aggro logic
         self._aggro = False
+        self._agrro_distance = 0
         self._player_position = Point(0, 0)
 
-        # Change Path/Route here
-        self._route = path
-        
+        # Movement logic, starts by travelling to the first point on it's route
+        self._route = path        
         self._route_item = 0
         self._goal_position = self._route[self._route_item]
 
@@ -52,13 +36,21 @@ class Enemy(Fighting_Actor):
         self._aggro = bool
 
     def get_aggro(self, player_pos):
-        # TODO: Is the Player close enough for the enemy to want to move towards the Player?
-        # Calculate difference between the Player and self
-        # If aggro_distance <= player_distance
-        # Then return True, will go after the Player
-        # Else return False, will continue on route
+        """
+            Updates the Player's position and calculates if the
+             Player is close enough for the enemy to aggro onto them.
+        """        
         self._player_position = player_pos
+        # TODO: Calculate difference between the Player and self
+        # x_dif = abs(self._position.get_x() - player_pos.get_x())
+        # y_dif = abs(self._position.get_y() - player_pos.get_y())
+        # if self._agrro_distance <= (x_dif + y_dif) or sqrt(x_dif^2 + y_dif^2) <- Pythagorian?
+        # Then return self._aggro = True, will go after the Player
+        # Else return False, will continue on route
+        
+        # DEBUG: Test aggro
         #self._aggro = True
+        pass # to help shrink the method in VS Code
 
     def get_velocity(self):
         """
@@ -110,6 +102,7 @@ class Enemy(Fighting_Actor):
             self._velocity = new_velocity
         else:
             self.override_update()
+        # Literally return self._velocity
         return super().get_velocity()
 
     def is_hit(self, other_collider):

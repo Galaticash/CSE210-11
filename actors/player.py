@@ -5,14 +5,10 @@ from actors.bullet import Bullet
 from player_input import Player_Input, pyray
 # For Score/Inventory display
 from actors.counter import Counter
-
-from constants import STARTING_LIVES, PLAYER_HP, STARTING_SHOTS, BULLET_PADDING, BULLET_SPEED
-# Inventory Icons
+# Constants
+#  Inventory/Counter Icons
 from constants import GEM_ICON, BULLET_ICON, HEALTH_ICON, LIFE_ICON
-
-# TODO: Move to constants file
-
-#GEMS_IMAGE = "assets\\OtherSprites\\Diamond.png"
+from constants import STARTING_LIVES, PLAYER_HP, STARTING_SHOTS, BULLET_PADDING, BULLET_SPEED
 
 class Player(Fighting_Actor):
     """
@@ -32,7 +28,6 @@ class Player(Fighting_Actor):
         self._player_input = Player_Input()
         self._velocity = [0, 0]
 
-        # TODO: Change to UI/inventory?
         # Create a Counter for each item
         self._gems = Counter(Point(400, FONT_SIZE), FONT_SIZE, "Gems:", GEM_ICON)
         self._lives = Counter(Point(50, FONT_SIZE), FONT_SIZE, "Lives:", LIFE_ICON)
@@ -41,8 +36,11 @@ class Player(Fighting_Actor):
 
         self._key = Counter(Point(500, FONT_SIZE//2), FONT_SIZE, "Key: ")
 
+        # DEBUG: Add to HUD to print [x, y] of Astronaut
         self._print_x = Counter(Point(750, FONT_SIZE), FONT_SIZE, "X")
         self._print_y = Counter(Point(750, FONT_SIZE *2), FONT_SIZE, "Y")
+
+        self._HUD = [self._gems, self._lives, self._health, self._shots, self._key, self._print_x, self._print_y]
 
         # Initialize all the Player stats
         self.start_stats()
@@ -133,7 +131,7 @@ class Player(Fighting_Actor):
         """
             Returns the Player's HUD objects.
         """
-        return [self._gems, self._health, self._lives, self._shots, self._print_x, self._print_y, self._key]
+        return self._HUD
 
     def fire_bullet(self):
         """

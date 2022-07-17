@@ -83,30 +83,28 @@ class Director():
     def update_game(self):
         """
             Updates all members of the cast while the game is not over (self._game_over)
-            TODO: Adjust for Final Game
         """
-        # Check if the game is currently over
+        # If the game is not over,
         if not self._game_over:
             # Continue playing the game,
-
-            # Check if the game is over (the Player has died)
+            #   Checks if the game is over (the Player has died)
             self._game_over = not(self._scene_manager.continue_game())
             # DEBUG: Immediate game over
             #self._game_over = True
             
-            # Check if the Player is trying to exit
-            next_scene = self._scene_manager.check_collisions()
-            if not (next_scene == None):
-                if next_scene == "BOSS" and not (self._scene_manager.get_player().has_key()):
-                    # Tell the Player to get the key
-                    #self._scene_manager.add_message(Message(Point(450, 300), FONT_SIZE, "Must first have the key"))
-                    self._scene_manager.add_message(Temp_Message(Point(450, 300), FONT_SIZE, "Must first have the key", 4))
-                else:
-                    self._scene_manager.setup_scene(self._game_scenes[next_scene])
-        
-            # If the last check is done and sees that the game is over
+            # If the game has just ended in the last check
             if self._game_over:
                 self.add_game_over()
+            else:
+                # Check if the Player is trying to change Scenes
+                next_scene = self._scene_manager.check_collisions()
+                if not (next_scene == None):
+                    if next_scene == "BOSS" and not (self._scene_manager.get_player().has_key()):
+                        # Tell the Player to get the key
+                        self._scene_manager.add_message(Temp_Message(Point(450, 300), FONT_SIZE, "Must first have the key", 4))
+                    else:
+                        # Move the Player to the next scene
+                        self._scene_manager.setup_scene(self._game_scenes[next_scene])
         else:
             # Check for "Play Again" or "Exit" click            
             mouse_position = self._mouse.click_position()
@@ -134,37 +132,30 @@ class Director():
     def add_game_over(self):
         """
             Adds the "Game Over" Menu to the displayed cast.
-            TODO: Adjust for Final Game
         """
-        # Lots of math to determine the location, would be better if it was more concise.
-        game_over_size = self._font_size * 2
-        button_size = int(self._font_size * 1.5)
-        center = [(self._max_x - (int(len("Game Over")/2 * game_over_size)))//2, (self._max_y - game_over_size)//2]
-        x_offset = game_over_size * 2
-        y_offset = int(game_over_size * 1.5)
+        # Math to figure out where "Game Over" and it's buttons should be placed
+        game_over_pos = Point((self._max_x - (int(len("Game Over")/2 * GAME_OVER_SIZE)))//2, (self._max_y - GAME_OVER_SIZE)//2)
+        x_offset = GAME_OVER_SIZE * 2
+        y_offset = int(GAME_OVER_SIZE * 1.5)
         
         # Add the Game Over Message.
-        game_over_pos = Point((self._max_x - (int(len("Game Over")/2 * game_over_size)))//2, (self._max_y - game_over_size)//2)
-        self._scene_manager.add_message(Message(game_over_pos, game_over_size, "Game Over"))
+        self._scene_manager.add_message(Message(game_over_pos, GAME_OVER_SIZE, "Game Over"))
         
         # Add Play Again and Exit Buttons.
-        self._scene_manager.add_button("PLAY_AGAIN", Button(Point(game_over_pos.get_x() - (x_offset//2), game_over_pos.get_y() + y_offset), button_size, "Play Again"))
-        self._scene_manager.add_button("EXIT", Button(Point(game_over_pos.get_x() + (2 * x_offset), game_over_pos.get_y()+ y_offset), button_size, "Exit"))
+        self._scene_manager.add_button("PLAY_AGAIN", Button(Point(game_over_pos.get_x() - (x_offset//2), game_over_pos.get_y() + y_offset), BUTTON_SIZE, "Play Again"))
+        self._scene_manager.add_button("EXIT", Button(Point(game_over_pos.get_x() + (2 * x_offset), game_over_pos.get_y()+ y_offset), BUTTON_SIZE, "Exit"))
 
     def replay(self):
         """
-            Resets the game, but keeps the current scores.
-        """
+            Resets the game.
+        """        
         self._game_over = False
-
+        # Starts the Player back at the Spawn and resets their stats
+        self._scene_manager.reset_player()
         self._scene_manager.setup_scene(self._game_scenes["SPAWN"])
 
         # Removes game_over cast members (Game Over menu).
         self._scene_manager.remove_game_over()
-        self._scene_manager.remove_buttons()
-
-        # Resets the Player's Stats
-        self._scene_manager.reset_player()
     
     def get_game_over(self):
         """

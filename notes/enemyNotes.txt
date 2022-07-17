@@ -1,0 +1,24 @@
+# Player Aggro
+
+"""
+move()
+If the Player's position within (DETECTION_RANGE)
+    then Enemy's velocity --> Player's position
+    (figuring out difference in positions and)
+
+Else
+    Continue moving on it's path
+    Move towards next point
+-   -   -   -   -
+
+Enemy --> point
+point can be reassinged to the Player's position (aggro)
+
+"""
+
+"""
+class Route():
+    def __init__(self):
+        self._path = [Point(500, 300), Point(100, 300), Point(100, 500), Point(500, 500)]
+
+"""
