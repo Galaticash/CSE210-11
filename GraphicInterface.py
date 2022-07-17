@@ -230,12 +230,13 @@ class Window():
         pyray.draw_rectangle(0, self._GUI_space, self._width, self._height, self._background_color)
 
         # TODO: Print background of the scene (gotten from Cast)
+        
 
         # DEBUG: Printing the walls/exit points
-        walls = cast.get_walls()
+        exits = cast.get_exits()
         for direction in DIRECTIONS:
             #self._print_circle(walls[direction])
-            self._print_hitbox(walls[direction].get_hitbox(), pyray.BLUE)
+            self._print_hitbox(exits[direction].get_hitbox(), pyray.BLUE)
 
         # Updates the Colliding Actors
         for actor in cast.get_colliders():

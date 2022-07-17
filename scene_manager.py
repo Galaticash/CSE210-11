@@ -1,6 +1,6 @@
 from collisionHandler import Collision_Handler
 from constants import *
-from actors.wall import Wall
+from actors.exit import Exit
 from point import Point
 import copy
 
@@ -8,14 +8,14 @@ import copy
 scene_edges = {"TOP": UI_Y_POS, "BOTTOM": WINDOW_MAX_Y, "LEFT": 0, "RIGHT": WINDOW_MAX_X}
 
 # WALL["TOP"], WALL["LEFT"] ...
-WALLS = {"TOP": Wall("TOP", Point((scene_edges["RIGHT"] - scene_edges["LEFT"])//2, scene_edges["TOP"]), scene_edges["TOP"], scene_edges["TOP"], scene_edges["LEFT"], scene_edges["RIGHT"]), "LEFT": Wall("LEFT", Point(scene_edges["LEFT"], (scene_edges["BOTTOM"] - scene_edges["TOP"])//2), scene_edges["TOP"], scene_edges["BOTTOM"], scene_edges["LEFT"], scene_edges["LEFT"]), "RIGHT": Wall("RIGHT", Point(scene_edges["RIGHT"], (scene_edges["BOTTOM"] - scene_edges["TOP"])//2), scene_edges["TOP"], scene_edges["BOTTOM"], scene_edges["RIGHT"], scene_edges["RIGHT"]), "BOTTOM": Wall("BOTTOM", Point((scene_edges["RIGHT"] - scene_edges["LEFT"])//2, scene_edges["BOTTOM"]), scene_edges["BOTTOM"], scene_edges["BOTTOM"], scene_edges["LEFT"], scene_edges["RIGHT"])}
+EXITS = {"TOP": Exit("TOP", Point((scene_edges["RIGHT"] - scene_edges["LEFT"])//2, scene_edges["TOP"]), scene_edges["TOP"], scene_edges["TOP"], scene_edges["LEFT"], scene_edges["RIGHT"]), "LEFT": Exit("LEFT", Point(scene_edges["LEFT"], (scene_edges["BOTTOM"] - scene_edges["TOP"])//2), scene_edges["TOP"], scene_edges["BOTTOM"], scene_edges["LEFT"], scene_edges["LEFT"]), "RIGHT": Exit("RIGHT", Point(scene_edges["RIGHT"], (scene_edges["BOTTOM"] - scene_edges["TOP"])//2), scene_edges["TOP"], scene_edges["BOTTOM"], scene_edges["RIGHT"], scene_edges["RIGHT"]), "BOTTOM": Exit("BOTTOM", Point((scene_edges["RIGHT"] - scene_edges["LEFT"])//2, scene_edges["BOTTOM"]), scene_edges["BOTTOM"], scene_edges["BOTTOM"], scene_edges["LEFT"], scene_edges["RIGHT"])}
 
 class Scene_Manager():
     """
        An object that is in charge of making sure all objects in the current scene interact properly 
     """
     def __init__(self, max_x, max_y):
-        # TODO: remove max_x, max_y - temporary wall sensing
+        # TODO: remove max_x, max_y - temporary EXIT sensing
         self._max_x = max_x
         self._max_y = max_y
         
@@ -25,7 +25,7 @@ class Scene_Manager():
 
         self._player_entrance = None
 
-        # Colliders can include things like walls, barrels, etc <-- Another new class or just a Collision Actor with no movement (Collision Actor's Move method is just 'pass' then Enemy and Player would override Move)
+        # Colliders can include things like rocks/walls, barrels, etc <-- Another new class or just a Collision Actor with no movement (Collision Actor's Move method is just 'pass' then Enemy and Player would override Move)
         self._colliding_actors = []
 
         # These items are added to the colliding actors list, but have their own lists for specific functions
@@ -44,14 +44,14 @@ class Scene_Manager():
         
         # Scene Loading
         self._scene_loaded = False
-        self._walls = WALLS
+        self._exits = EXITS
 
         # NOTE: These items could be in the Scene object, but then the Scene Manager goes
         #       self._current_scene.exit("TOP") --> returned a new Scene to load (or False if no connection there)
         # The Scenes connected to the current scene        
         self._scene_connections = {"TOP": None, "LEFT": None, "RIGHT": None, "BOTTOM": None}
         # The Hitbox areas the Player needs to step in to leave the scene in the specified direction
-        self._exits = {"TOP": None, "LEFT": None, "RIGHT": None, "BOTTOM": None}
+        self._exit_areas = {"TOP": None, "LEFT": None, "RIGHT": None, "BOTTOM": None}
 
         self._collision_handler = Collision_Handler()
 
@@ -95,7 +95,7 @@ class Scene_Manager():
             self._colliding_actors[0].enter_scene(Point(450, 300))
 
         for direction in DIRECTIONS:
-            self._colliding_actors.append(self._walls[direction])
+            self._colliding_actors.append(self._exits[direction])
         
         del self._enemies
         self._enemies = []
@@ -133,8 +133,8 @@ class Scene_Manager():
         """
         self._images.append(actor)
 
-    def get_walls(self):
-        return self._walls
+    def get_exits(self):
+        return self._exits
 
     #def load_scene(scene)
         # Add all the Scene's colliders to self._colliders

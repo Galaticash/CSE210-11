@@ -45,12 +45,25 @@ class Director():
         self._game_scenes["BOSS"] = Boss_Scene()
         self._game_scenes["ONE"] = Scene1()
         self._game_scenes["TWO"] = Scene2()
+        self._game_scenes["HIDDEN"] = Hidden_Scene()
 
+        # Add connections for the Spawn
         self._game_scenes["SPAWN"].add_connection("TOP", "BOSS")
         self._game_scenes["SPAWN"].add_connection("RIGHT", "ONE")
-        self._game_scenes["SPAWN"].add_connection("LEFT", "TWO")
+        self._game_scenes["SPAWN"].add_connection("LEFT", "HIDDEN")
+        self._game_scenes["SPAWN"].add_connection("BOTTOM", "TWO")
 
+        # Add connections for Boss
+        self._game_scenes["BOSS"].add_connection("BOTTOM", "SPAWN")
 
+        # Add connection for One
+        self._game_scenes["ONE"].add_connection("LEFT", "SPAWN")
+
+        # Add connection for Two
+        self._game_scenes["TWO"].add_connection("TOP", "SPAWN")
+        
+        # Add connection for Hidden room
+        self._game_scenes["HIDDEN"].add_connection("RIGHT", "SPAWN")
 
     def start_game(self):
         """
@@ -65,7 +78,8 @@ class Director():
         # Add the Player (user) and Enemies to the Cast.
         self._scene_manager.add_player(Player(PLAYER_NAME, Point(100,  150), self._actor_size))
         
-        self._scene_manager.setup_scene(self._game_scenes["TEST"])
+        # Start at the SPAWN scene
+        self._scene_manager.setup_scene(self._game_scenes["SPAWN"])
 
         
     def update_game(self):
@@ -172,9 +186,9 @@ class Director():
 
 # Game can also just be run from Director
 if __name__ == "__main__":
-    cycle_game = Director()
-    cycle_game.start_game()
+    astronaut_game = Director()
+    astronaut_game.start_game()
     # Slightly different here, window will not close until user presses the "X" button.
-    while not cycle_game.get_window_close():
-        cycle_game.update_game()
-    cycle_game.end_game()
+    while not astronaut_game.get_window_close():
+        astronaut_game.update_game()
+    astronaut_game.end_game()

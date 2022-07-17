@@ -77,34 +77,32 @@ class Scene1(Scene):
 class TestScene(Scene):
     def __init__(self):
         super().__init__()
-        
-        # TODO: All the enemies will be created with the scene, these are for testing
-        #       Put all of these test items in a Scene called "TEST"
         pickup_size = ACTOR_SIZE //2
 
-        # Adds
-        self._enemies = [Enemy("Enemy1", Point(int(WINDOW_MAX_X * 2/3) - 5, WINDOW_MAX_Y//2), ACTOR_SIZE), Enemy("Enemy2", Point(int(WINDOW_MAX_X * 1/3), WINDOW_MAX_Y//2), ACTOR_SIZE), Enemy("Enemy3", Point(int(WINDOW_MAX_X * 2/3) + 75, WINDOW_MAX_Y//2), ACTOR_SIZE), Enemy("Enemy4", Point(int(WINDOW_MAX_X * 1/3) - 75, WINDOW_MAX_Y//2), ACTOR_SIZE)]
-        
-        # Adds the pickups
-        self._objects = [ReusablePickup("Gem", Point(300, 150), 5, pickup_size), ReusablePickup("Life", Point(400, 150), 1, pickup_size), ReusablePickup("Heart", Point(500, 150), 10, pickup_size), ReusablePickup("Bullet", Point(600, 150), 1, pickup_size)]
-        
-        # Things that don't collide
-        self._bg_objects = [background_obj(Point(550, 500), ACTOR_SIZE, ROCK_BLUE), background_obj(Point(0, 150), ACTOR_SIZE, ROCK_BLACK_LONG), background_obj(Point(500, 150), ACTOR_SIZE, ROCK_BLUE_LONG), background_obj(Point(0, 600), ACTOR_SIZE, ROCK_BLACK_LONG), background_obj(Point(800, 750), ACTOR_SIZE, ROCK_BLUE_LONG)]
-        
-        # Things that do collide but DON'T move
-        self._objects = [collidable_obj("Rock", Point(650, 500), ACTOR_SIZE, ROCK_BLACK)]
-        
+        # Adds enemies, treated as colliders with movement
+        self._enemies = [Enemy("Enemy1", Point(int(WINDOW_MAX_X * 2/3) - 5, WINDOW_MAX_Y//2), ACTOR_SIZE), Enemy("Enemy2", Point(int(WINDOW_MAX_X * 1/3), WINDOW_MAX_Y//2), ACTOR_SIZE), Enemy("Enemy3", Point(int(WINDOW_MAX_X * 2/3) + 75, WINDOW_MAX_Y//2), ACTOR_SIZE), Enemy("Enemy4", Point(int(WINDOW_MAX_X * 1/3) - 75, WINDOW_MAX_Y//2), ACTOR_SIZE)]        
         #self._scene_manager.add_enemy(Enemy("Enemy5", Point(200a, 200), self._actor_size, [Point(450, 200), Point(550, 200)]))
         
-        # Add some pickup items
-        #self._scene_manager.add_collider(Pickup("Gem", Point(300, 150), 5, pickup_size))        
-        #self._scene_manager.add_collider(Pickup("Life", Point(400, 150), 1, pickup_size))        
-        #self._scene_manager.add_collider(Pickup("Heart", Point(500, 150), 10, pickup_size))
-        #self._scene_manager.add_collider(Pickup("Bullet", Point(600, 150), 1, pickup_size))
-        
+        # Adds the pickups and other non-moving collidables
+        # Things that do collide but DON'T move  
         # Infinity hahaha
+        self._objects = [collidable_obj("Rock", Point(650, 500), ACTOR_SIZE, ROCK_BLACK), ReusablePickup("Gem", Point(300, 150), 5, pickup_size), ReusablePickup("Life", Point(400, 150), 1, pickup_size), ReusablePickup("Heart", Point(500, 150), 10, pickup_size), ReusablePickup("Bullet", Point(600, 150), 1, pickup_size)]
         
-        #self._scene_manager.add_collider(Pickup("Bullet", Point(550, 150), 1, self._actor_size))
+        # Things that don't collide (no hitbox, only image)
+        self._bg_objects = [background_obj(Point(550, 500), ACTOR_SIZE, ROCK_BLUE), background_obj(Point(0, 150), ACTOR_SIZE, ROCK_BLACK_LONG), background_obj(Point(500, 150), ACTOR_SIZE, ROCK_BLUE_LONG), background_obj(Point(0, 600), ACTOR_SIZE, ROCK_BLACK_LONG), background_obj(Point(800, 750), ACTOR_SIZE, ROCK_BLUE_LONG)]
+        
+        # Add some pickup items 
+        #Pickup("Gem", Point(300, 150), 5, pickup_size)
+        #Pickup("Life", Point(400, 150), 1, pickup_size)     
+        #Pickup("Heart", Point(500, 150), 10, pickup_size)
+        #Pickup("Bullet", Point(600, 150), 1, pickup_size)
+
+class Hidden_Scene(Scene):
+    def __init__(self):
+        # Need to initialize the connection dictionary
+        super().__init__()
+        self._objects = []
+        # [Pickup()]
 
 class Boss_Scene(Scene):
     def __init__(self):
