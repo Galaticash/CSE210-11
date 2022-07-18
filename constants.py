@@ -15,10 +15,18 @@ WINDOW_MAX_Y = 600
 
 # Actor/Font Sizing
 FONT_SIZE = 30
+# To account for extra blank pixels in the actor
+ACTOR_SCALE = 1.25
+ENEMY_SCALE = ACTOR_SCALE + .5
+
 # Note: The Player is 24 pixels/ Enemy 32 pixels, 
 # but the sprites are upscaled up to be printed at this size
-ACTOR_SIZE = 100
-PICKUP_SIZE = ACTOR_SIZE //2
+ACTOR_WIDTH = 80
+ACTOR_HEIGHT = ACTOR_WIDTH
+# int(ACTOR_WIDTH * 1.5)
+PICKUP_SIZE = ACTOR_WIDTH //2
+
+COUNTER_SIZE = FONT_SIZE
 
 # Actor Names (VERY HARDCODED AND WEIRD)
 PLAYER_NAME = "Player"
@@ -36,12 +44,17 @@ SPACESHIP_ICON = "SmallDriller.png"
 ROCK_BLACK = "Rock\\rock_black.png"
 ROCK_BLUE = "Rock\\rock_blue.png"
 
+# Actor Constants
+STEP_SIZE = 5
+COLOR_TIMER_MAX = 2
+INVULNERABLE_TIMER = 15
+
 # When the Collision Actor is flung by a collision, how long until it can change its velocity
 FREEZE_TIME = 15
 
 # Player Constants
-STARTING_LIVES = 0 #3
-PLAYER_HP = 5 #25
+STARTING_LIVES = 3
+PLAYER_HP = 25
 STARTING_SHOTS = 50
 
 # Boss Constants
@@ -59,7 +72,10 @@ BULLET_PADDING = 100
 # Speed of the bullet
 BULLET_SPEED = 5
 
-
 # Game Over display
 GAME_OVER_SIZE = FONT_SIZE * 2
 BUTTON_SIZE = int(FONT_SIZE * 1.5)
+
+BUTTON_PADDING = 0
+BUTTON_COLOR = "GREEN"
+BUTTON_TEXT_COLOR = "WHITE"

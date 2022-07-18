@@ -1,12 +1,10 @@
 from actors.actor import *
 from actors.hitbox import Hitbox
 from actors.image import Image
-from constants import ACTOR_SIZE, FONT_SIZE
+from constants import ACTOR_WIDTH, ACTOR_HEIGHT, STEP_SIZE, COLOR_TIMER_MAX, INVULNERABLE_TIMER
 import copy
 
-STEP_SIZE = 5
-COLOR_TIMER_MAX = 2
-COLLISION_TIMER = 75
+
 
 # The frame at which the animation frame is updated
 UPDATE_FRAME = 5
@@ -15,8 +13,8 @@ class Collision_Actor(Actor):
     """
         An Actor that can collide with other Collision Actors.
     """
-    def __init__(self, name, position, size, image="blank.png", color="WHITE"):
-        super().__init__(position, size, image, color)
+    def __init__(self, name, position, width, height, image="blank.png", color="WHITE"):
+        super().__init__(position, width, height, image, color)
         self._name = name
 
         # Health Points
@@ -36,9 +34,10 @@ class Collision_Actor(Actor):
 
         self._do_collisions = True
         self._collision_timer = 0
-        self._collision_reset = COLLISION_TIMER
+        self._collision_reset = INVULNERABLE_TIMER
 
-        self._hitbox = self.calculate_hitbox(20, size)
+        HITBOX_PADDING = -5
+        self._hitbox = Hitbox(self._position, self._width, self._height, HITBOX_PADDING)
 
         # For animation
         self._frame_counter = 0
@@ -59,18 +58,6 @@ class Collision_Actor(Actor):
             Can tell if it is the same instance if the name is the same.
         """
         return self._name == other._name
-
-    def calculate_hitbox(self, padding, height, width = 0):
-        if width == 0:
-            width = height
-
-        # Hitbox math
-        top = (self._position.get_y() - height//2)
-        bottom = (self._position.get_y() + height//2) 
-        left = (self._position.get_x() - (width//2)) 
-        right = (self._position.get_x() + (width//2)) 
-        return Hitbox(top, bottom, left, right, -1 * padding)
-
 
     def get_frame(self):
         """
@@ -173,8 +160,8 @@ class Collision_Actor(Actor):
         self._position.add_velocity(dx, dy)
         
         # Update the hitbox's position.
-        #self._hitbox.add_velocity(dx, dy)
-        self._hitbox.update_position(self._position, self._size)
+        self._hitbox.update_position(dx, dy)
+        #self._hitbox.update_position(self._position, self._size)
 
     def is_hit(self, other_collider):
         """

@@ -1,24 +1,20 @@
-from actors.message import Message, Color
+from actors.message import Message, Color, Point
 from actors.hitbox import Hitbox
-
-BUTTON_PADDING = 5
-BUTTON_COLOR = "GREEN"
-BUTTON_TEXT_COLOR = "WHITE"
+from constants import BUTTON_PADDING, BUTTON_COLOR, BUTTON_TEXT_COLOR
 
 class Button(Message):
     """
         A type of Message that returns if the cursor has been clicked in its Hitbox.
     """
-    def __init__(self, position, size, message, image="", color="WHITE"):
-        super().__init__(position, size, message, image, color)
+    def __init__(self, position, height, message, image="", color="WHITE"):
+        super().__init__(position, height, message, image, color)
+        
 
-        # Hitbox math
-        # POSITION IS TOP LEFT
-        top = (self._position.get_y())
-        bottom = (self._position.get_y() + self._size) 
-        left = (self._position.get_x()) 
-        right = (self._position.get_x() + (self._size//2 * len(self._message))) 
-        self._hitbox = Hitbox(top, bottom, left, right, BUTTON_PADDING)
+        # Create a new hitbox using the width
+        self._width = height * (len(self._message)//2)
+        # Messages have their position on the top left corner
+        self._center_position = Point(self._position.get_x() + self._width//2, self._position.get_y() + self._height//2 )
+        self._hitbox = Hitbox(self._center_position, self._width, self._height, BUTTON_PADDING)
 
         self._text_color = Color(BUTTON_TEXT_COLOR)
         self._color = Color(BUTTON_COLOR)

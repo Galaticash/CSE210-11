@@ -4,11 +4,17 @@ class Message(Actor):
     """
         An Actor that displays a given message at a given position.
     """
-    def __init__(self, position, size, message, image="", color="WHITE"):
-        super().__init__(position, size, image, color)
+    def __init__(self, position, height, message, image="", color="WHITE"):
+        super().__init__(position, height, height, image, color)
         self._message = message
         self._x_pos = position.get_x()
         self._y_pos = position.get_y()
+
+    def get_size(self):
+        """
+            Returns how tall the letters are to be printed.
+        """
+        return self._height
 
     def get_display(self):
         """
@@ -20,8 +26,8 @@ class Temp_Message(Message):
     """
         A type of message that fades over time
     """
-    def __init__(self, position, size, message, fade_speed, image="", color="WHITE"):
-        super().__init__(position, size, message, image, color)
+    def __init__(self, position, height, message, fade_speed, image="", color="WHITE"):
+        super().__init__(position, height, message, image, color)
         self._fade_speed = fade_speed
         self._timer = 0
        

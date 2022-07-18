@@ -24,8 +24,20 @@ class Collision_Handler():
         
         # Send them flying opposite directions
         collider_two.set_velocity(collision_direction)
-        opposite_velocity = [collision_direction[0]* -1, collision_direction[1]* -1]
+        opposite_velocity = self.reverse_velocity(collision_direction)
+        #[collision_direction[0]* -1, collision_direction[1]* -1]
         collider_one.set_velocity(opposite_velocity)
+
+    def reverse_velocity(self, velocity):
+        """
+            Reverses the direction of the collision.
+        """
+        return [velocity[0] * -1, velocity[1] * -1]
+
+    def stop_object(self, collision_direction, collider):
+        # stop the object from moving in the collision direction
+        if collider.get_velocity() == collision_direction:
+            collider.set_velocity([0, 0])
 
     def freeze_movement(self, collider):
         """
@@ -55,11 +67,13 @@ class Collision_Handler():
                     collider_two.is_hit(collider_one)
 
                     # Will reverse the direction the objects are currently travelling
+                    one_s_velocity = True
                     collision_direction = copy.copy(collider_one.get_velocity())
 
                     # Guarantee at least one collider is moving
                     # But if the first one isn't moving, get velocity from the second
-                    if collision_direction == [0, 0]:
+                    if collision_direction == [0, 0]:                        
+                        one_s_velocity = False
                         collision_direction = copy.copy(collider_two.get_velocity())
                     
                     # Do not fling the colliders if one is a pickup OR a wall
@@ -74,10 +88,10 @@ class Collision_Handler():
                         else:
                             # The Player is colliding with something
                             self.fling_objects(collision_direction, collider_one, collider_two)
-                        
-                        if exit_direction == None:
-                            # Normal collisions
-                            pass
+    
+                        #if exit_direction == None:
+                            # Normal collisions - stop movement in collision direction
+
                     else:                    
                         self.fling_objects(collision_direction, collider_one, collider_two)
 

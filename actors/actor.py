@@ -11,7 +11,7 @@ class Actor():
         Has a symbol to represent itself with, can be a single character or a string of them (Message).
         Has Getters for each Attribute so the GUI can properly display the Actor.
     """
-    def __init__(self, position, size, image="blank.png", color = "WHITE"):
+    def __init__(self, position, width, height, image="blank.png", color = "WHITE"):
         # Spawn point at the center of the screen
         self._spawn_point = position
         self._position = self._spawn_point # Could replay the game and set the actor back to the start
@@ -23,7 +23,12 @@ class Actor():
 
         self._symbol = "#" 
         self._image = image
-        self._size = size
+        
+        #self._size = size
+        self._width = width
+        # Assumes object is a square
+        self._height = height
+
         self._base_color = Color(color)
         self._color = copy.copy(self._base_color)
 
@@ -97,11 +102,23 @@ class Actor():
         """
         return self._facing
 
+    def get_width(self):
+        """
+            Returns the width of the Actor.
+        """
+        return self._width
+
+    def get_height(self):
+        """
+            Return the height of the Actor.
+        """
+        return self._height
+
     def get_size(self):
         """
-            Returns the font size of the Actor.
+            Returns the larger of the two values: width and height
         """
-        return self._size
+        return self._width if self._width > self._height else self._height
 
     def set_color(self, color):
         """

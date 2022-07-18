@@ -1,4 +1,5 @@
 from collisionHandler import Collision_Handler
+from actors.background_obj import collidable_obj
 from constants import *
 from actors.exit import Exit
 from point import Point
@@ -6,23 +7,33 @@ import copy
 
 # Scene bounds (all the same)
 scene_edges = {"TOP": UI_Y_POS, "BOTTOM": WINDOW_MAX_Y, "LEFT": 0, "RIGHT": WINDOW_MAX_X}
+EXIT_POSITIONS = {"TOP": Point((scene_edges["RIGHT"] - scene_edges["LEFT"])//2, scene_edges["TOP"]), "BOTTOM": Point((scene_edges["RIGHT"] - scene_edges["LEFT"])//2, scene_edges["BOTTOM"]), "LEFT": Point(scene_edges["LEFT"], (scene_edges["BOTTOM"] - scene_edges["TOP"])//2 +  scene_edges["TOP"]), "RIGHT": Point(scene_edges["RIGHT"], (scene_edges["BOTTOM"] - scene_edges["TOP"])//2 + scene_edges["TOP"])}
+# scene_edges["TOP"], scene_edges["TOP"], scene_edges["LEFT"], scene_edges["RIGHT"]
+WALL_WIDTH = {"TOP": scene_edges["RIGHT"] - scene_edges["LEFT"], "BOTTOM": scene_edges["RIGHT"] - scene_edges["LEFT"], "LEFT": 0, "RIGHT": 0}
+WALL_HEIGHT = {"TOP": 0, "BOTTOM": 0, "LEFT": scene_edges["BOTTOM"] - scene_edges["TOP"], "RIGHT": scene_edges["BOTTOM"] - scene_edges["TOP"]}
 
-# WALL["TOP"], WALL["LEFT"] ...
-EXITS = {"TOP": Exit("TOP", Point((scene_edges["RIGHT"] - scene_edges["LEFT"])//2, scene_edges["TOP"]), scene_edges["TOP"], scene_edges["TOP"], scene_edges["LEFT"], scene_edges["RIGHT"]), "LEFT": Exit("LEFT", Point(scene_edges["LEFT"], (scene_edges["BOTTOM"] - scene_edges["TOP"])//2), scene_edges["TOP"], scene_edges["BOTTOM"], scene_edges["LEFT"], scene_edges["LEFT"]), "RIGHT": Exit("RIGHT", Point(scene_edges["RIGHT"], (scene_edges["BOTTOM"] - scene_edges["TOP"])//2), scene_edges["TOP"], scene_edges["BOTTOM"], scene_edges["RIGHT"], scene_edges["RIGHT"]), "BOTTOM": Exit("BOTTOM", Point((scene_edges["RIGHT"] - scene_edges["LEFT"])//2, scene_edges["BOTTOM"]), scene_edges["BOTTOM"], scene_edges["BOTTOM"], scene_edges["LEFT"], scene_edges["RIGHT"])}
+# The exits that, when collided with, move the Player to the next scene
+EXITS =  {"TOP": Exit("TOP", EXIT_POSITIONS["TOP"], WALL_WIDTH["TOP"], WALL_HEIGHT["TOP"]), "LEFT": Exit("LEFT", EXIT_POSITIONS["LEFT"], WALL_WIDTH["LEFT"], WALL_HEIGHT["LEFT"]), "RIGHT": Exit("RIGHT", EXIT_POSITIONS["RIGHT"], WALL_WIDTH["RIGHT"], WALL_HEIGHT["RIGHT"]), "BOTTOM": Exit("BOTTOM", EXIT_POSITIONS["BOTTOM"], WALL_WIDTH["BOTTOM"], WALL_HEIGHT["BOTTOM"])}
+
+# Blockers are placed if there is no connection
+EXIT_BLOCKERS = {"TOP": collidable_obj("TOP_WALL", EXIT_POSITIONS["TOP"], WALL_WIDTH["TOP"], WALL_HEIGHT["TOP"]), "BOTTOM": collidable_obj("BOTTOM_WALL", EXIT_POSITIONS["BOTTOM"], WALL_WIDTH["BOTTOM"], WALL_HEIGHT["BOTTOM"]), "LEFT": collidable_obj("LEFT_WALL", EXIT_POSITIONS["LEFT"], WALL_WIDTH["LEFT"], WALL_HEIGHT["LEFT"]), "RIGHT": collidable_obj("RIGHT_WALL", EXIT_POSITIONS["RIGHT"], WALL_WIDTH["RIGHT"], WALL_HEIGHT["RIGHT"])}
+
+# Where the Player enters the scene
+ENTRANCE_PADDING = ACTOR_WIDTH + 25
+ENTRANCE_POINTS = {"TOP": Point(EXIT_POSITIONS["TOP"].get_x(), EXIT_POSITIONS["TOP"].get_y() + ENTRANCE_PADDING),"BOTTOM": Point(EXIT_POSITIONS["BOTTOM"].get_x(), EXIT_POSITIONS["BOTTOM"].get_y() - ENTRANCE_PADDING), "LEFT": Point(EXIT_POSITIONS["LEFT"].get_x() + ENTRANCE_PADDING, EXIT_POSITIONS["LEFT"].get_y()), "RIGHT": Point(EXIT_POSITIONS["RIGHT"].get_x() - ENTRANCE_PADDING, EXIT_POSITIONS["RIGHT"].get_y())}
+
+#{"TOP": Exit(), "BOTTOM": Exit(), "LEFT": Exit(), "RIGHT": Exit()}
 
 class Scene_Manager():
     """
        An object that is in charge of making sure all Actors in the current scene interact properly. 
     """
-    def __init__(self, max_x, max_y):
-        # TODO: remove max_x, max_y - temporary EXIT sensing
-        self._max_x = max_x
-        self._max_y = max_y
-        
+    def __init__(self, max_x, max_y):        
         # Could make player it's own object to simplify the reset of colliding actors, enemies, and object lists?
         #self._player = None
         self._HUD = []
 
+        # Player enters from nowhere, spawns in Spawn Scene
         self._player_entrance = None
 
         # Colliders can include things like rocks/walls, barrels, etc <-- Another new class or just a Collision Actor with no movement (Collision Actor's Move method is just 'pass' then Enemy and Player would override Move)
@@ -33,14 +44,15 @@ class Scene_Manager():
         self._objects = []
 
         # Background objects, without colliders
-        self._images = []
+        self._bg_objects = []
+        self._foreground_objects = []
 
         # Currently only being used for Game Over
-        self._messages = []
-        self._REPLAY_BUTTON_NAMES = ["PLAY_AGAIN", "EXIT"]        
         # If there are more buttons, add to the list? Not very maintainable here..
         # Maybe have differnt lists of buttons? (self._replay_buttons, and self._UI_buttons?)
-        self._buttons = {}
+        self._messages = []
+        self._REPLAY_BUTTON_NAMES = ["PLAY_AGAIN", "EXIT"] # For iterating through the dictionary
+        self._buttons = {}  
         
         # Scene Loading
         self._scene_loaded = False
@@ -50,8 +62,6 @@ class Scene_Manager():
         #       self._current_scene.exit("TOP") --> returned a new Scene to load (or False if no connection there)
         # The Scenes connected to the current scene        
         self._scene_connections = {"TOP": None, "LEFT": None, "RIGHT": None, "BOTTOM": None}
-        # The Hitbox areas the Player needs to step in to leave the scene in the specified direction
-        self._exit_areas = {"TOP": None, "LEFT": None, "RIGHT": None, "BOTTOM": None}
 
         self._collision_handler = Collision_Handler()
 
@@ -108,14 +118,23 @@ class Scene_Manager():
     def get_objects(self):
         return self._objects
 
-    def add_image(self, actor):
+    def add_bg_obj(self, actor):
         """
-            Adds an actor that has only position and image arguements
+            Adds an Actor to the background (non-colliding).
         """
-        self._images.append(actor)
+        self._bg_objects.append(actor)
 
     def get_bg_objects(self):
-        return self._images
+        return self._bg_objects
+
+    def add_foreground_obj(self, actor):
+        """
+            Adds an Actor to the foreground (non-colliding).
+        """
+        self._foreground_objects.append(actor)
+
+    def get_foreground_objects(self):
+        return self._foreground_objects
 
     def add_message(self, new_message):
         """
@@ -206,44 +225,77 @@ class Scene_Manager():
             # Only check for collisions if there are other colliding Actors
             exit_direction = self._collision_handler.check_exit(self._colliding_actors)
             if not(exit_direction == None):
-                # print(f"Player is trying to exit {exit_direction} to {self._scene_connections[exit_direction]}")
+                #print(f"Player is trying to exit {exit_direction} to {self._scene_connections[exit_direction]}")
                 self._player_entrance = self.get_opposite_direction(exit_direction)
                 return self._scene_connections[exit_direction]
+            else:
+                self._player_entrance = None
         # If there is no exiting
         return None
 
     def get_opposite_direction(self, direction):
+        """
+            Gets the opposite direction, for figuring out
+             where the Player will enter the Next Scene.
+        """
         if direction == "TOP":
             return "BOTTOM"
-        if direction == "BOTTOM":
+        elif direction == "BOTTOM":
             return "TOP"
-        if direction == "RIGHT":
+        elif direction == "RIGHT":
             return "LEFT"
-        if direction == "LEFT":
+        elif direction == "LEFT":
             return "RIGHT"
+        else:
+            return None
 
     def setup_scene(self, scene):
+        # Shouldn't be an issue, since all of this has to happen before the next GUI check
+        self._scene_loaded = False
+        #print(f"Player will enter {scene.get_name()} from {self._player_entrance}")
         self.reset()
+        # Move to the next scene
         self._current_scene = scene
 
+        # For every direction,
         for direction in DIRECTIONS:
+            # Get the connections for the new scene
             self._scene_connections[direction] = self._current_scene.get_connection(direction)
+            # If there isn't a connection, put a blocker instead
+            if self._scene_connections[direction] == None:
+                self._colliding_actors.append(EXIT_BLOCKERS[direction])
+            else:                
+                self._colliding_actors.append(self._exits[direction])
 
+        # Put the Player where they entered in,
+        if (self._player_entrance == None):
+            # UNLESS the game just started, begins at the Spaceship
+            self._colliding_actors[0].set_position(Point(450, 300))
+        else:
+            self._colliding_actors[0].set_position(copy.copy(ENTRANCE_POINTS[self._player_entrance]))
+
+        # Get all the objecs from the new Scene
         new_enemies = self._current_scene.get_enemies()
         new_objects = self._current_scene.get_objects()
         new_bg_objects = self._current_scene.get_bg_objects()
+        new_fore_objects = self._current_scene.get_fore_objects()
 
-        # Make sure dead objects aren't added
+        # Make sure dead objects aren't added 
+        #  (Actors remember if they have already been defeated)
         for enemy in new_enemies:
             if enemy.is_alive():
                 self.add_enemy(enemy)
-        
         for object in new_objects:
             if object.is_alive():
                 self.add_collider(object)
 
+        # Add bg_objects (spaceship, etc)
         for bg_object in new_bg_objects:
-            self.add_image(bg_object)
+            self.add_bg_obj(bg_object)
+
+        # Add foreground objects (overhanging rocks, etc)
+        for fore_object in new_fore_objects:
+            self.add_foreground_obj(fore_object)
 
         self._scene_loaded = True
 
@@ -251,7 +303,7 @@ class Scene_Manager():
         """
             Returns if the user has chosen to Play Again (True) or Exit (False).
         """
-        print(f"Cursor click at [{cursor_position.get_x()}, {cursor_position.get_y()}]")
+        #print(f"Cursor clicked at [{cursor_position.get_x()}, {cursor_position.get_y()}]")
         # If the Play Again button has been clicked.
         if self._buttons[self._REPLAY_BUTTON_NAMES[0]].pressed(cursor_position):
             return True
@@ -282,23 +334,26 @@ class Scene_Manager():
             Reset all the knowledge that the Scene Manager has
             Except for the Player and the HUD
         """
+        self._current_scene = None
+        
+        # Clear the connections dictionary
+        del self._scene_connections
+        self._scene_connections = {}
+
         player = copy.copy(self._colliding_actors[0])
-        # NOTE: not sure if delete does anything in python?
+        
+        # NOTE: not sure if del/delete does anything in python?
+        # Delete the colliders list, and restart with only the Player
         del self._colliding_actors
         self._colliding_actors = []
-        
         self._colliding_actors.append(player)
-        
-        if not (self._player_entrance == None):
-            # Move player to the entrance
-            self._colliding_actors[0].set_position(Point(450, 300))
 
-        for direction in DIRECTIONS:
-            self._colliding_actors.append(self._exits[direction])
-        
+        # Delete every other list, except HUD
         del self._enemies
         self._enemies = []
         del self._objects
         self._objects = []
-        del self._images
-        self._images = []
+        del self._bg_objects
+        self._bg_objects = []
+        del self._foreground_objects
+        self._foreground_objects = []

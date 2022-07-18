@@ -10,8 +10,8 @@ class Bullet(Fighting_Actor):
     """
         A Bullet fired from the Player to do damage
     """
-    def __init__(self, name, position, velocity, size, image="Bolt\\arrow1_6.png", color="WHITE"):
-        super().__init__(name, position, size, image, color)
+    def __init__(self, name, position, velocity, width, height, image="blank.png", color="WHITE"):
+        super().__init__(name, position, width, height, image, color)
         # Has no Health Points so it can be immediately destroyed on impact
         self._max_HP = 0
         self._current_HP = 0
@@ -25,6 +25,12 @@ class Bullet(Fighting_Actor):
 
         self._velocity = velocity
         
+    def swap_width_height(self):
+        temp = self._height
+        self._height = self._width
+        self._width = temp
+        self._hitbox.rotate_90()        
+
     def find_rotation(self, velocity):
         """
             Find the proper rotation of the Bullet (limited to 90 degree intervals)
@@ -35,10 +41,13 @@ class Bullet(Fighting_Actor):
 
         # If velocity_x is nothing, check y
         if velocity[0] == 0:
+            # If travelling up or down
             if velocity[1] > 0:
-                rotation = ROTATION[0]
+                rotation = ROTATION[0]                
+                self.swap_width_height()
             else:
-                rotation = ROTATION[2]
+                rotation = ROTATION[2]                
+                self.swap_width_height()
         # Velocity Y has to be nothing (grid-based)
         else:
             if velocity[0] > 0:

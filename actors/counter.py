@@ -8,8 +8,8 @@ class Counter(Message):
     """
         A type of Message that counts
     """
-    def __init__(self, position, font_size, message, image_file = "", color="WHITE"):
-        super().__init__(position, font_size, message, color)
+    def __init__(self, position, height, message, image_file="", color="WHITE"):
+        super().__init__(position, height, message, image_file, color)
         self._color = Color("WHITE")
         self._count = 0
         self._image = Image(image_file, COUNTER_IMAGE_SCALE)

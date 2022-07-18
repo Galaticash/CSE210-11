@@ -20,7 +20,7 @@ class Director():
         self._max_x = WINDOW_MAX_X
         self._max_y = WINDOW_MAX_Y
         self._font_size = FONT_SIZE
-        self._actor_size = ACTOR_SIZE
+        self._actor_size = ACTOR_WIDTH
 
         # Create a Window to display things on
         self._window = Window(self._max_x, self._max_y)
@@ -75,7 +75,7 @@ class Director():
 
         # Add the Player (user) and Enemies to the Cast.
         PLAYER_SPAWN = Point(300, 325)
-        self._scene_manager.add_player(Player(PLAYER_NAME, PLAYER_SPAWN, self._actor_size))
+        self._scene_manager.add_player(Player(PLAYER_NAME, PLAYER_SPAWN, ACTOR_WIDTH, ACTOR_HEIGHT))
         
         # Start at the SPAWN scene
         self._scene_manager.setup_scene(self._game_scenes["SPAWN"])

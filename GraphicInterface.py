@@ -120,12 +120,13 @@ class Window():
                 print(f"Invalid filepath, {actor.get_name()}: {filepath}")
                 return
 
+            # TODO: A scaled 1 image should be actor's width
             size = actor.get_size() * image.get_scale()
             if texture.width == 0:
                 # Error catching
                 scale = size
             else:
-                scale = size // texture.height # Make sure it fits within the box
+                scale = size // texture.width  # Make sure it fits within the box
 
             # Goal - print the image according to the actor's size (pixels)
 
@@ -192,8 +193,9 @@ class Window():
         """
             Prints the given button on the board. Has a box 
              surrounding it to differentiate itself as a button.
-        """        
-        # self._print_hitbox(button.get_hitbox(), button.get_color())
+        """
+        
+        self._print_hitbox(button.get_hitbox(), button.get_color())
         pyray.draw_text(button.get_display(), button.get_x(), button.get_y(), button.get_size(), button.get_text_color())
         
     def _print_hitbox(self, hitbox, color = ""):
@@ -202,12 +204,11 @@ class Window():
              otherwise the Rectangle will draw on top of the text.
         """
         color = pyray.RED
-        hitbox_color = color
+        hitbox_color = color        
         if color == "":
             # Draw a rectangle
             hitbox_color = self._hitbox_test_hit_color if hitbox.get_is_hit() else self._hitbox_test_color
         
-
         pyray.draw_rectangle(hitbox.left, hitbox.top, hitbox.right - hitbox.left, hitbox.bottom - hitbox.top, hitbox_color)
 
         # Draw the outline
@@ -219,6 +220,9 @@ class Window():
         pyray.draw_line(hitbox.left, hitbox.top, hitbox.left, hitbox.bottom, color)
         # Right
         pyray.draw_line(hitbox.right, hitbox.top, hitbox.right, hitbox.bottom, color)
+
+        # The point position
+        pyray.draw_circle(hitbox._position.get_x(), hitbox._position.get_y(), 5, pyray.GREEN)
 
     def _print_rock(self, rock):
         """
@@ -237,8 +241,9 @@ class Window():
 
         pyray.draw_rectangle(0, self._GUI_space, self._width, self._height, self._background_color)
 
-        # TODO: Print background of the scene (gotten from Cast)
-        
+        # Print the background objects
+        for bg_item in cast.get_bg_objects():
+            self._print_actor_image(bg_item)
 
         # DEBUG: Printing the walls/exit points
         #exits = cast.get_exits()
@@ -248,16 +253,16 @@ class Window():
 
         # Updates the Colliding Actors
         for actor in cast.get_colliders():
-            # self._print_hitbox(actor.get_hitbox())
+            #self._print_hitbox(actor.get_hitbox())
             self._print_actor_image(actor)
+            
+        # Print the foreground objects - colliding actors can go 'under' them
+        for fore_obj in cast.get_foreground_objects():
+            self._print_actor_image(fore_obj)
 
-        # TODO: Draw any rocks, objects, etc (decoration?)
-        for item in cast.get_bg_objects():
-            self._print_actor_image(item)
-
-        # Objects with colliders ???
-        for item in cast.get_objects():
-            self._print_actor_image(item)
+        # # Objects with colliders (Pickups, etc) <-- already included in colliders
+        # for item in cast.get_objects():
+        #     self._print_actor_image(item)
 
         # Draw the GUI
         pyray.draw_rectangle(0, 0, WINDOW_MAX_X, UI_Y_POS, pyray.BLACK)

@@ -6,8 +6,8 @@ class background_obj(Actor):
     """
         An image displayed on the screen
     """
-    def __init__(self, position, size, image="blank.png", rotation=0, scale=1, color="WHITE"):
-        super().__init__(position, size, image, color)
+    def __init__(self, position, width, image="blank.png", rotation=0, scale=1, color="WHITE"):
+        super().__init__(position, width, width, image, color)
         self._image = Image(image, scale, rotation)
 
     def get_display(self):
@@ -17,8 +17,8 @@ class collidable_obj(Collision_Actor):
     """
         A collidable image on the screen
     """
-    def __init__(self, name, position, size, image="blank.png", rotation=0, scale=1, color="WHITE"):
-        super().__init__(name, position, size, image, color)
+    def __init__(self, name, position, width, height, image="blank.png", rotation=0, scale=1, color="WHITE"):
+        super().__init__(name, position, width, height, image, color)
         
         self._image = Image(image, scale, rotation)
         self._attack = 0
@@ -47,6 +47,7 @@ class collidable_obj(Collision_Actor):
             return is_hit
         else:
             return False
+
 
 # TO BE USED FOR LONG WALLS
 class long_object(collidable_obj):

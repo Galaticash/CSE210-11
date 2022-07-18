@@ -8,16 +8,18 @@ from actors.counter import Counter
 # Constants
 #  Inventory/Counter Icons
 from constants import GEM_ICON, BULLET_ICON, HEALTH_ICON, LIFE_ICON
-from constants import STARTING_LIVES, PLAYER_HP, STARTING_SHOTS, BULLET_PADDING, BULLET_SPEED
+from constants import ACTOR_SCALE, COUNTER_SIZE, STARTING_LIVES, PLAYER_HP, STARTING_SHOTS, BULLET_PADDING, BULLET_SPEED
 
 class Player(Fighting_Actor):
     """
         The Player/Astronaut that is controlled by the user.
     """
-    def __init__(self, name, position, size, image="blank.png", color="WHITE"):
-        super().__init__(name, position, size, image, color)
+    def __init__(self, name, position, width, height, image="blank.png", color="WHITE"):
+        super().__init__(name, position, width, height, image, color)
         self._max_HP = PLAYER_HP
         self._spawn_point = position
+
+        self._scale = ACTOR_SCALE
 
         # Overwrite the Images
         # TODO: Can adjust file order for animation to be less clunky?
@@ -29,16 +31,16 @@ class Player(Fighting_Actor):
         self._velocity = [0, 0]
 
         # Create a Counter for each item
-        self._gems = Counter(Point(400, FONT_SIZE), FONT_SIZE, "Gems:", GEM_ICON)
-        self._lives = Counter(Point(50, FONT_SIZE), FONT_SIZE, "Lives:", LIFE_ICON)
-        self._health = Counter(Point(50, FONT_SIZE *2), FONT_SIZE, "Health:", HEALTH_ICON)   
-        self._shots = Counter(Point(250, FONT_SIZE), FONT_SIZE, "Shots:", BULLET_ICON)
+        self._gems = Counter(Point(400, COUNTER_SIZE), COUNTER_SIZE, "Gems:", GEM_ICON)
+        self._lives = Counter(Point(50, COUNTER_SIZE), COUNTER_SIZE, "Lives:", LIFE_ICON)
+        self._health = Counter(Point(50, COUNTER_SIZE *2), COUNTER_SIZE, "Health:", HEALTH_ICON)   
+        self._shots = Counter(Point(250, COUNTER_SIZE), COUNTER_SIZE, "Shots:", BULLET_ICON)
 
-        self._key = Counter(Point(500, FONT_SIZE//2), FONT_SIZE, "Key: ")
+        self._key = Counter(Point(500, COUNTER_SIZE//2), COUNTER_SIZE, "Key: ")
 
         # DEBUG: Add to HUD to print [x, y] of Astronaut
-        self._print_x = Counter(Point(750, FONT_SIZE), FONT_SIZE, "X")
-        self._print_y = Counter(Point(750, FONT_SIZE *2), FONT_SIZE, "Y")
+        self._print_x = Counter(Point(750, COUNTER_SIZE), COUNTER_SIZE, "X")
+        self._print_y = Counter(Point(750, COUNTER_SIZE *2), COUNTER_SIZE, "Y")
 
         self._HUD = [self._gems, self._lives, self._health, self._shots, self._key, self._print_x, self._print_y]
 
@@ -50,6 +52,7 @@ class Player(Fighting_Actor):
             Overrides the position of the Player.
         """
         self._position = position
+        self._hitbox.overrite_position(self._position)
 
     def move(self):
         """
@@ -64,7 +67,7 @@ class Player(Fighting_Actor):
         """
             Returns if the Player has found the boss key.
         """
-        return self._key.get_count() == 1
+        return self._key.get_count() >= 1
 
     def start_stats(self):
         """
@@ -75,11 +78,10 @@ class Player(Fighting_Actor):
         self._position = copy.copy(self._spawn_point) # TODO: Player doesn't reset position?
         
         # DEBUG: Immediate Boss fight
-        #self._key.set_count(1)
+        # self._key.set_count(1)
         self._lives.set_count(STARTING_LIVES)
         self._health.set_count(self._current_HP)
         self._shots.set_count(STARTING_SHOTS)
-
 
     def check_shoot(self):
         """
@@ -158,7 +160,7 @@ class Player(Fighting_Actor):
 
         # Returns the bullet back to the Scene Manager so 
         #  it can display it and detect collisions
-        return Bullet("bullet", new_position, speed, self._size)
+        return Bullet("bullet", new_position, speed, self._width, int(self._width // 3))
 
     def pickup(self, item):
         """
