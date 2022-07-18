@@ -69,6 +69,7 @@ PLAYER_HP = 25
 STARTING_SHOTS = 50
 
 # Boss Constants
+BOSS_NAME = "Boss"
 BOSS_HP = 40
 BOSS_ATTACK = 10
 

@@ -2,7 +2,7 @@ from actors.enemy import Enemy, Point
 from actors.Boss import Boss
 from actors.hitbox import Hitbox
 from actors.background_obj import background_obj, collidable_obj, long_object
-from constants import ACTOR_HEIGHT, ACTOR_WIDTH, PICKUP_SIZE, ROCK_BLACK, ROCK_BLUE, SPACESHIP_ICON, WINDOW_MAX_X, WINDOW_MAX_Y
+from constants import ACTOR_HEIGHT, ACTOR_WIDTH, PICKUP_SIZE, ROCK_BLACK, ROCK_BLUE, SPACESHIP_ICON, WINDOW_MAX_X, WINDOW_MAX_Y, BOSS_NAME
 from actors.pickup import *
 
 """
@@ -165,4 +165,4 @@ class Boss_Scene(Scene):
     def __init__(self):
         super().__init__()
         self._name = "Boss"
-        self._enemies = [Boss("Boss", Point(300, 150), ACTOR_WIDTH *3,  ACTOR_WIDTH *5, [Point(300, 150), Point(600, 150)])]
+        self._enemies = [Boss(BOSS_NAME, Point(300, 150), ACTOR_WIDTH *3,  ACTOR_WIDTH *5, [Point(300, 150), Point(600, 150)])]

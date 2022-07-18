@@ -14,6 +14,7 @@ class Director():
     def __init__(self):
         # Determine if the game is over.
         self._game_over = False
+        self._win = False
         # Determine iwf the window should close (exit program).
         self._window_close = False
         # Add all the constants
@@ -89,6 +90,7 @@ class Director():
             # Continue playing the game,
             #   Checks if the game is over (the Player has died)
             self._game_over = not(self._scene_manager.continue_game())
+            self._win = self._scene_manager.boss_defeated()
             # DEBUG: Immediate game over
             #self._game_over = True
             
@@ -139,7 +141,10 @@ class Director():
         y_offset = int(GAME_OVER_SIZE * 1.5)
         
         # Add the Game Over Message.
-        self._scene_manager.add_message(Message(game_over_pos, GAME_OVER_SIZE, "Game Over"))
+        if self._scene_manager.boss_defeated():
+            self._scene_manager.add_message(Message(game_over_pos, GAME_OVER_SIZE, "You Win!"))
+        else:
+            self._scene_manager.add_message(Message(game_over_pos, GAME_OVER_SIZE, "Game Over"))
         
         # Add Play Again and Exit Buttons.
         self._scene_manager.add_button("PLAY_AGAIN", Button(Point(game_over_pos.get_x() - (x_offset//2), game_over_pos.get_y() + y_offset), BUTTON_SIZE, "Play Again"))
@@ -150,8 +155,10 @@ class Director():
             Resets the game.
         """        
         self._game_over = False
+        self._win = False
         # Starts the Player back at the Spawn and resets their stats
-        self._scene_manager.reset_player()
+        self._scene_manager.reset()
+        self.create_scenes()
         self._scene_manager.setup_scene(self._game_scenes["SPAWN"])
 
         # Removes game_over cast members (Game Over menu).

@@ -10,6 +10,7 @@ class Scene_Manager():
         # Could make player it's own object to simplify the reset of colliding actors, enemies, and object lists?
         #self._player = None
         self._HUD = []
+        self._win = False
 
         # Player enters from nowhere, spawns in Spawn Scene
         self._player_entrance = None
@@ -163,8 +164,14 @@ class Scene_Manager():
                     # Remove the actor if it is not the Player
                     self._colliding_actors.remove(collider)
                     #print(f"{collider.get_name()} has died!")
+                    if collider.get_name() == BOSS_NAME:
+                        # If the Boss has been defeated, the Player won the game
+                        print("you win!")
+                        self._win = True
+                        return False
                 else:
                     # The Player has died, and the game is over
+                    self._win = False
                     return False
             collider.move()
         
@@ -174,11 +181,8 @@ class Scene_Manager():
         # Return if the game should continue
         return True
 
-    def reset_player(self):
-        """
-            Moves the Player to their spawn point.
-        """
-        self._colliding_actors[0].respawn()
+    def boss_defeated(self):
+        return self._win
 
     def check_actions(self):
         """
@@ -249,7 +253,8 @@ class Scene_Manager():
         # Put the Player where they entered in,
         if (self._player_entrance == None):
             # UNLESS the game just started, begins at the Spaceship
-            self._colliding_actors[0].set_position(PLAYER_SPAWN)
+            #self._colliding_actors[0].respawn()
+            self._colliding_actors[0].set_position(copy.copy(PLAYER_SPAWN))
         else:
             self._colliding_actors[0].set_position(copy.copy(ENTRANCE_POINTS[self._player_entrance]))
 
