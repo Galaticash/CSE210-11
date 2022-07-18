@@ -166,9 +166,14 @@ class Scene_Manager():
                     #print(f"{collider.get_name()} has died!")
                     if collider.get_name() == BOSS_NAME:
                         # If the Boss has been defeated, the Player won the game
-                        print("you win!")
+                        #print("you win!")
                         self._win = True
                         return False
+                    if collider.get_name() == BOSS_KEY_NAME:
+                        hidden_enemies = self._current_scene.get_hidden_enemies()
+                        if len(hidden_enemies) > 0:
+                            for enemy in hidden_enemies:
+                                self.add_enemy(enemy)
                 else:
                     # The Player has died, and the game is over
                     self._win = False

@@ -8,7 +8,8 @@ from actors.counter import Counter
 # Constants
 #  Inventory/Counter Icons
 from constants import GEM_ICON, BULLET_ICON, HEALTH_ICON, LIFE_ICON
-from constants import ACTOR_SCALE, COUNTER_SIZE, STARTING_LIVES, PLAYER_HP, STARTING_SHOTS, BULLET_PADDING, BULLET_SPEED
+from constants import ACTOR_SCALE, COUNTER_SIZE, STARTING_LIVES, PLAYER_HP, STARTING_SHOTS, BULLET_PADDING, BULLET_SPEED, BOSS_KEY_NAME
+from constants import GEM_NAME, LIFE_NAME, HEALTH_NAME, BULLET_NAME
 
 class Player(Fighting_Actor):
     """
@@ -31,12 +32,11 @@ class Player(Fighting_Actor):
         self._velocity = [0, 0]
 
         # Create a Counter for each item
-        self._gems = Counter(Point(400, COUNTER_SIZE), COUNTER_SIZE, "Gems:", GEM_ICON)
         self._lives = Counter(Point(50, COUNTER_SIZE), COUNTER_SIZE, "Lives:", LIFE_ICON)
-        self._health = Counter(Point(50, COUNTER_SIZE *2), COUNTER_SIZE, "Health:", HEALTH_ICON)   
-        self._shots = Counter(Point(250, COUNTER_SIZE), COUNTER_SIZE, "Shots:", BULLET_ICON)
-
-        self._key = Counter(Point(500, COUNTER_SIZE//2), COUNTER_SIZE, "Key: ")
+        self._health = Counter(Point(150, COUNTER_SIZE), COUNTER_SIZE, "Health:", HEALTH_ICON)  
+        self._gems = Counter(Point(375, COUNTER_SIZE), COUNTER_SIZE, "Gems:", GEM_ICON) 
+        self._shots = Counter(Point(500, COUNTER_SIZE), COUNTER_SIZE, "Shots:", BULLET_ICON)
+        self._key = Counter(Point(624, COUNTER_SIZE//2), COUNTER_SIZE, "Key: ")
 
         # DEBUG: Add to HUD to print [x, y] of Astronaut
         self._print_x = Counter(Point(750, COUNTER_SIZE), COUNTER_SIZE, "X")
@@ -78,7 +78,7 @@ class Player(Fighting_Actor):
         self._position = copy.copy(self._spawn_point) # TODO: Player doesn't reset position?
         
         # DEBUG: Immediate Boss fight
-        self._key.set_count(0)
+        # self._key.set_count(0)
         self._lives.set_count(STARTING_LIVES)
         self._health.set_count(self._current_HP)
         self._shots.set_count(STARTING_SHOTS)
@@ -168,16 +168,16 @@ class Player(Fighting_Actor):
         """
             The Player will pickup the given item.
         """
-        if item.get_name()[0] == "G":
-            self._gems.add(item.get_amount())
-        elif item.get_name()[0] == "B":
-            self._shots.add(item.get_amount())
-        elif item.get_name()[0] == "H":
-            self._update_HP(item.get_amount())
-        elif item.get_name()[0] == "L":
-            self._lives.add(item.get_amount())
-        elif item.get_name()[0] == "K":
+        if item.get_name()[0:-3] == BOSS_KEY_NAME:
             self._key.add(item.get_amount())
+        elif item.get_name()[0:-3] == GEM_NAME:
+            self._gems.add(item.get_amount())
+        elif item.get_name()[0:-3] == BULLET_NAME:
+            self._shots.add(item.get_amount())
+        elif item.get_name()[0:-3] == HEALTH_NAME:
+            self._update_HP(item.get_amount())
+        elif item.get_name()[0:-3] == LIFE_NAME:
+            self._lives.add(item.get_amount())
         else:
             print("Unidentified Item")
 

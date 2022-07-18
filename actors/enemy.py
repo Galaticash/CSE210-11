@@ -1,6 +1,7 @@
+from turtle import pos
 from actors.collision_actor import *
 from actors.Fighting_Actor import Fighting_Actor
-from constants import ENEMY_SCALE
+from constants import ENEMY_SCALE, AGGRO
 
 SPIRTE_PATH = "Alien\\Alien_idle3.png"
 
@@ -22,13 +23,19 @@ class Enemy(Fighting_Actor):
         self._max_HP = 15
         self._current_HP = self._max_HP
 
-        # Aggro logic
-        self._aggro = False
+        # Aggro logic, enemies that only aggro don't have a path
+        if path == AGGRO:
+            self._aggro = True
+            self._route = [position]  
+        else:
+            self._aggro = False
+                
+            self._route = path  
+
         self._agrro_distance = 0
         self._player_position = Point(0, 0)
-
+        
         # Movement logic, starts by travelling to the first point on it's route
-        self._route = path        
         self._route_item = 0
         self._goal_position = self._route[self._route_item]
 

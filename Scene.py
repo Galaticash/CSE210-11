@@ -2,7 +2,7 @@ from actors.enemy import Enemy, Point
 from actors.Boss import Boss
 from actors.hitbox import Hitbox
 from actors.background_obj import background_obj, collidable_obj, long_object
-from constants import ACTOR_HEIGHT, ACTOR_WIDTH, PICKUP_SIZE, ROCK_BLACK, ROCK_BLUE, SPACESHIP_ICON, WINDOW_MAX_X, WINDOW_MAX_Y, BOSS_NAME
+from constants import ACTOR_HEIGHT, ACTOR_WIDTH, PICKUP_SIZE, ROCK_BLACK, ROCK_BLUE, SPACESHIP_ICON, WINDOW_MAX_X, WINDOW_MAX_Y, BOSS_NAME, BOSS_KEY_NAME, AGGRO, HEALTH_NAME, BULLET_NAME, GEM_NAME
 from actors.pickup import *
 
 """
@@ -23,6 +23,7 @@ class Scene():
         self._name = "None"
         # The Enemies that the Player has to battle
         self._enemies = []
+        self._hidden_enemies = []
 
         # Rocks, barriers, barrels
         # Just anything the Player can collide with (non-fighting)
@@ -83,10 +84,21 @@ class Scene():
         """
         return self._fore_objects
 
+    def get_hidden_enemies(self):
+        """
+            Returns the hidden enemies in the scene (reveal themselves when event triggered)
+        """
+        return self._hidden_enemies
+
 class Spawn_scene(Scene):
     def __init__(self):
         super().__init__()
         self._name = "Spawn"
+
+        #self._objects.append(Pickup(BOSS_KEY_NAME + str(1), Point(450, 300), 1, PICKUP_SIZE))        
+        #self._objects.append(Pickup(BULLET_NAME + str(2), Point(450, 400), 1, PICKUP_SIZE))
+        #self._objects.append(Pickup(HEALTH_NAME + str(1), Point(450, 500), 1, PICKUP_SIZE))
+        
         # There will be no enemies in the Spawn scene
         #self._enemies = []
         
@@ -154,12 +166,14 @@ class Hidden_Scene(Scene):
         super().__init__()
         self._name = "Hidden"
 
+        self._hidden_enemies.append(Enemy("enemy1", Point(200, 200), ACTOR_WIDTH, ACTOR_HEIGHT, AGGRO))
+
         self._objects = []
-        self._objects.append(Pickup("Gem1", Point(100, 150), 1, PICKUP_SIZE))
-        self._objects.append(Pickup("Gem2", Point(200, 200), 5, PICKUP_SIZE, "BLUE"))
-        self._objects.append(Pickup("Gem3", Point(125, 175), 1, PICKUP_SIZE))
-        self._objects.append(Pickup("Gem4", Point(300, 300), 1, PICKUP_SIZE))
-        self._objects.append(Pickup("Key", Point(300, 450), 1, PICKUP_SIZE, "YELLOW"))
+        self._objects.append(Pickup(GEM_NAME + str(1), Point(100, 150), 1, PICKUP_SIZE))
+        self._objects.append(Pickup(GEM_NAME + str(2), Point(200, 200), 5, PICKUP_SIZE, "BLUE"))
+        self._objects.append(Pickup(GEM_NAME + str(3), Point(125, 175), 1, PICKUP_SIZE))
+        self._objects.append(Pickup(GEM_NAME + str(4), Point(300, 300), 1, PICKUP_SIZE))
+        self._objects.append(Pickup(BOSS_KEY_NAME + str(1), Point(300, 450), 1, PICKUP_SIZE))
 
 class Boss_Scene(Scene):
     def __init__(self):

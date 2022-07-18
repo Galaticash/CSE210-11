@@ -153,13 +153,14 @@ class Director():
     def replay(self):
         """
             Resets the game.
-        """        
+        """
+        # Reset game over/win variables
         self._game_over = False
         self._win = False
-        # Starts the Player back at the Spawn and resets their stats
-        self._scene_manager.reset()
-        self.create_scenes()
-        self._scene_manager.setup_scene(self._game_scenes["SPAWN"])
+
+        self._scene_manager.reset() # Reset the scene manager's knowledge
+        self.create_scenes() # Reset the scenes
+        self._scene_manager.setup_scene(self._game_scenes["SPAWN"]) # setup the Spawn Scene
 
         # Removes game_over cast members (Game Over menu).
         self._scene_manager.remove_game_over()

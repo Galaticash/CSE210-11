@@ -29,7 +29,7 @@ ACTOR_HEIGHT = ACTOR_WIDTH
 ACTOR_SCALE = 1.25
 ENEMY_SCALE = ACTOR_SCALE + .5
 
-PICKUP_SIZE = ACTOR_WIDTH //2
+PICKUP_SIZE = 50
 
 # Actor Names (VERY HARDCODED AND WEIRD)
 PLAYER_NAME = "Player"
@@ -49,7 +49,10 @@ GEM_ICON = "OtherSprites\\Diamond.png"
 BULLET_ICON = "OtherSprites\\EnergyPack.png"
 HEALTH_ICON = "OtherSprites\\Heart.png"
 LIFE_ICON = "OtherSprites\\LivesCounter.png"
-KEY_ICON = "OtherSprites\\Diamond.png"
+KEY_ICON = "OtherSprites\\key.png"
+#"OtherSprites\\LivesCounter.png"
+#
+
 SPACESHIP_ICON = "SmallDriller.png"
 #"8-bit-space-ship.png"
 ROCK_BLACK = "Rock\\rock_black.png"
@@ -57,6 +60,8 @@ ROCK_BLUE = "Rock\\rock_blue.png"
 
 # When the Collision Actor is flung by a collision, how long until it can change its velocity
 FREEZE_TIME = 15
+
+AGGRO = ""
 
 # Actor Constants
 STEP_SIZE = 5
@@ -72,6 +77,12 @@ STARTING_SHOTS = 50
 BOSS_NAME = "Boss"
 BOSS_HP = 40
 BOSS_ATTACK = 10
+
+BOSS_KEY_NAME = "Boss_key"
+HEALTH_NAME = "Health"
+BULLET_NAME = "Bullet"
+GEM_NAME = "Gem"
+LIFE_NAME = "Life"
 
 # How far the bullet spawns from the Player
 BULLET_PADDING = 100

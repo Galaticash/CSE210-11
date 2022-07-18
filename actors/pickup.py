@@ -1,27 +1,28 @@
 from actors.collision_actor import Collision_Actor
-from constants import PICKUP_SIZE, GEM_ICON, BULLET_ICON, HEALTH_ICON, LIFE_ICON, KEY_ICON, BLANK_ICON
+from constants import PICKUP_SIZE, BOSS_KEY_NAME, GEM_ICON, BULLET_ICON, HEALTH_ICON, LIFE_ICON, KEY_ICON, BLANK_ICON, BULLET_NAME, GEM_NAME, HEALTH_NAME, LIFE_NAME
 
 class Pickup(Collision_Actor):
     """
         An item that can be picked up (by the Player only)
     """    
     def __init__(self, name, position, amount, width = PICKUP_SIZE, color="WHITE"):        
-        # Add a pickup identifier
-        # VERY Hardcoded but it works
-
-        name += "_p"
-        if name[0] == "G":
-            image = GEM_ICON
-        elif name[0] == "B":
-            image = BULLET_ICON
-        elif name[0] == "H":
-            image = HEALTH_ICON
-        elif name[0] == "L":
-            image = LIFE_ICON
-        elif name[0] == "K":
+        # Add a pickup identifier, VERY Hardcoded but it works
+        # Name without the number (0 - 9)
+        if name[0:-1] == BOSS_KEY_NAME:
             image = KEY_ICON
+        elif name[0:-1] == GEM_NAME:
+            image = GEM_ICON
+        elif name[0:-1] == BULLET_NAME:
+            image = BULLET_ICON
+        elif name[0:-1] == HEALTH_NAME:
+            image = HEALTH_ICON
+        elif name[0:-1] == LIFE_NAME:
+            image = LIFE_ICON
         else:
             image = BLANK_ICON
+        
+        # Pickup identifier (if obj.get_name()[-2] == "_p")
+        name += "_p"
 
         super().__init__(name, position, width, width, image, color)
 
