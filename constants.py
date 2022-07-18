@@ -50,13 +50,12 @@ BULLET_ICON = "OtherSprites\\EnergyPack.png"
 HEALTH_ICON = "OtherSprites\\Heart.png"
 LIFE_ICON = "OtherSprites\\LivesCounter.png"
 KEY_ICON = "OtherSprites\\key.png"
-#"OtherSprites\\LivesCounter.png"
-#
-
 SPACESHIP_ICON = "SmallDriller.png"
 #"8-bit-space-ship.png"
 ROCK_BLACK = "Rock\\rock_black.png"
 ROCK_BLUE = "Rock\\rock_blue.png"
+
+GAME_TITLE = "Astronaut Adventure"
 
 # When the Collision Actor is flung by a collision, how long until it can change its velocity
 FREEZE_TIME = 15
