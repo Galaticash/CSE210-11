@@ -16,6 +16,8 @@ class Bullet(Fighting_Actor):
         self._max_HP = 0
         self._current_HP = 0
 
+        # Cool, you can change the update frame per Actor
+        #self._update_fame = 2
         self._frames = ["Bolt\\arrow1_6.png", "Bolt\\arrow1_7.png", "Bolt\\arrow1_8.png", "Bolt\\arrow1_9.png", "Bolt\\arrow1_10.png", "Bolt\\arrow1_11.png"]
         self._scale = 2
 
@@ -26,6 +28,9 @@ class Bullet(Fighting_Actor):
         self._velocity = velocity
         
     def swap_width_height(self):
+        """
+            Swaps the width and height of the object, and rotates its hitbox
+        """
         temp = self._height
         self._height = self._width
         self._width = temp
@@ -65,5 +70,4 @@ class Bullet(Fighting_Actor):
         if hit_something:
             # print(f"Bullet hit {other_collider.get_name()}")
             self._alive = False
-
         return hit_something

@@ -1,28 +1,6 @@
 from collisionHandler import Collision_Handler
-from actors.background_obj import collidable_obj
 from constants import *
-from actors.exit import Exit
-from point import Point
 import copy
-
-# Scene bounds (all the same)
-scene_edges = {"TOP": UI_Y_POS, "BOTTOM": WINDOW_MAX_Y, "LEFT": 0, "RIGHT": WINDOW_MAX_X}
-EXIT_POSITIONS = {"TOP": Point((scene_edges["RIGHT"] - scene_edges["LEFT"])//2, scene_edges["TOP"]), "BOTTOM": Point((scene_edges["RIGHT"] - scene_edges["LEFT"])//2, scene_edges["BOTTOM"]), "LEFT": Point(scene_edges["LEFT"], (scene_edges["BOTTOM"] - scene_edges["TOP"])//2 +  scene_edges["TOP"]), "RIGHT": Point(scene_edges["RIGHT"], (scene_edges["BOTTOM"] - scene_edges["TOP"])//2 + scene_edges["TOP"])}
-# scene_edges["TOP"], scene_edges["TOP"], scene_edges["LEFT"], scene_edges["RIGHT"]
-WALL_WIDTH = {"TOP": scene_edges["RIGHT"] - scene_edges["LEFT"], "BOTTOM": scene_edges["RIGHT"] - scene_edges["LEFT"], "LEFT": 0, "RIGHT": 0}
-WALL_HEIGHT = {"TOP": 0, "BOTTOM": 0, "LEFT": scene_edges["BOTTOM"] - scene_edges["TOP"], "RIGHT": scene_edges["BOTTOM"] - scene_edges["TOP"]}
-
-# The exits that, when collided with, move the Player to the next scene
-EXITS =  {"TOP": Exit("TOP", EXIT_POSITIONS["TOP"], WALL_WIDTH["TOP"], WALL_HEIGHT["TOP"]), "LEFT": Exit("LEFT", EXIT_POSITIONS["LEFT"], WALL_WIDTH["LEFT"], WALL_HEIGHT["LEFT"]), "RIGHT": Exit("RIGHT", EXIT_POSITIONS["RIGHT"], WALL_WIDTH["RIGHT"], WALL_HEIGHT["RIGHT"]), "BOTTOM": Exit("BOTTOM", EXIT_POSITIONS["BOTTOM"], WALL_WIDTH["BOTTOM"], WALL_HEIGHT["BOTTOM"])}
-
-# Blockers are placed if there is no connection
-EXIT_BLOCKERS = {"TOP": collidable_obj("TOP_WALL", EXIT_POSITIONS["TOP"], WALL_WIDTH["TOP"], WALL_HEIGHT["TOP"]), "BOTTOM": collidable_obj("BOTTOM_WALL", EXIT_POSITIONS["BOTTOM"], WALL_WIDTH["BOTTOM"], WALL_HEIGHT["BOTTOM"]), "LEFT": collidable_obj("LEFT_WALL", EXIT_POSITIONS["LEFT"], WALL_WIDTH["LEFT"], WALL_HEIGHT["LEFT"]), "RIGHT": collidable_obj("RIGHT_WALL", EXIT_POSITIONS["RIGHT"], WALL_WIDTH["RIGHT"], WALL_HEIGHT["RIGHT"])}
-
-# Where the Player enters the scene
-ENTRANCE_PADDING = ACTOR_WIDTH + 25
-ENTRANCE_POINTS = {"TOP": Point(EXIT_POSITIONS["TOP"].get_x(), EXIT_POSITIONS["TOP"].get_y() + ENTRANCE_PADDING),"BOTTOM": Point(EXIT_POSITIONS["BOTTOM"].get_x(), EXIT_POSITIONS["BOTTOM"].get_y() - ENTRANCE_PADDING), "LEFT": Point(EXIT_POSITIONS["LEFT"].get_x() + ENTRANCE_PADDING, EXIT_POSITIONS["LEFT"].get_y()), "RIGHT": Point(EXIT_POSITIONS["RIGHT"].get_x() - ENTRANCE_PADDING, EXIT_POSITIONS["RIGHT"].get_y())}
-
-#{"TOP": Exit(), "BOTTOM": Exit(), "LEFT": Exit(), "RIGHT": Exit()}
 
 class Scene_Manager():
     """
@@ -184,6 +162,7 @@ class Scene_Manager():
                 if not collider.get_name() == PLAYER_NAME:
                     # Remove the actor if it is not the Player
                     self._colliding_actors.remove(collider)
+                    #print(f"{collider.get_name()} has died!")
                 else:
                     # The Player has died, and the game is over
                     return False
@@ -270,7 +249,7 @@ class Scene_Manager():
         # Put the Player where they entered in,
         if (self._player_entrance == None):
             # UNLESS the game just started, begins at the Spaceship
-            self._colliding_actors[0].set_position(Point(450, 300))
+            self._colliding_actors[0].set_position(PLAYER_SPAWN)
         else:
             self._colliding_actors[0].set_position(copy.copy(ENTRANCE_POINTS[self._player_entrance]))
 

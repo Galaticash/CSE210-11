@@ -1,7 +1,7 @@
+from constants import Point
 from color import Color
-from point import Point
-import copy
 from actors.image import Image
+import copy
 
 class Actor():
     """

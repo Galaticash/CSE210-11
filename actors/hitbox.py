@@ -1,4 +1,3 @@
-from point import Point
 DIRECTIONS = ["TOP", "BOTTOM", "LEFT", "RIGHT"]
 
 class Hitbox():

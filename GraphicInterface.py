@@ -194,8 +194,8 @@ class Window():
             Prints the given button on the board. Has a box 
              surrounding it to differentiate itself as a button.
         """
-        
-        self._print_hitbox(button.get_hitbox(), button.get_color())
+        # NOTE: The boxes don't look good rn, so they'll be turned off
+        # self._print_hitbox(button.get_hitbox(), button.get_color())
         pyray.draw_text(button.get_display(), button.get_x(), button.get_y(), button.get_size(), button.get_text_color())
         
     def _print_hitbox(self, hitbox, color = ""):
@@ -203,7 +203,6 @@ class Window():
             Draws a given hitbox. Must be printed before text, 
              otherwise the Rectangle will draw on top of the text.
         """
-        color = pyray.RED
         hitbox_color = color        
         if color == "":
             # Draw a rectangle
@@ -222,7 +221,7 @@ class Window():
         pyray.draw_line(hitbox.right, hitbox.top, hitbox.right, hitbox.bottom, color)
 
         # The point position
-        pyray.draw_circle(hitbox._position.get_x(), hitbox._position.get_y(), 5, pyray.GREEN)
+        # pyray.draw_circle(hitbox._position.get_x(), hitbox._position.get_y(), 5, pyray.GREEN)
 
     def _print_rock(self, rock):
         """

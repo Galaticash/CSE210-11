@@ -1,13 +1,6 @@
 from actors.actor import *
 from actors.hitbox import Hitbox
-from actors.image import Image
-from constants import ACTOR_WIDTH, ACTOR_HEIGHT, STEP_SIZE, COLOR_TIMER_MAX, INVULNERABLE_TIMER
-import copy
-
-
-
-# The frame at which the animation frame is updated
-UPDATE_FRAME = 5
+from constants import ACTOR_WIDTH, ACTOR_HEIGHT, STEP_SIZE, COLOR_TIMER_MAX, INVULNERABLE_TIMER, UPDATE_FRAME
 
 class Collision_Actor(Actor):
     """

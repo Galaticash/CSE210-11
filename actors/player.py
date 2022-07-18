@@ -160,7 +160,9 @@ class Player(Fighting_Actor):
 
         # Returns the bullet back to the Scene Manager so 
         #  it can display it and detect collisions
-        return Bullet("bullet", new_position, speed, self._width, int(self._width // 3))
+        bullet_width = int(self._width)
+        bullet_height = int(self._width //3)
+        return Bullet("bullet", new_position, speed, bullet_width, bullet_height)
 
     def pickup(self, item):
         """

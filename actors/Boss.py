@@ -1,5 +1,4 @@
 from actors.enemy import Enemy
-from actors.hitbox import Hitbox
 from constants import BOSS_HP, BOSS_ATTACK
 
 class Boss(Enemy):
@@ -12,3 +11,12 @@ class Boss(Enemy):
         self._current_HP = self._max_HP
 
         self._attack = BOSS_ATTACK
+
+    def is_hit(self, other_collider):
+        """
+            The Boss is so big that he ignores the Top wall
+        """
+        if not (other_collider.get_name() == "TOP_WALL"):
+            return super().is_hit(other_collider)
+        else:
+            return False

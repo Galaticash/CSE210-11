@@ -35,7 +35,7 @@ class Director():
 
     def create_scenes(self):
         """
-            Creates all the scenes in the game and adds connections
+            Creates all the scenes in the game and adds their connections
         """
         # {"SPAWN": Scene() }
         self._game_scenes["TEST"] = TestScene()
@@ -74,7 +74,7 @@ class Director():
         self.create_scenes()
 
         # Add the Player (user) and Enemies to the Cast.
-        PLAYER_SPAWN = Point(300, 325)
+
         self._scene_manager.add_player(Player(PLAYER_NAME, PLAYER_SPAWN, ACTOR_WIDTH, ACTOR_HEIGHT))
         
         # Start at the SPAWN scene

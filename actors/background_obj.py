@@ -1,4 +1,3 @@
-
 from actors.actor import Actor, Image
 from actors.collision_actor import Collision_Actor
 
@@ -38,12 +37,10 @@ class collidable_obj(Collision_Actor):
     # The actor will collide with other actors, but not recieve damage/update it's alive status
     def is_hit(self, other_collider):
         """
-            If this object is hit, do nothing
+            Will report if the object has been hit. However, it won't do anything.
         """
-        if self._do_collisions and other_collider.get_name() == "Player":
+        if self._do_collisions:
             is_hit = self._hitbox.hit(other_collider.get_hitbox())
-            if is_hit:
-                pass
             return is_hit
         else:
             return False

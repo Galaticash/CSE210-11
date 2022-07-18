@@ -61,11 +61,9 @@ class Collision_Handler():
             # Check a sub section of the list
             for j in range(i + 1, len(given_colliders)):
                 collider_two = given_colliders[j]
-                # Check if the first object collided with the other object
-                if collider_one.is_hit(collider_two):
-                    # Other collider hits the first collider back
-                    collider_two.is_hit(collider_one)
-
+                # Check if the colliders have hit eachother
+                # BOTH have to return True, since some ignore collisions
+                if collider_one.is_hit(collider_two) and collider_two.is_hit(collider_one):
                     # Will reverse the direction the objects are currently travelling
                     one_s_velocity = True
                     collision_direction = copy.copy(collider_one.get_velocity())
