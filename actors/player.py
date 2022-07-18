@@ -78,7 +78,7 @@ class Player(Fighting_Actor):
         self._position = copy.copy(self._spawn_point) # TODO: Player doesn't reset position?
         
         # DEBUG: Immediate Boss fight
-        self._key.set_count(1)
+        self._key.set_count(0)
         self._lives.set_count(STARTING_LIVES)
         self._health.set_count(self._current_HP)
         self._shots.set_count(STARTING_SHOTS)
