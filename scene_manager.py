@@ -1,6 +1,31 @@
+from actors.pickup import Pickup
 from collisionHandler import Collision_Handler
 from constants import *
 import copy
+
+
+## Scene Manager Constants ##
+from actors.background_obj import collidable_obj
+from actors.exit import Exit
+# Scene bounds (all the same)
+SCENE_EDGES = {"TOP": UI_Y_POS, "BOTTOM": WINDOW_MAX_Y, "LEFT": 0, "RIGHT": WINDOW_MAX_X}
+# NOTE: Some funky math for the left/right edges, it goes wrong somewhere, but I was able to adjust it here (//2)
+EXIT_POSITIONS = {"TOP": Point((SCENE_EDGES["RIGHT"] - SCENE_EDGES["LEFT"])//2, SCENE_EDGES["TOP"]), "BOTTOM": Point((SCENE_EDGES["RIGHT"] - SCENE_EDGES["LEFT"])//2, SCENE_EDGES["BOTTOM"]), "LEFT": Point(SCENE_EDGES["LEFT"], (SCENE_EDGES["BOTTOM"] - SCENE_EDGES["TOP"])//2 +  SCENE_EDGES["TOP"]), "RIGHT": Point(SCENE_EDGES["RIGHT"], (SCENE_EDGES["BOTTOM"] - SCENE_EDGES["TOP"])//2 + SCENE_EDGES["TOP"])}
+
+# The widths and heights for each Exit/Edge
+WALL_WIDTH = {"TOP": SCENE_EDGES["RIGHT"] - SCENE_EDGES["LEFT"], "BOTTOM": SCENE_EDGES["RIGHT"] - SCENE_EDGES["LEFT"], "LEFT": 0, "RIGHT": 0}
+WALL_HEIGHT = {"TOP": 0, "BOTTOM": 0, "LEFT": SCENE_EDGES["BOTTOM"] - SCENE_EDGES["TOP"], "RIGHT": SCENE_EDGES["BOTTOM"] - SCENE_EDGES["TOP"]}
+
+# The exits that, when collided with, move the Player to the next scene
+EXITS =  {"TOP": Exit("TOP", EXIT_POSITIONS["TOP"], WALL_WIDTH["TOP"], WALL_HEIGHT["TOP"]), "LEFT": Exit("LEFT", EXIT_POSITIONS["LEFT"], WALL_WIDTH["LEFT"], WALL_HEIGHT["LEFT"]), "RIGHT": Exit("RIGHT", EXIT_POSITIONS["RIGHT"], WALL_WIDTH["RIGHT"], WALL_HEIGHT["RIGHT"]), "BOTTOM": Exit("BOTTOM", EXIT_POSITIONS["BOTTOM"], WALL_WIDTH["BOTTOM"], WALL_HEIGHT["BOTTOM"])}
+
+# Blockers are placed if there is no connection (so they can't walk off the screen)
+EXIT_BLOCKERS = {"TOP": collidable_obj("TOP_WALL", EXIT_POSITIONS["TOP"], WALL_WIDTH["TOP"], WALL_HEIGHT["TOP"]), "BOTTOM": collidable_obj("BOTTOM_WALL", EXIT_POSITIONS["BOTTOM"], WALL_WIDTH["BOTTOM"], WALL_HEIGHT["BOTTOM"]), "LEFT": collidable_obj("LEFT_WALL", EXIT_POSITIONS["LEFT"], WALL_WIDTH["LEFT"], WALL_HEIGHT["LEFT"]), "RIGHT": collidable_obj("RIGHT_WALL", EXIT_POSITIONS["RIGHT"], WALL_WIDTH["RIGHT"], WALL_HEIGHT["RIGHT"])}
+
+# Where the Player enters the next Scene
+ENTRANCE_PADDING = ACTOR_WIDTH + 25
+ENTRANCE_POINTS = {"TOP": Point(EXIT_POSITIONS["TOP"].get_x(), EXIT_POSITIONS["TOP"].get_y() + ENTRANCE_PADDING),"BOTTOM": Point(EXIT_POSITIONS["BOTTOM"].get_x(), EXIT_POSITIONS["BOTTOM"].get_y() - ENTRANCE_PADDING), "LEFT": Point(EXIT_POSITIONS["LEFT"].get_x() + ENTRANCE_PADDING, EXIT_POSITIONS["LEFT"].get_y()), "RIGHT": Point(EXIT_POSITIONS["RIGHT"].get_x() - ENTRANCE_PADDING, EXIT_POSITIONS["RIGHT"].get_y())}
+
 
 class Scene_Manager():
     """
@@ -11,6 +36,8 @@ class Scene_Manager():
         #self._player = None
         self._HUD = []
         self._win = False
+
+        self._added_number = 0
 
         # Player enters from nowhere, spawns in Spawn Scene
         self._player_entrance = None
@@ -166,14 +193,20 @@ class Scene_Manager():
                     #print(f"{collider.get_name()} has died!")
                     if collider.get_name() == BOSS_NAME:
                         # If the Boss has been defeated, the Player won the game
-                        #print("you win!")
                         self._win = True
                         return False
-                    if collider.get_name() == BOSS_KEY_NAME:
+                    if collider.get_name() == BOSS_KEY_NAME + str(1) + "_p":
                         hidden_enemies = self._current_scene.get_hidden_enemies()
                         if len(hidden_enemies) > 0:
                             for enemy in hidden_enemies:
                                 self.add_enemy(enemy)
+                    # "Enemy1" --> "Enemy"
+                    # if len(collider.get_name()) >= len(ENEMY_NAME) and collider.get_name()[:-1] == ENEMY_NAME:
+                    #     print("Drop")
+                    #     self._objects.append(Pickup(BULLET_NAME + str(self._added_number), collider.get_point_position(), 1))
+                    #     self._added_number += 1
+                    #     if self._added_number > 9:
+                    #         self._added_number = 0
                 else:
                     # The Player has died, and the game is over
                     self._win = False
@@ -308,7 +341,8 @@ class Scene_Manager():
         """
             Removes the Game Over Message.
         """
-        self._messages.pop()
+        del self._messages
+        self._messages = []
         self.remove_buttons()
 
     def remove_buttons(self):
@@ -324,12 +358,14 @@ class Scene_Manager():
             Except for the Player and the HUD
         """
         self._current_scene = None
+        self._win = False
         
         # Clear the connections dictionary
         del self._scene_connections
         self._scene_connections = {}
 
         player = copy.copy(self._colliding_actors[0])
+        player.start_stats()
         
         # NOTE: not sure if del/delete does anything in python?
         # Delete the colliders list, and restart with only the Player

@@ -1,6 +1,5 @@
 import os
 import pyray
-from pyray import Rectangle
 import pathlib
 from actors.image import Image
 
@@ -257,7 +256,13 @@ class Window():
             
         # Print the foreground objects - colliding actors can go 'under' them
         for fore_obj in cast.get_foreground_objects():
-            self._print_actor_image(fore_obj)
+            # If it has an image
+            if isinstance(fore_obj.get_display(), Image):
+                # Print the image
+                self._print_actor_image(fore_obj)
+            else:
+                # Print the text version
+                self._print_actor(fore_obj)
 
         # # Objects with colliders (Pickups, etc) <-- already included in colliders
         # for item in cast.get_objects():

@@ -74,14 +74,17 @@ class Player(Fighting_Actor):
             Changes the Player's stats to the starting amounts.
         """
         self._alive = True
+        self._velocity = [0, 0]
         self._current_HP = self._max_HP
         self._position = copy.copy(self._spawn_point) # TODO: Player doesn't reset position?
         
-        # DEBUG: Immediate Boss fight
-        # self._key.set_count(0)
+        # DEBUG: Set key <- 1 for immediate Boss fight
+        self._key.set_count(0)
+        self._gems.set_count(0)
         self._lives.set_count(STARTING_LIVES)
         self._health.set_count(self._current_HP)
         self._shots.set_count(STARTING_SHOTS)
+
 
     def check_shoot(self):
         """

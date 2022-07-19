@@ -26,7 +26,7 @@ class Enemy(Fighting_Actor):
         # Aggro logic, enemies that only aggro don't have a path
         if path == AGGRO:
             self._aggro = True
-            self._route = [position]  
+            self._route = [position]
         else:
             self._aggro = False
                 

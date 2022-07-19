@@ -55,6 +55,8 @@ SPACESHIP_ICON = "SmallDriller.png"
 ROCK_BLACK = "Rock\\rock_black.png"
 ROCK_BLUE = "Rock\\rock_blue.png"
 
+BOSS_BG = "possible_boss_fight_background.png"
+
 GAME_TITLE = "Astronaut Adventure"
 
 # When the Collision Actor is flung by a collision, how long until it can change its velocity
@@ -68,14 +70,16 @@ COLOR_TIMER_MAX = 2
 INVULNERABLE_TIMER = 15
 
 # Player Constants
-STARTING_LIVES = 1
+STARTING_LIVES = 1 #3
 PLAYER_HP = 25
-STARTING_SHOTS = 50
+STARTING_SHOTS = 75
 
 # Boss Constants
 BOSS_NAME = "Boss"
 BOSS_HP = 40
 BOSS_ATTACK = 10
+
+ENEMY_NAME = "Enemy"
 
 BOSS_KEY_NAME = "Boss_key"
 HEALTH_NAME = "Health"
@@ -95,25 +99,3 @@ BUTTON_SIZE = int(FONT_SIZE * 1.5)
 BUTTON_PADDING = 0
 BUTTON_COLOR = "GREEN"
 BUTTON_TEXT_COLOR = "WHITE"
-
-## Scene Manager Constants ##
-from actors.background_obj import collidable_obj
-from actors.exit import Exit
-# Scene bounds (all the same)
-SCENE_EDGES = {"TOP": UI_Y_POS, "BOTTOM": WINDOW_MAX_Y, "LEFT": 0, "RIGHT": WINDOW_MAX_X}
-# NOTE: Some funky math for the left/right edges, it goes wrong somewhere, but I was able to adjust it here (//2)
-EXIT_POSITIONS = {"TOP": Point((SCENE_EDGES["RIGHT"] - SCENE_EDGES["LEFT"])//2, SCENE_EDGES["TOP"]), "BOTTOM": Point((SCENE_EDGES["RIGHT"] - SCENE_EDGES["LEFT"])//2, SCENE_EDGES["BOTTOM"]), "LEFT": Point(SCENE_EDGES["LEFT"], (SCENE_EDGES["BOTTOM"] - SCENE_EDGES["TOP"])//2 +  SCENE_EDGES["TOP"]), "RIGHT": Point(SCENE_EDGES["RIGHT"], (SCENE_EDGES["BOTTOM"] - SCENE_EDGES["TOP"])//2 + SCENE_EDGES["TOP"])}
-
-# The widths and heights for each Exit/Edge
-WALL_WIDTH = {"TOP": SCENE_EDGES["RIGHT"] - SCENE_EDGES["LEFT"], "BOTTOM": SCENE_EDGES["RIGHT"] - SCENE_EDGES["LEFT"], "LEFT": 0, "RIGHT": 0}
-WALL_HEIGHT = {"TOP": 0, "BOTTOM": 0, "LEFT": SCENE_EDGES["BOTTOM"] - SCENE_EDGES["TOP"], "RIGHT": SCENE_EDGES["BOTTOM"] - SCENE_EDGES["TOP"]}
-
-# The exits that, when collided with, move the Player to the next scene
-EXITS =  {"TOP": Exit("TOP", EXIT_POSITIONS["TOP"], WALL_WIDTH["TOP"], WALL_HEIGHT["TOP"]), "LEFT": Exit("LEFT", EXIT_POSITIONS["LEFT"], WALL_WIDTH["LEFT"], WALL_HEIGHT["LEFT"]), "RIGHT": Exit("RIGHT", EXIT_POSITIONS["RIGHT"], WALL_WIDTH["RIGHT"], WALL_HEIGHT["RIGHT"]), "BOTTOM": Exit("BOTTOM", EXIT_POSITIONS["BOTTOM"], WALL_WIDTH["BOTTOM"], WALL_HEIGHT["BOTTOM"])}
-
-# Blockers are placed if there is no connection (so they can't walk off the screen)
-EXIT_BLOCKERS = {"TOP": collidable_obj("TOP_WALL", EXIT_POSITIONS["TOP"], WALL_WIDTH["TOP"], WALL_HEIGHT["TOP"]), "BOTTOM": collidable_obj("BOTTOM_WALL", EXIT_POSITIONS["BOTTOM"], WALL_WIDTH["BOTTOM"], WALL_HEIGHT["BOTTOM"]), "LEFT": collidable_obj("LEFT_WALL", EXIT_POSITIONS["LEFT"], WALL_WIDTH["LEFT"], WALL_HEIGHT["LEFT"]), "RIGHT": collidable_obj("RIGHT_WALL", EXIT_POSITIONS["RIGHT"], WALL_WIDTH["RIGHT"], WALL_HEIGHT["RIGHT"])}
-
-# Where the Player enters the next Scene
-ENTRANCE_PADDING = ACTOR_WIDTH + 25
-ENTRANCE_POINTS = {"TOP": Point(EXIT_POSITIONS["TOP"].get_x(), EXIT_POSITIONS["TOP"].get_y() + ENTRANCE_PADDING),"BOTTOM": Point(EXIT_POSITIONS["BOTTOM"].get_x(), EXIT_POSITIONS["BOTTOM"].get_y() - ENTRANCE_PADDING), "LEFT": Point(EXIT_POSITIONS["LEFT"].get_x() + ENTRANCE_PADDING, EXIT_POSITIONS["LEFT"].get_y()), "RIGHT": Point(EXIT_POSITIONS["RIGHT"].get_x() - ENTRANCE_PADDING, EXIT_POSITIONS["RIGHT"].get_y())}

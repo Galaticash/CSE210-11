@@ -114,6 +114,7 @@ class Director():
             # If the mouse was clicked,
             if not (mouse_position == None):
                 # Check if the user chose to play again (based on which button is clicked).
+                # Returns three values None: no button clicked, True: Play Again clicked, False: Exit clicked
                 play_again = self._scene_manager.check_replay_buttons(mouse_position)
                 # If the user actually pressed a button,
                 if not (play_again == None):
@@ -158,8 +159,8 @@ class Director():
         self._game_over = False
         self._win = False
 
-        self._scene_manager.reset() # Reset the scene manager's knowledge
-        self.create_scenes() # Reset the scenes
+        self._scene_manager.reset() # Reset the Scene Manager's knowledge
+        self.create_scenes() # Reset the Scenes (Enemies respawned, etc)
         self._scene_manager.setup_scene(self._game_scenes["SPAWN"]) # setup the Spawn Scene
 
         # Removes game_over cast members (Game Over menu).

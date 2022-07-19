@@ -2,7 +2,8 @@ from actors.enemy import Enemy, Point
 from actors.Boss import Boss
 from actors.hitbox import Hitbox
 from actors.background_obj import background_obj, collidable_obj, long_object
-from constants import ACTOR_HEIGHT, ACTOR_WIDTH, PICKUP_SIZE, ROCK_BLACK, ROCK_BLUE, SPACESHIP_ICON, WINDOW_MAX_X, WINDOW_MAX_Y, BOSS_NAME, BOSS_KEY_NAME, AGGRO, HEALTH_NAME, BULLET_NAME, GEM_NAME
+from actors.message import Temp_Message
+from constants import ACTOR_HEIGHT, ACTOR_WIDTH, BOSS_BG, FONT_SIZE, PICKUP_SIZE, ROCK_BLACK, ROCK_BLUE, SPACESHIP_ICON, WINDOW_MAX_X, WINDOW_MAX_Y, BOSS_NAME, BOSS_KEY_NAME, AGGRO, HEALTH_NAME, BULLET_NAME, GEM_NAME, GAME_TITLE, ENEMY_NAME
 from actors.pickup import *
 
 """
@@ -93,6 +94,7 @@ class Spawn_scene(Scene):
     def __init__(self):
         super().__init__()
         self._name = "Spawn"
+        self._fore_objects.append(Temp_Message(Point(350, 300), int(FONT_SIZE * 1.5), GAME_TITLE, 4))
 
         self._objects.append(collidable_obj("topWall1", Point(WALL_SIZE//2 - PADDING, 0), WALL_SIZE, WALL_SIZE, ROCK_BLACK))
         self._objects.append(collidable_obj("topWall2", Point(900 - WALL_SIZE//2 + PADDING, 0), WALL_SIZE, WALL_SIZE, ROCK_BLACK))
@@ -107,32 +109,69 @@ class Scene1(Scene):
         super().__init__()
         self._name = "Right"
 
-        self._enemies = [Enemy("Enemy1", Point(100, 100), ACTOR_WIDTH, ACTOR_HEIGHT), Enemy("Enemy2", Point(400, 400), ACTOR_WIDTH, ACTOR_HEIGHT)]
+        self._enemies.append(Enemy("Enemy1", Point(300, 400), ACTOR_WIDTH, ACTOR_HEIGHT, [Point(250, 250), Point(600, 250)]))
+        self._enemies.append(Enemy("Enemy2", Point(400, 350), ACTOR_WIDTH, ACTOR_HEIGHT,  [Point(400, 350), Point(500, 400)]))
+        self._enemies.append(Enemy("Enemy3", Point(600, 350), ACTOR_WIDTH, ACTOR_HEIGHT, [Point(750, 350)]))
         
-        self._objects = [collidable_obj("Wall", Point(450, 100), ACTOR_WIDTH, ACTOR_WIDTH)]
+        #self._objects = [collidable_obj("Wall", Point(450, 100), ACTOR_WIDTH, ACTOR_WIDTH)] <-- the invisible
+        #
+        self._objects.append(collidable_obj("topWall", Point(WALL_SIZE//2 - PADDING, 0), WALL_SIZE, WALL_SIZE, ROCK_BLACK))
+        self._objects.append(collidable_obj("topWall", Point(900 - WALL_SIZE//2 + PADDING, 0), WALL_SIZE, WALL_SIZE, ROCK_BLACK))
+        self._objects.append(collidable_obj("topWall", Point(450, 0), WALL_SIZE, WALL_SIZE, ROCK_BLACK))
+        
+        self._objects.append(collidable_obj("bottomWall", Point(WALL_SIZE//2 - PADDING, 675), WALL_SIZE, WALL_SIZE, ROCK_BLACK))
+        self._objects.append(collidable_obj("bottomWall", Point(900 - WALL_SIZE//2 + PADDING, 675), WALL_SIZE, WALL_SIZE, ROCK_BLACK))
+        self._objects.append(collidable_obj("topWall", Point(450, 675), WALL_SIZE, WALL_SIZE, ROCK_BLACK))
+
+        self._objects.append(collidable_obj("sideWall1", Point(900, 300), WALL_SIZE, WALL_SIZE, ROCK_BLACK))
 
 class Scene2(Scene):
     def __init__(self):
         super().__init__()
         self._name = "Down"
         
-        self._enemies.append(Enemy("enemy1", Point(100, 650), ACTOR_WIDTH, ACTOR_HEIGHT, [Point(650, 100), Point(650, 300)]))
-        self._enemies.append(Enemy("enemy2", Point(200, 400), ACTOR_WIDTH, ACTOR_HEIGHT, [Point(400, 400), Point(200, 400)]))
-        self._enemies.append(Enemy("enemy3", Point(150, 200), ACTOR_WIDTH, ACTOR_HEIGHT, [Point(350, 200), Point(150, 200)]))
+        self._enemies.append(Enemy("enemy1", Point(600, 450), ACTOR_WIDTH, ACTOR_HEIGHT, [Point(650, 275), Point(650, 425)]))
+        self._enemies.append(Enemy("enemy2", Point(400, 400), ACTOR_WIDTH, ACTOR_HEIGHT, [Point(350, 350), Point(150, 350), Point(150, 450), Point(350, 450)]))
+        self._enemies.append(Enemy("enemy3", Point(200, 450), ACTOR_WIDTH, ACTOR_HEIGHT, [Point(350, 350), Point(150, 350), Point(150, 450), Point(350, 450)]))
  
+        self._objects.append(collidable_obj("topWall", Point(WALL_SIZE//2 - PADDING, 0), WALL_SIZE, WALL_SIZE, ROCK_BLACK))
+        self._objects.append(collidable_obj("topWall", Point(900 - WALL_SIZE//2 + PADDING, 0), WALL_SIZE, WALL_SIZE, ROCK_BLACK))
+    
+        self._objects.append(collidable_obj("bottomWall", Point(WALL_SIZE//2 - PADDING, 700), WALL_SIZE, WALL_SIZE, ROCK_BLACK))
+        self._objects.append(collidable_obj("bottomWall", Point(900 - WALL_SIZE//2 + PADDING, 700), WALL_SIZE, WALL_SIZE, ROCK_BLACK))
+        self._objects.append(collidable_obj("topWall", Point(450, 700), WALL_SIZE, WALL_SIZE, ROCK_BLACK))
+
+        self._objects.append(collidable_obj("sideWall1", Point(1000, 375), WALL_SIZE, WALL_SIZE, ROCK_BLACK))
+        self._objects.append(collidable_obj("sideWall1", Point(-100, 375), WALL_SIZE, WALL_SIZE, ROCK_BLACK))
+
 class Hidden_Scene(Scene):
     def __init__(self):
         # Need to initialize the connection dictionary
         super().__init__()
         self._name = "Hidden"
 
-        self._hidden_enemies.append(Enemy("enemy1", Point(200, 200), ACTOR_WIDTH, ACTOR_HEIGHT, AGGRO))
+        # Aggro when pick up key
+        self._hidden_enemies.append(Enemy(ENEMY_NAME + str(1), Point(700, 250), ACTOR_WIDTH, ACTOR_HEIGHT, AGGRO))
+        self._hidden_enemies.append(Enemy(ENEMY_NAME + str(2), Point(700, 400), ACTOR_WIDTH, ACTOR_HEIGHT, AGGRO))
 
-        self._objects.append(Pickup(GEM_NAME + str(1), Point(100, 150), 1, PICKUP_SIZE))
-        self._objects.append(Pickup(GEM_NAME + str(2), Point(200, 200), 5, PICKUP_SIZE, "BLUE"))
-        self._objects.append(Pickup(GEM_NAME + str(3), Point(125, 175), 1, PICKUP_SIZE))
-        self._objects.append(Pickup(GEM_NAME + str(4), Point(300, 300), 1, PICKUP_SIZE))
-        self._objects.append(Pickup(BOSS_KEY_NAME + str(1), Point(300, 450), 1, PICKUP_SIZE))
+        self._objects.append(Pickup(GEM_NAME + str(1), Point(200, 300), 1, PICKUP_SIZE))
+        self._objects.append(Pickup(GEM_NAME + str(2), Point(600, 250), 5, PICKUP_SIZE, "BLUE"))
+        self._objects.append(Pickup(GEM_NAME + str(3), Point(400, 250), 1, PICKUP_SIZE))
+        self._objects.append(Pickup(GEM_NAME + str(4), Point(350, 450), 5, PICKUP_SIZE, "BLUE"))
+        self._objects.append(Pickup(GEM_NAME + str(5), Point(500, 300), 1, PICKUP_SIZE))
+        
+        self._objects.append(Pickup(BOSS_KEY_NAME + str(1), Point(250, 450), 1, PICKUP_SIZE))
+
+        self._objects.append(collidable_obj("topWall", Point(WALL_SIZE//2 - PADDING, 0), WALL_SIZE, WALL_SIZE, ROCK_BLACK))
+        self._objects.append(collidable_obj("topWall", Point(900 - WALL_SIZE//2 + PADDING, 0), WALL_SIZE, WALL_SIZE, ROCK_BLACK))
+        self._objects.append(collidable_obj("topWall", Point(450, 0), WALL_SIZE, WALL_SIZE, ROCK_BLACK))
+
+        self._objects.append(collidable_obj("bottomWall", Point(WALL_SIZE//2 - PADDING, 700), WALL_SIZE, WALL_SIZE, ROCK_BLACK))
+        self._objects.append(collidable_obj("bottomWall", Point(900 - WALL_SIZE//2 + PADDING, 700), WALL_SIZE, WALL_SIZE, ROCK_BLACK))
+        self._objects.append(collidable_obj("topWall", Point(450, 700), WALL_SIZE, WALL_SIZE, ROCK_BLACK))
+
+        self._objects.append(collidable_obj("sideWall1", Point(-100, 375), WALL_SIZE, WALL_SIZE, ROCK_BLACK))
+
 
 class Boss_Scene(Scene):
     def __init__(self):
@@ -140,6 +179,13 @@ class Boss_Scene(Scene):
         self._name = "Boss"
 
         self._enemies = [Boss(BOSS_NAME, Point(300, 150), ACTOR_WIDTH *3,  ACTOR_WIDTH *5, [Point(300, 150), Point(600, 150)])]
+        
+        self._fore_objects.append(Temp_Message(Point(325, 100), FONT_SIZE * 3, "Big Boi", 5))
+
+        #self._bg_objects.append(background_obj(Point(450, 300), 100, BOSS_BG, 0, .1))
+
+        self._objects.append(collidable_obj("bottomWall", Point(WALL_SIZE//2 - PADDING, 700), WALL_SIZE, WALL_SIZE, ROCK_BLACK))
+        self._objects.append(collidable_obj("bottomWall", Point(900 - WALL_SIZE//2 + PADDING, 700), WALL_SIZE, WALL_SIZE, ROCK_BLACK))
 
 class TestScene(Scene):
     def __init__(self):
