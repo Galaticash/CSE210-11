@@ -219,6 +219,17 @@ class Scene_Manager():
         # Return if the game should continue
         return True
 
+    def restart_game(self, spawn_scene):
+        """
+            Restarts the game
+        """
+        self.reset() # Reset the Scene Manager's knowledge        
+        self._colliding_actors[0].start_stats() # Resets the Player
+        self.setup_scene(spawn_scene) # setup the Spawn Scene
+
+        # Removes game_over cast members (Game Over menu)
+        self.remove_game_over()
+
     def boss_defeated(self):
         return self._win
 
@@ -365,7 +376,6 @@ class Scene_Manager():
         self._scene_connections = {}
 
         player = copy.copy(self._colliding_actors[0])
-        player.start_stats()
         
         # NOTE: not sure if del/delete does anything in python?
         # Delete the colliders list, and restart with only the Player

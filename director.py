@@ -158,13 +158,11 @@ class Director():
         # Reset game over/win variables
         self._game_over = False
         self._win = False
-
-        self._scene_manager.reset() # Reset the Scene Manager's knowledge
+        
         self.create_scenes() # Reset the Scenes (Enemies respawned, etc)
-        self._scene_manager.setup_scene(self._game_scenes["SPAWN"]) # setup the Spawn Scene
 
-        # Removes game_over cast members (Game Over menu).
-        self._scene_manager.remove_game_over()
+        # Restart the Scene Manager with the Spawn Scene
+        self._scene_manager.restart_game(self._game_scenes["SPAWN"])
     
     def get_game_over(self):
         """
