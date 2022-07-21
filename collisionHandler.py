@@ -13,6 +13,12 @@ class Collision_Handler():
     def __init__(self):
         pass
 
+    def fling_object(self, collider):
+        # Fling only one object in the opposite direction it was travelling
+        opposite_velocity = self.reverse_velocity(collider.get_velocity())
+        self.freeze_movement(collider)
+        collider.set_velocity(opposite_velocity)
+
     def fling_objects(self, collision_direction, collider_one, collider_two):
         """
             Given two colliders and the direction they are colliding, flings them opposite directions.
@@ -25,7 +31,6 @@ class Collision_Handler():
         # Send them flying opposite directions
         collider_two.set_velocity(collision_direction)
         opposite_velocity = self.reverse_velocity(collision_direction)
-        #[collision_direction[0]* -1, collision_direction[1]* -1]
         collider_one.set_velocity(opposite_velocity)
 
     def reverse_velocity(self, velocity):
@@ -62,7 +67,7 @@ class Collision_Handler():
             for j in range(i + 1, len(given_colliders)):
                 collider_two = given_colliders[j]
                 # Check if the colliders have hit eachother
-                # BOTH have to return True, since some ignore collisions
+                # BOTH have to return True, since some Actors ignore collisions
                 if collider_one.is_hit(collider_two) and collider_two.is_hit(collider_one):
                     # Will reverse the direction the objects are currently travelling
                     one_s_velocity = True
@@ -74,21 +79,24 @@ class Collision_Handler():
                         one_s_velocity = False
                         collision_direction = copy.copy(collider_two.get_velocity())
                     
-                    # Do not fling the colliders if one is a pickup OR a wall
+                    # Do not fling the colliders if one is a Pickup OR an Exit
                     if collider_one.get_name()[-2:] == "_p" or collider_two.get_name()[-2:] == "_p":
                         pass
-                    # If one collider is the Player and the other is a wall    
+                    # If one collider is the Player and the other is an Exit
                     elif (collider_one.get_name() == PLAYER_NAME or collider_two.get_name() == PLAYER_NAME):
                         if (collider_one.get_name() in DIRECTIONS):
                             exit_direction = collider_one.get_name()
                         elif(collider_two.get_name() in DIRECTIONS):
                             exit_direction = collider_two.get_name()
                         else:
-                            # The Player is colliding with something
+                            # The Player is colliding with something else
                             self.fling_objects(collision_direction, collider_one, collider_two)
     
-                        #if exit_direction == None:
+                        if exit_direction == None:
+                            self.fling_objects(collision_direction, collider_one, collider_two)
                             # Normal collisions - stop movement in collision direction
+                        else:
+                            pass
 
                     else:                    
                         self.fling_objects(collision_direction, collider_one, collider_two)

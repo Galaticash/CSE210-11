@@ -230,6 +230,10 @@ class Scene_Manager():
         # Removes game_over cast members (Game Over menu)
         self.remove_game_over()
 
+    def fling_player(self):
+        # Flings the Player backwards
+        self._collision_handler.fling_object(self._colliding_actors[0])
+
     def boss_defeated(self):
         return self._win
 

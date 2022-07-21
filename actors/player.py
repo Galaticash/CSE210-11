@@ -85,7 +85,6 @@ class Player(Fighting_Actor):
         self._health.set_count(self._current_HP)
         self._shots.set_count(STARTING_SHOTS)
 
-
     def check_shoot(self):
         """
             Checks if the Player is shooting.

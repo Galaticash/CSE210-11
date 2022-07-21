@@ -94,6 +94,8 @@ class Window():
         pyray.draw_circle(actor.get_x(), actor.get_y(), 20, pyray.GREEN)
 
     def _flip_image(self, texture):
+        # GOAL: Flip the texture horizontally
+        # ERROR: built in function works on images only, and even when I used that, it didn't work as expected (blank tetxure was returned)
         pass
 
     def _print_actor_image(self, actor):
@@ -101,7 +103,7 @@ class Window():
             Prints the given actor's image on the screen.
         """
         # DEBUG: Prints Hitbox
-        # self._print_hitbox(actor.get_hitbox())
+        #self._print_hitbox(actor.get_hitbox())
         # DEBUG: Prints point position
         #pyray.draw_circle(actor.get_x(), actor.get_y(), 10, pyray.GREEN)
         
@@ -119,17 +121,18 @@ class Window():
                 print(f"Invalid filepath, {actor.get_name()}: {filepath}")
                 return
 
-            # TODO: A scaled 1 image should be actor's width
+
+            # GOAL: print the image according to the actor's size (pixels)
+            #   An Image with scale = 1 should be Actor's width pixels wide (match Hitbox size)
+            # ERROR: Doesn't quite work, there's some issues if it isn't a square 
             size = actor.get_size() * image.get_scale()
             if texture.width == 0:
-                # Error catching
+                # Error catching: Width should not be 0
                 scale = size
             else:
                 scale = size // texture.width  # Make sure it fits within the box
 
-            # Goal - print the image according to the actor's size (pixels)
-
-            # ROTATION
+            # ROTATION - change the way the Actor's Image is oriented (used for Bullet only)
             rotation = image.get_rotation()
 
             # Actor Position is the center
@@ -159,16 +162,16 @@ class Window():
             # NOTE: MUST put full Alpha or the image is not shown
             tint = image.get_tint()
 
-            # Flipping left
+            # Actor is facing left, redraw the texture
             if redraw:
                 # print("Draw Left")
-                #tint = pyray.BLACK
-                
-                # pyray.Texture
+                # texture = self._flip_image(texture)
                 pass
 
+            # Print the texture onto the screen given it's position, rotation, scale, and tint
             pyray.draw_texture_ex(texture, raylib_position, rotation, scale, tint)
         else:
+            # ERROR: There is no image associated with the actor (returns "")
             print(f"There is no image for the actor at position [{actor.get_x()}, {actor.get_y}]")
 
     def _print_actor(self, actor):
@@ -183,6 +186,7 @@ class Window():
             Draws a Counter with in a Image x count format
         """
         # some math to figure out how far away from the image it should be
+        # TODO: rename to padding
         buffer_x = counter.get_size()
         buffer_y = counter.get_size()//2
         pyray.draw_text("x " + str(counter.get_count()), counter.get_x() + buffer_x, counter.get_y() - buffer_y, counter.get_size(), counter.get_color())
@@ -193,7 +197,8 @@ class Window():
             Prints the given button on the board. Has a box 
              surrounding it to differentiate itself as a button.
         """
-        # NOTE: The boxes don't look good rn, so they'll be turned off
+        # NOTE: The boxes don't look good rn, so they'll be turned off 
+        #   (error with sizing hitbox to len(message) bc of varying widths of letters)
         # self._print_hitbox(button.get_hitbox(), button.get_color())
         pyray.draw_text(button.get_display(), button.get_x(), button.get_y(), button.get_size(), button.get_text_color())
         
@@ -210,7 +215,7 @@ class Window():
         pyray.draw_rectangle(hitbox.left, hitbox.top, hitbox.right - hitbox.left, hitbox.bottom - hitbox.top, hitbox_color)
 
         # Draw the outline
-        # Draw the top line
+        # Top line
         pyray.draw_line(hitbox.left, hitbox.top, hitbox.right, hitbox.top, color)
         # Bottom
         pyray.draw_line(hitbox.left, hitbox.bottom, hitbox.right, hitbox.bottom, color)
@@ -222,13 +227,6 @@ class Window():
         # The point position
         # pyray.draw_circle(hitbox._position.get_x(), hitbox._position.get_y(), 5, pyray.GREEN)
 
-    def _print_rock(self, rock):
-        """
-            Draw a Pyray Rectangle instead of an image/png
-        """
-        # Put the Rock's position, size, etc
-        pyray.draw_rectangle()
-
     def update(self, cast):
         """
             Draws a frame of the Game given the Cast of Actors.
@@ -237,54 +235,53 @@ class Window():
         pyray.begin_drawing()
         pyray.clear_background(pyray.BLACK)
 
+        # Draw the background - could change to pyray.clear_background(self._background_color)
         pyray.draw_rectangle(0, self._GUI_space, self._width, self._height, self._background_color)
 
-        # Print the background objects
+        # Draw the background objects
         for bg_item in cast.get_bg_objects():
             self._print_actor_image(bg_item)
 
-        # DEBUG: Printing the walls/exit points
+        # DEBUG: Printing the Exits
         #exits = cast.get_exits()
         #for direction in DIRECTIONS:
         #    #self._print_circle(walls[direction])
         #    self._print_hitbox(exits[direction].get_hitbox(), pyray.BLUE)
 
-        # Updates the Colliding Actors
+        # Draws the Colliding Actors
         for actor in cast.get_colliders():
             #self._print_hitbox(actor.get_hitbox())
             self._print_actor_image(actor)
             
-        # Print the foreground objects - colliding actors can go 'under' them
+        # Draws the foreground objects - colliding actors can go 'under' them
         for fore_obj in cast.get_foreground_objects():
-            # If it has an image
+            # If it has an image,
             if isinstance(fore_obj.get_display(), Image):
-                # Print the image
+                # Draw the image
                 self._print_actor_image(fore_obj)
             else:
                 # Print the text version
                 self._print_actor(fore_obj)
-
-        # # Objects with colliders (Pickups, etc) <-- already included in colliders
-        # for item in cast.get_objects():
-        #     self._print_actor_image(item)
 
         # Draw the GUI
         pyray.draw_rectangle(0, 0, WINDOW_MAX_X, UI_Y_POS, pyray.BLACK)
 
         # Prints the HUD items (Counter)
         for item in cast.get_HUD():
+            # If it has an image,
             if item.has_image():
+                # Draw the image and the "X count"
                 self._print_counter(item)
             else:
+                # Print just the text version
                 self._print_actor(item)
 
-        # Updates the Messages
+        # Prints the Messages
         for message in cast.get_messages():
             self._print_actor(message)
 
-        # Updates the Buttons
+        # Draws the Buttons
         for button in cast.get_buttons():
-            #self._print_circle(button)
             self._print_button(button)
 
         pyray.end_drawing()

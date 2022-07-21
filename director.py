@@ -104,6 +104,8 @@ class Director():
                     if next_scene == "BOSS" and not (self._scene_manager.get_player().has_key()):
                         # Tell the Player to get the key
                         self._scene_manager.add_message(Temp_Message(Point(450, 300), FONT_SIZE, "Must first have the key", 4))
+                        # Fix for the Player being able to walk off the screen otherwise
+                        self._scene_manager.fling_player()
                     else:
                         # Move the Player to the next scene
                         self._scene_manager.setup_scene(self._game_scenes[next_scene])
