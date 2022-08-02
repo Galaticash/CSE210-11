@@ -1,8 +1,10 @@
 # CSE 210 Final Project - Astronaut Adventures
-This is a python project that was worked on by Ashley DeMott, John Lydiksen, and Hailey Phipps. Over the course of 4 weeks, we created this game and then shared a demo with our classmates. When we shared the demo, the game was capable of moving the Player between scenes, fighting enemies
+This is a python project that was worked on by Ashley DeMott, John Lydiksen, and Hailey Phipps in CSE 210 - Programming with Classes. Over the course of 4 weeks, we created this Zelda-like game, and shared a video demo with our classmates. When we shared the demo, the game was capable of moving the Player between scenes and fighting enemies, but collisions were still a little buggy, and the game lacked sound (A feature every other demoed game had. L).
 
 ## Game Features
 TODO
+Lots of inheritance:
+Actor - Collision Actor - Player, Scene - Boss Scene, Actor - Collision Actor - Pickup Item, etc
 
 ## Bugs
 - Collisions still don't work really well, as the two colliders continually collide, bouncing back and forth. Could be solved with an invulnerability period, where the colliders cannot collide again (or, with only the initial collider - what happens when they are bounced through a wall?) for a set amount of time.
