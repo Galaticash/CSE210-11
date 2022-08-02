@@ -11,14 +11,17 @@ from constants import GEM_ICON, BULLET_ICON, HEALTH_ICON, LIFE_ICON
 from constants import ACTOR_SCALE, COUNTER_SIZE, STARTING_LIVES, PLAYER_HP, STARTING_SHOTS, BULLET_PADDING, BULLET_SPEED, BOSS_KEY_NAME
 from constants import GEM_NAME, LIFE_NAME, HEALTH_NAME, BULLET_NAME
 
+from sound import Sound
+
 class Player(Fighting_Actor):
     """
         The Player/Astronaut that is controlled by the user.
     """
-    def __init__(self, name, position, width, height, image="blank.png", color="WHITE"):
+    def __init__(self, name, position, width, height, audio_service, image="blank.png", color="WHITE"):
         super().__init__(name, position, width, height, image, color)
         self._max_HP = PLAYER_HP
         self._spawn_point = position
+        self._audio_service = audio_service
 
         self._scale = ACTOR_SCALE
 
@@ -164,6 +167,7 @@ class Player(Fighting_Actor):
         #  it can display it and detect collisions
         bullet_width = int(self._width)
         bullet_height = int(self._width //3)
+        self._audio_service.play_sound(Sound("boing.wav"))
         return Bullet("bullet", new_position, speed, bullet_width, bullet_height)
 
     def pickup(self, item):
@@ -172,6 +176,8 @@ class Player(Fighting_Actor):
         """
         if item.get_name()[0:-3] == BOSS_KEY_NAME:
             self._key.add(item.get_amount())
+            #self._audio_service.play_sound(Sound("crab_rave.mp3"))
+            self._audio_service.loop_sound(Sound("crab_rave.mp3"))
         elif item.get_name()[0:-3] == GEM_NAME:
             self._gems.add(item.get_amount())
         elif item.get_name()[0:-3] == BULLET_NAME:
@@ -208,11 +214,15 @@ class Player(Fighting_Actor):
             self._update_HP(-1 * damage_points)
             if self._current_HP <= 0:
                 if self._lives.get_count() > 0:
-                    self._lives.add(-1)
+                    # Currently, lives is just a counter, 
+                    #  doesn't have any in-game effect 
+                    #  (send player to the front of the room,
+                    #   respawn at the spaceship, etc)
+                    self._lives.add(-1)                  
                     self._set_HP(self._max_HP)
                 else:
                     # Game over
-                    self._alive = False
+                    self._alive = False                      
                     # Make sure to display 0 as the minimum HP
                     self._set_HP(0)
                     self._color = Color("INVISIBLE")

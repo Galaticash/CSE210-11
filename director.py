@@ -7,6 +7,9 @@ from mouse_input import Mouse_Input
 from Scene import *
 from constants import *
 
+from audio_service import Audio_Service
+from sound import Sound
+
 class Director():
     """
         Directs the inner workings of the game.
@@ -26,10 +29,13 @@ class Director():
         # Create a Window to display things on
         self._window = Window(self._max_x, self._max_y)
 
+        # Create an Audio Service to play sounds
+        self._audio_service = Audio_Service()
+
         self._game_scenes = {}
 
         # Create a Scene Manager to manage the current Scene and the collisions between Actors in that Scene
-        self._scene_manager = Scene_Manager(self._max_x, self._max_y)
+        self._scene_manager = Scene_Manager(self._audio_service)
 
         # Create a Mouse_input
         self._mouse = Mouse_Input()
@@ -71,16 +77,18 @@ class Director():
         # Load the images used in the game
         self._window.load_images("assets")
 
+        self._audio_service.load_sounds("assets\\sounds")
+
         # Creates the game's scenes
         self.create_scenes()
 
         # Add the Player (user) and Enemies to the Cast.
 
-        self._scene_manager.add_player(Player(PLAYER_NAME, PLAYER_SPAWN, ACTOR_WIDTH, ACTOR_HEIGHT))
+        self._scene_manager.add_player(Player(PLAYER_NAME, PLAYER_SPAWN, ACTOR_WIDTH, ACTOR_HEIGHT, self._audio_service))
         
         # Start at the SPAWN scene
         self._scene_manager.setup_scene(self._game_scenes["SPAWN"])
-        
+
     def update_game(self):
         """
             Updates all members of the cast while the game is not over (self._game_over)
@@ -183,7 +191,8 @@ class Director():
             Ends the game by closing the window. Additional things can be added
               like adding a game over animation/screen.
         """
-        self._window.unload_images()
+        self._audio_service.unload_sounds()
+        self._window.unload_images()        
         self._window.close()
 
 # Game can also just be run from Director

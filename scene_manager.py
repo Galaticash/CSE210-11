@@ -1,8 +1,8 @@
 from actors.pickup import Pickup
 from collisionHandler import Collision_Handler
+from sound import Sound
 from constants import *
 import copy
-
 
 ## Scene Manager Constants ##
 from actors.background_obj import collidable_obj
@@ -31,7 +31,17 @@ class Scene_Manager():
     """
        An object that is in charge of making sure all Actors in the current scene interact properly. 
     """
-    def __init__(self, max_x, max_y):        
+    def __init__(self, audio_service):  
+        # Could skip this line, and just hand it directly to the collision handler,
+        # However! Could use it here to play a sound when changing scenes/entering boss scene
+        # Hmm, so here it would handle music changes instead of short sound bits
+        self._audio_service = audio_service    
+        self._music = Sound("crab_rave.mp3")
+        self._boss_music = Sound("WindowsXPErrorRemix.mp3")
+        self._game_over_sound = Sound("over.wav")
+        self._game_start_sound = Sound("start.wav")
+        self._current_music = copy.copy(self._music)
+
         # Could make player it's own object to simplify the reset of colliding actors, enemies, and object lists?
         #self._player = None
         self._HUD = []
@@ -61,6 +71,7 @@ class Scene_Manager():
         self._buttons = {}  
         
         # Scene Loading
+        self._current_scene = None
         self._scene_loaded = False
         self._exits = EXITS
 
@@ -69,7 +80,39 @@ class Scene_Manager():
         # The Scenes connected to the current scene        
         self._scene_connections = {"TOP": None, "LEFT": None, "RIGHT": None, "BOTTOM": None}
 
-        self._collision_handler = Collision_Handler()
+        self._collision_handler = Collision_Handler(self._audio_service)
+
+
+## MUSIC HANDLING ##
+    def music_loop(self):
+        """
+            Very lazy rn, but I just want to play Crab Rave
+        """
+        # If no sounds are playing (the music has ended)
+        #if self._audio_service.is_sound_playing(self._music) < 1 and self._colliding_actors[0].has_key():
+        #    self._audio_service.play_sound(self._music)
+        if (not self._audio_service.is_sound_playing(self._current_music)):
+            self._audio_service.play_sound(self._current_music)
+
+    def play_sound(self, sound):
+        """ 
+            Stops the current music to play a sound
+        """         
+        self.stop_music()
+        self._audio_service.play_sound(sound)
+
+    def stop_music(self):
+        """
+            Stops the current music, could change to pause as well, but eh
+        """
+        self._audio_service.stop_sound(self._current_music)
+
+    def change_music(self, music):
+        """
+            Stops the current music, and changes to a new one.
+        """
+        self.stop_music()
+        self._current_music = copy.copy(music)
 
 ## ADDERS AND GETTERS ##
 
@@ -182,7 +225,10 @@ class Scene_Manager():
         """
             Moves all Colliders and checks their status (is_alive).
             (non-moving will have "pass" in their move method)
-        """
+        """     
+        # Check if the music is still playing, keep it looping   
+        self.music_loop()
+
         # Move each colliding actor, but only if it is alive
         for collider in self._colliding_actors:
             # If it is not alive
@@ -194,6 +240,8 @@ class Scene_Manager():
                     if collider.get_name() == BOSS_NAME:
                         # If the Boss has been defeated, the Player won the game
                         self._win = True
+                        # Probably have it be victory music, and game over
+                        self.play_sound(self._game_start_sound)
                         return False
                     if collider.get_name() == BOSS_KEY_NAME + str(1) + "_p":
                         hidden_enemies = self._current_scene.get_hidden_enemies()
@@ -210,6 +258,7 @@ class Scene_Manager():
                 else:
                     # The Player has died, and the game is over
                     self._win = False
+                    self.play_sound(self._game_over_sound)
                     return False
             collider.move()
         
@@ -223,7 +272,9 @@ class Scene_Manager():
         """
             Restarts the game
         """
-        self.reset() # Reset the Scene Manager's knowledge        
+        self._current_scene = None
+        self.reset() # Reset the Scene Manager's knowledge
+        self.change_music(self._music)
         self._colliding_actors[0].start_stats() # Resets the Player
         self.setup_scene(spawn_scene) # setup the Spawn Scene
 
@@ -288,10 +339,25 @@ class Scene_Manager():
     def setup_scene(self, scene):
         # Shouldn't be an issue, since all of this has to happen before the next GUI check
         self._scene_loaded = False
+        
+        # Go back to normal music if the Player exits the Boss level LOL
+        if (not self._current_scene == None):
+            # Exiting FROM the Boss Scene
+            if self._current_scene.get_name() == "Boss":
+                self.change_music(self._music)
+        # Coming from Scene None (aka game start)
+        else:
+            self.play_sound(self._game_start_sound)
+
         #print(f"Player will enter {scene.get_name()} from {self._player_entrance}")
         self.reset()
+
         # Move to the next scene
         self._current_scene = scene
+        
+        # If ENTERING the Boss Scene, and the Boss hasn't been defeated
+        if self._current_scene.get_name() == "Boss" and (not self.boss_defeated()):
+            self.change_music(self._boss_music)
 
         # For every direction,
         for direction in DIRECTIONS:
@@ -369,9 +435,10 @@ class Scene_Manager():
 
     def reset(self):
         """
-            Reset all the knowledge that the Scene Manager has
-            Except for the Player and the HUD
+            Reset all Scene knowledge that the Scene Manager has
+            Keeps Player and HUD data
         """
+        # Reset the Scene and the win condition
         self._current_scene = None
         self._win = False
         

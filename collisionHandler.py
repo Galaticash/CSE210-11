@@ -10,8 +10,8 @@ class Collision_Handler():
     """
         Handles the Collisions of the game, given a Cast of Colliding Actors.
     """
-    def __init__(self):
-        pass
+    def __init__(self, audio_service):
+        self._audio_service = audio_service
 
     def fling_object(self, collider):
         # Fling only one object in the opposite direction it was travelling

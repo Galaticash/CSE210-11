@@ -151,8 +151,8 @@ class Hidden_Scene(Scene):
         self._name = "Hidden"
 
         # Aggro when pick up key
-        self._hidden_enemies.append(Enemy(ENEMY_NAME + str(1), Point(700, 250), ACTOR_WIDTH, ACTOR_HEIGHT, AGGRO))
-        self._hidden_enemies.append(Enemy(ENEMY_NAME + str(2), Point(700, 400), ACTOR_WIDTH, ACTOR_HEIGHT, AGGRO))
+        #self._hidden_enemies.append(Enemy(ENEMY_NAME + str(1), Point(700, 250), ACTOR_WIDTH, ACTOR_HEIGHT, AGGRO))
+        #self._hidden_enemies.append(Enemy(ENEMY_NAME + str(2), Point(700, 400), ACTOR_WIDTH, ACTOR_HEIGHT, AGGRO))
 
         self._objects.append(Pickup(GEM_NAME + str(1), Point(200, 300), 1, PICKUP_SIZE))
         self._objects.append(Pickup(GEM_NAME + str(2), Point(600, 250), 5, PICKUP_SIZE, "BLUE"))
