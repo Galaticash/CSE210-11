@@ -1,7 +1,10 @@
 import os
 import pyray
 import pathlib
-from actors.image import Image
+from actors.image import Image, Color
+
+from actors.player import Collision_Actor
+
 
 from constants import DIRECTIONS, UI_Y_POS, WINDOW_MAX_X, ROTATION
 
@@ -34,10 +37,10 @@ class Window():
         
         # Has a const set Frame Rate, limits number of updates
         pyray.set_target_fps(FRAME_RATE)
-        self._hitbox_test_color = (255, 0, 0, 50)
-        self._hitbox_test_hit_color = (255, 0, 0, 200)
+        self._hitbox_test_color = Color(255, 0, 0, 50)
+        self._hitbox_test_hit_color = Color(255, 0, 0, 200)
 
-        self._background_color = (255, 162, 87, 255)
+        self._background_color = Color(255, 162, 87, 255)
         self._GUI_space = 100
 
     def load_images(self, directory):
@@ -96,16 +99,24 @@ class Window():
     def _flip_image(self, texture):
         # GOAL: Flip the texture horizontally
         # ERROR: built in function works on images only, and even when I used that, it didn't work as expected (blank tetxure was returned)
-        pass
+        
+        #texture.width *= -1
+
+        #gen_texture_mipmaps(texture)
+        
+        return texture
 
     def _print_actor_image(self, actor):
         """
             Prints the given actor's image on the screen.
         """
         # DEBUG: Prints Hitbox
-        #self._print_hitbox(actor.get_hitbox())
+        #if actor.get_hitbox():
+        if issubclass(type(actor), Collision_Actor):
+           self._print_hitbox(actor.get_hitbox())
+
         # DEBUG: Prints point position
-        #pyray.draw_circle(actor.get_x(), actor.get_y(), 10, pyray.GREEN)
+        pyray.draw_circle(actor.get_x(), actor.get_y(), 10, pyray.GREEN)
         
         redraw = actor.get_facing()[0] < 0
 
@@ -165,7 +176,7 @@ class Window():
             # Actor is facing left, redraw the texture
             if redraw:
                 # print("Draw Left")
-                # texture = self._flip_image(texture)
+                texture = self._flip_image(texture)
                 pass
 
             # Print the texture onto the screen given it's position, rotation, scale, and tint
@@ -202,15 +213,17 @@ class Window():
         # self._print_hitbox(button.get_hitbox(), button.get_color())
         pyray.draw_text(button.get_display(), button.get_x(), button.get_y(), button.get_size(), button.get_text_color())
         
-    def _print_hitbox(self, hitbox, color = ""):
+    def _print_hitbox(self, hitbox, color = None):
         """
             Draws a given hitbox. Must be printed before text, 
              otherwise the Rectangle will draw on top of the text.
         """
-        hitbox_color = color        
-        if color == "":
+        if color == None:
             # Draw a rectangle
+            color = Color(0,0,0,0)
             hitbox_color = self._hitbox_test_hit_color if hitbox.get_is_hit() else self._hitbox_test_color
+        else:
+            hitbox_color = color
         
         pyray.draw_rectangle(hitbox.left, hitbox.top, hitbox.right - hitbox.left, hitbox.bottom - hitbox.top, hitbox_color)
 

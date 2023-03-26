@@ -1,4 +1,4 @@
-from actors.Fighting_Actor import Fighting_Actor
+from actors.Fighting_Actor import Fighting_Actor, HARD_COLORS
 from constants import ROTATION
 
 IMAGE_SOURCE = "Bolt\\"
@@ -10,7 +10,7 @@ class Bullet(Fighting_Actor):
     """
         A Bullet fired from the Player to do damage
     """
-    def __init__(self, name, position, velocity, width, height, image="blank.png", color="WHITE"):
+    def __init__(self, name, position, velocity, width, height, image="blank.png", color=HARD_COLORS["WHITE"]):
         super().__init__(name, position, width, height, image, color)
         # Has no Health Points so it can be immediately destroyed on impact
         self._max_HP = 0

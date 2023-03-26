@@ -1,6 +1,4 @@
-from turtle import pos
-from actors.collision_actor import *
-from actors.Fighting_Actor import Fighting_Actor
+from actors.Fighting_Actor import *
 from constants import ENEMY_SCALE, AGGRO
 
 SPIRTE_PATH = "Alien\\Alien_idle3.png"
@@ -12,7 +10,7 @@ class Enemy(Fighting_Actor):
         An Actor that the Player can fight against and defeat.
         It will follow a given path, and can aggro onto the Player.
     """
-    def __init__(self, name, position, width, height, path = [Point(500, 300), Point(100, 300), Point(100, 500), Point(500, 500)], image="blank.png", color="WHITE"):
+    def __init__(self, name, position, width, height, path = [Point(500, 300), Point(100, 300), Point(100, 500), Point(500, 500)], image="blank.png", color=HARD_COLORS["WHITE"]):
         super().__init__(name, position, width, height, image, color)
         # Animation
         self._frames = ["Alien\\Alien_idle3.png", "Alien\\Alien_run1.png", "Alien\\Alien_run2.png", "Alien\\Alien_run3.png", "Alien\\Alien_run4.png", "Alien\\Alien_run5.png", "Alien\\Alien_run6.png"]

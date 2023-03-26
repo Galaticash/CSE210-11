@@ -1,12 +1,12 @@
 from actors.actor import *
 from actors.hitbox import Hitbox
-from constants import ACTOR_WIDTH, ACTOR_HEIGHT, STEP_SIZE, COLOR_TIMER_MAX, INVULNERABLE_TIMER, UPDATE_FRAME
+from constants import ACTOR_WIDTH, ACTOR_HEIGHT, STEP_SIZE, COLOR_TIMER_MAX, INVULNERABLE_TIMER, UPDATE_FRAME, HARD_COLORS
 
 class Collision_Actor(Actor):
     """
         An Actor that can collide with other Collision Actors.
     """
-    def __init__(self, name, position, width, height, image="blank.png", color="WHITE"):
+    def __init__(self, name, position, width, height, image="blank.png", color=HARD_COLORS["WHITE"]):
         super().__init__(position, width, height, image, color)
         self._name = name
 
@@ -170,14 +170,14 @@ class Collision_Actor(Actor):
                 other_damage = other_collider.get_attack()
                 if other_damage > 0:
                     self.damage(other_damage)
-                    self._color = Color("RED")
+                    self._color = Color(HARD_COLORS["RED"][0], HARD_COLORS["RED"][1], HARD_COLORS["RED"][2], HARD_COLORS["RED"][3])
                     # Start timer of invulnerability
                     self._do_collisions = False
             else:
                 # Color Timer instead of flashing Red for one second
                 if self._color_timer >= COLOR_TIMER_MAX:
                     self._color_timer = 0
-                    self._color = Color("WHITE")
+                    self._color = Color(HARD_COLORS["WHITE"][0], HARD_COLORS["WHITE"][1], HARD_COLORS["WHITE"][2], HARD_COLORS["WHITE"][3])
             return is_hit
         else:
             # Not colliding with other actors, counter until it does

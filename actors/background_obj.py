@@ -1,11 +1,12 @@
-from actors.actor import Actor, Image
+from actors.actor import Actor
+from actors.image import Image, HARD_COLORS
 from actors.collision_actor import Collision_Actor
 
 class background_obj(Actor):
     """
         An image displayed on the screen
     """
-    def __init__(self, position, width, image="blank.png", rotation=0, scale=1, color="WHITE"):
+    def __init__(self, position, width, image="blank.png", rotation=0, scale=1, color=HARD_COLORS["WHITE"]):
         super().__init__(position, width, width, image, color)
         self._image = Image(image, scale, rotation)
 
@@ -16,7 +17,7 @@ class collidable_obj(Collision_Actor):
     """
         A collidable image on the screen
     """
-    def __init__(self, name, position, width, height, image="blank.png", rotation=0, scale=1, color="WHITE"):
+    def __init__(self, name, position, width, height, image="blank.png", rotation=0, scale=1, color=HARD_COLORS["WHITE"]):
         super().__init__(name, position, width, height, image, color)
         
         self._image = Image(image, scale, rotation)
@@ -48,7 +49,7 @@ class collidable_obj(Collision_Actor):
 
 # TO BE USED FOR LONG WALLS
 class long_object(collidable_obj):
-    def __init__(self, name, position, size, image="blank.png", rotation=0, scale=1, color="WHITE"):
+    def __init__(self, name, position, size, image="blank.png", rotation=0, scale=1, color=HARD_COLORS["WHITE"]):
         super().__init__(name, position, size, image, rotation, scale, color)
         width = size *3
         self._hitbox = self.calculate_hitbox(5, size, width)

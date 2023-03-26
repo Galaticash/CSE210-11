@@ -1,5 +1,14 @@
-
 from point import Point
+
+HARD_COLORS = {"WHITE": [255, 255, 255, 255], "RED": [255, 0, 0, 255], "GREEN": [0, 255, 0, 255], "BLUE": [0, 0, 255, 255], "YELLOW": [255, 255, 0, 255], "NONE": [0, 0, 0, 0]}
+      
+#COLOR_WHITE = [255, 255, 255, 255]
+#COLOR_RED = [255, 0, 0, 255]
+#COLOR_GREEN = [0, 255, 0, 255]
+#COLOR_BLUE = [0, 0, 255, 255]
+#COLOR_YELLOW = [255, 255, 0, 255]
+#COLOR_NONE = [0, 0, 0, 0]
+
 
 # Because the game is grid-like, there are only four directions
 #  Not currently used, I guess it's more of a guideline for

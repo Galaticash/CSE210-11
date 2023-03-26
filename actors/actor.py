@@ -1,6 +1,5 @@
 from constants import Point
-from color import Color
-from actors.image import Image
+from actors.image import Image, Color, HARD_COLORS
 import copy
 
 class Actor():
@@ -11,7 +10,7 @@ class Actor():
         Has a symbol to represent itself with, can be a single character or a string of them (Message).
         Has Getters for each Attribute so the GUI can properly display the Actor.
     """
-    def __init__(self, position, width, height, image="blank.png", color = "WHITE"):
+    def __init__(self, position, width, height, image="blank.png", color=HARD_COLORS["WHITE"]):
         # Spawn point at the center of the screen
         self._spawn_point = position
         self._position = self._spawn_point # Could replay the game and set the actor back to the start
@@ -29,8 +28,9 @@ class Actor():
         # Assumes object is a square
         self._height = height
 
-        self._base_color = Color(color)
-        self._color = copy.copy(self._base_color)
+        self._base_color = Color(color[0], color[1], color[2], color[3])
+        self._color = Color()
+        self.reset_color() # Set color to base color
 
     def revive(self):
         """
@@ -124,16 +124,20 @@ class Actor():
         """
             Sets the color of the Actor.
         """        
-        self._color = Color(color)
+        self._color = Color(color[0], color[1], color[2], color[3])
 
     def reset_color(self):
         """
             Resets the color of the Actor, from turning red when hit.
         """
-        self._color = copy.copy(self._base_color)
+        self._color.r = self._base_color.r
+        self._color.g= self._base_color.g
+        self._color.b = self._base_color.b
+        self._color.a = self._base_color.a
 
+    # TODO: Not good to put here, L. What were you thinking??
     def get_color(self):
         """
             Returns the tuple Color of the Actor.
         """
-        return self._color.to_tuple()
+        return (self._color.r, self._color.g, self._color.b, self._color.a)

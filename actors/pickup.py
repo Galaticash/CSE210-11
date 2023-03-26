@@ -1,11 +1,11 @@
-from actors.collision_actor import Collision_Actor
+from actors.collision_actor import Collision_Actor, HARD_COLORS
 from constants import PICKUP_SIZE, BOSS_KEY_NAME, GEM_ICON, BULLET_ICON, HEALTH_ICON, LIFE_ICON, KEY_ICON, BLANK_ICON, BULLET_NAME, GEM_NAME, HEALTH_NAME, LIFE_NAME
 
 class Pickup(Collision_Actor):
     """
         An item that can be picked up (by the Player only)
     """    
-    def __init__(self, name, position, amount, width = PICKUP_SIZE, color="WHITE"):        
+    def __init__(self, name, position, amount, width = PICKUP_SIZE, color=HARD_COLORS["WHITE"]):        
         # Add a pickup identifier, VERY Hardcoded but it works
         # Name without the number (0 - 9)
         if name[0:-1] == BOSS_KEY_NAME:
@@ -53,7 +53,7 @@ class ReusablePickup(Pickup):
     """
         A type of interactable that doesn't disappear after being 'picked up'
     """    
-    def __init__(self, name, position, amount, width = PICKUP_SIZE, color="WHITE"):
+    def __init__(self, name, position, amount, width = PICKUP_SIZE, color=HARD_COLORS["WHITE"]):
         super().__init__(name, position, amount, width, color)
 
     def is_hit(self, other_collider):

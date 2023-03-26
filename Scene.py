@@ -1,4 +1,4 @@
-from actors.enemy import Enemy, Point
+from actors.enemy import Enemy, Point, HARD_COLORS
 from actors.Boss import Boss
 from actors.hitbox import Hitbox
 from actors.background_obj import background_obj, collidable_obj, long_object
@@ -155,9 +155,9 @@ class Hidden_Scene(Scene):
         #self._hidden_enemies.append(Enemy(ENEMY_NAME + str(2), Point(700, 400), ACTOR_WIDTH, ACTOR_HEIGHT, AGGRO))
 
         self._objects.append(Pickup(GEM_NAME + str(1), Point(200, 300), 1, PICKUP_SIZE))
-        self._objects.append(Pickup(GEM_NAME + str(2), Point(600, 250), 5, PICKUP_SIZE, "BLUE"))
+        self._objects.append(Pickup(GEM_NAME + str(2), Point(600, 250), 5, PICKUP_SIZE, HARD_COLORS["BLUE"]))
         self._objects.append(Pickup(GEM_NAME + str(3), Point(400, 250), 1, PICKUP_SIZE))
-        self._objects.append(Pickup(GEM_NAME + str(4), Point(350, 450), 5, PICKUP_SIZE, "BLUE"))
+        self._objects.append(Pickup(GEM_NAME + str(4), Point(350, 450), 5, PICKUP_SIZE, HARD_COLORS["BLUE"]))
         self._objects.append(Pickup(GEM_NAME + str(5), Point(500, 300), 1, PICKUP_SIZE))
         
         self._objects.append(Pickup(BOSS_KEY_NAME + str(1), Point(250, 450), 1, PICKUP_SIZE))

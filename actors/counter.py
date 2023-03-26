@@ -1,6 +1,5 @@
 from actors.message import Message
-from color import Color
-from actors.image import Image
+from actors.image import Image, Color, HARD_COLORS
 
 COUNTER_IMAGE_SCALE = 2
 
@@ -8,9 +7,8 @@ class Counter(Message):
     """
         A type of Message that counts
     """
-    def __init__(self, position, height, message, image_file="", color="WHITE"):
+    def __init__(self, position, height, message, image_file="", color=HARD_COLORS["WHITE"]):
         super().__init__(position, height, message, image_file, color)
-        self._color = Color("WHITE")
         self._count = 0
         self._image = Image(image_file, COUNTER_IMAGE_SCALE)
         # If there is an image, then display that

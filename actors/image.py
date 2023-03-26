@@ -1,7 +1,8 @@
-from color import Color
+from pyray import Color
+from constants import HARD_COLORS
 
 class Image():
-    def __init__(self, filepath, scale = 1, rotation = 0, tint = Color("WHITE")):
+    def __init__(self, filepath, scale = 1, rotation = 0, tint = Color(HARD_COLORS["WHITE"][0], HARD_COLORS["WHITE"][1], HARD_COLORS["WHITE"][2], HARD_COLORS["WHITE"][3])):
         self._filepath = "assets\\" + str(filepath)
         self._tint = tint
         self._scale = scale
@@ -17,7 +18,7 @@ class Image():
         """
             Returns the tuple Color to display the image.
         """
-        return self._tint.to_tuple()
+        return (self._tint.r, self._tint.g, self._tint.b, self._tint.a)
 
     def get_scale(self):
         return self._scale

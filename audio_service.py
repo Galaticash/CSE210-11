@@ -3,6 +3,8 @@ import pathlib
 import pyray
 
 DEFAULT_DIRECTORY = "assets\\sounds\\"
+VOLUME = .4
+# .4, .6, .6
 
 class Audio_Service():
     """
@@ -26,13 +28,13 @@ class Audio_Service():
     def adjust_volume(self):
         try:
             crab_rave = self._sounds["assets\\sounds\\crab_rave.mp3"]
-            pyray.set_sound_volume(crab_rave, .4)
+            pyray.set_sound_volume(crab_rave, VOLUME)
 
             start_sound = self._sounds["assets\\sounds\\start.wav"]
-            pyray.set_sound_volume(start_sound, .6)
+            pyray.set_sound_volume(start_sound, VOLUME)
 
             bap_sound = self._sounds["assets\\sounds\\boing.wav"]
-            pyray.set_sound_volume(bap_sound, .6)
+            pyray.set_sound_volume(bap_sound, VOLUME)
         except KeyError:
             print("Invalid Key")
         except:
@@ -95,7 +97,7 @@ class Audio_Service():
             sound = self._sounds[filepath]
             # Volume as a value betwen 0 and 1.0
             volume = sound_obj.get_volume()
-            # pyray.set_sound_volume(sound, volume)
+            pyray.set_sound_volume(sound, VOLUME) # rn we muting this all
         except KeyError:
             print(f"Invalid sound filepath: {filepath}")
             return
@@ -126,7 +128,6 @@ class Audio_Service():
         except KeyError:
             print(f"Invalid sound filepath: {filepath}")
             return
-
 
             pyray.play_sound(sound)
 

@@ -17,7 +17,7 @@ class Player(Fighting_Actor):
     """
         The Player/Astronaut that is controlled by the user.
     """
-    def __init__(self, name, position, width, height, audio_service, image="blank.png", color="WHITE"):
+    def __init__(self, name, position, width, height, audio_service, image="blank.png", color=HARD_COLORS["WHITE"]):
         super().__init__(name, position, width, height, image, color)
         self._max_HP = PLAYER_HP
         self._spawn_point = position
@@ -225,4 +225,4 @@ class Player(Fighting_Actor):
                     self._alive = False                      
                     # Make sure to display 0 as the minimum HP
                     self._set_HP(0)
-                    self._color = Color("INVISIBLE")
+                    self._color = Color(HARD_COLORS["NONE"][0], HARD_COLORS["NONE"][1], HARD_COLORS["NONE"][2], HARD_COLORS["NONE"][3])

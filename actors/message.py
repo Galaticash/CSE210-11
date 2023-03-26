@@ -4,7 +4,7 @@ class Message(Actor):
     """
         An Actor that displays a given message at a given position.
     """
-    def __init__(self, position, height, message, image="", color="WHITE"):
+    def __init__(self, position, height, message, image="", color=HARD_COLORS["WHITE"]):
         super().__init__(position, height, height, image, color)
         self._message = message
         self._x_pos = position.get_x()
@@ -26,7 +26,7 @@ class Temp_Message(Message):
     """
         A type of message that fades over time
     """
-    def __init__(self, position, height, message, fade_speed, image="", color="WHITE"):
+    def __init__(self, position, height, message, fade_speed, image="", color=HARD_COLORS["WHITE"]):
         super().__init__(position, height, message, image, color)
         self._fade_speed = fade_speed
         self._timer = 0
@@ -36,7 +36,9 @@ class Temp_Message(Message):
 
     def get_color(self):
         # Make a faded version of the color
-        color = self._color.to_tuple()
+        color = [self._color.r, self._color.g, self._color.b, self._color.a]
+        # self._color.to_tuple()
+
         transparency = 255 - self._timer
         if self._timer < 255:
             self._timer += self._fade_speed
